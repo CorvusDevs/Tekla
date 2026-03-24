@@ -1,20 +1,23 @@
 import AppKit
 import SwiftUI
 
-/// Manages a standalone, movable settings window separate from the keyboard panel.
-final class SettingsWindowController {
+/// Manages a standalone, movable settings panel separate from the keyboard panel.
+/// Uses NSPanel with `.nonactivatingPanel` so it doesn't steal focus from the target app.
+final class SettingsWindowController: NSObject, NSWindowDelegate {
 
     static let shared = SettingsWindowController()
 
-    private var window: NSWindow?
+    private var panel: NSPanel?
     private var onClose: (() -> Void)?
 
-    private init() {}
+    private override init() {
+        super.init()
+    }
 
     func show(settings: SettingsManager, predictionEngine: PredictionEngine, onClose: @escaping () -> Void) {
         self.onClose = onClose
 
-        if let existing = window, existing.isVisible {
+        if let existing = panel, existing.isVisible {
             existing.makeKeyAndOrderFront(nil)
             return
         }
@@ -32,9 +35,9 @@ final class SettingsWindowController {
             y: screenFrame.midY - 190
         )
 
-        let win = NSWindow(
+        let win = NSPanel(
             contentRect: NSRect(origin: origin, size: NSSize(width: 480, height: 380)),
-            styleMask: [.titled, .closable, .miniaturizable],
+            styleMask: [.titled, .closable, .miniaturizable, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -43,29 +46,23 @@ final class SettingsWindowController {
         win.isReleasedWhenClosed = false
         win.level = .floating + 1
         win.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        win.delegate = WindowCloseDelegate.shared
-        WindowCloseDelegate.shared.onClose = { [weak self] in
-            self?.onClose?()
-            self?.window = nil
-        }
+        win.delegate = self
 
         win.makeKeyAndOrderFront(nil)
-        self.window = win
+        self.panel = win
     }
 
     func close() {
-        window?.close()
-        onClose?()
-        window = nil
+        guard let panel else { return }
+        panel.close()  // triggers windowWillClose which handles cleanup
     }
-}
 
-/// Detects when the user closes the settings window via the title bar close button.
-private final class WindowCloseDelegate: NSObject, NSWindowDelegate {
-    static let shared = WindowCloseDelegate()
-    var onClose: (() -> Void)?
+    // MARK: - NSWindowDelegate
 
     func windowWillClose(_ notification: Notification) {
-        onClose?()
+        let callback = onClose
+        onClose = nil   // release the closure to avoid retain cycles
+        panel = nil
+        callback?()
     }
 }

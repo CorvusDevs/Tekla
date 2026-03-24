@@ -168,6 +168,25 @@ enum KeyboardLayout {
         LanguageManager.layout(for: language).mainRows
     }
 
+    /// Compute the minimum window width needed for a language layout at a given
+    /// minimum key unit size. Accounts for inter-key spacing, horizontal padding,
+    /// and navigation cluster.
+    static func minimumWidth(
+        for language: String,
+        minKeyUnit: CGFloat = 34,
+        showNavigationCluster: Bool = true
+    ) -> CGFloat {
+        let rows = mainRows(for: language)
+        let widestUnits = rows.map { $0.reduce(CGFloat(0)) { $0 + $1.widthMultiplier } }.max() ?? 14
+        let maxKeyCount = rows.map(\.count).max() ?? 14
+        let spacing = CGFloat(maxKeyCount - 1) * (3.0 * minKeyUnit / 38.0)
+        let hPad: CGFloat = 32 // 16pt each side
+        let navWidth: CGFloat = showNavigationCluster
+            ? (3.0 * minKeyUnit + 2.0 * (3.0 * minKeyUnit / 38.0) + 14.0 * minKeyUnit / 38.0)
+            : 0
+        return widestUnits * minKeyUnit + spacing + hPad + navWidth
+    }
+
     // MARK: Navigation Cluster
 
     static let navTopRow: [KeyModel] = [

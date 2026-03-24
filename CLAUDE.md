@@ -100,4 +100,4 @@
 
 ## Commits
 
-- **Always update the changelog when committing.** Every commit message should follow the pattern `vX.Y.Z — Summary` and include a bulleted list of what changed.
+- **Always update the changelog when committing.** Every commit message should follow the pattern `vX.Y.Z — Summary` and include a bulleted list of what changed. Also update `CHANGELOG.md` at the project root with the same version entry so there is a single file tracking all releases.

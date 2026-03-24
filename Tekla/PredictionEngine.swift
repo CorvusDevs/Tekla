@@ -288,19 +288,17 @@ final class PredictionEngine {
         guard !initialPrefixes.isEmpty, !language.isEmpty else { return }
         pendingDeepHarvestPrefixes = [] // prevent re-entry
 
-        Task.detached(priority: .utility) { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let result = self.runCascadeHarvest(initialPrefixes: initialPrefixes, language: language)
-            await MainActor.run {
-                self.mergeEntries(result)
-            }
+            self.mergeEntries(result)
         }
     }
 
-    /// Run the deep cascade harvest synchronously (called from background thread).
+    /// Run the deep cascade harvest on the main thread (NSSpellChecker requires main thread).
     /// Phases 3-5: query 3→4→5 letter prefixes to discover words
     /// that the shallow 2-letter harvest missed (e.g. "estante").
-    nonisolated private func runCascadeHarvest(initialPrefixes: Set<String>, language: String) -> [String: Double] {
+    private func runCascadeHarvest(initialPrefixes: Set<String>, language: String) -> [String: Double] {
         let checker = NSSpellChecker.shared
         var allEntries: [String: Double] = [:]
 

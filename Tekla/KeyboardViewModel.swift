@@ -99,6 +99,11 @@ final class KeyboardViewModel {
             sendKey("delete")
             lastSwipedWord = nil
             lastActionInsertedTrailingSpace = false
+            // Backspace cancels auto-capitalization — user is editing, not starting a new sentence
+            if shouldCapitalizeNext {
+                shouldCapitalizeNext = false
+                isShiftActive = false
+            }
             if !currentWordBuffer.isEmpty {
                 currentWordBuffer.removeLast()
             }
@@ -111,27 +116,10 @@ final class KeyboardViewModel {
             releaseOneShot()
 
         case .returnKey:
-            if isShowingNextWordPredictions, !predictions.isEmpty {
-                // Insert the primary (center) prediction
-                let primaryIdx = predictions.count / 2
-                let primary = predictions[primaryIdx]
-                debugLog("[Enter] inserted next-word prediction \"\(primary)\" (prev=\"\(previousWord ?? "nil")\")")
-                KeystrokeEngine.typeString(primary + " ")
-                lastActionInsertedTrailingSpace = true
-                if settings.learnFromTyping {
-                    predictionEngine.recordWordInContext(primary.lowercased(), after: previousWord)
-                }
-                previousWord = primary.lowercased()
-                shouldCapitalizeNext = false
-                isShowingNextWordPredictions = false
-                predictions = []
-                showNextWordPredictions()
-            } else {
-                sendKey("return")
-                lastSwipedWord = nil
-                lastActionInsertedTrailingSpace = false
-                commitCurrentWord()
-            }
+            sendKey("return")
+            lastSwipedWord = nil
+            lastActionInsertedTrailingSpace = false
+            commitCurrentWord()
             releaseOneShot()
 
         case .tab:
@@ -303,6 +291,14 @@ final class KeyboardViewModel {
         syncLanguage()
         guard !scoredCandidates.isEmpty, permissions.isAccessibilityGranted else { return }
 
+        // If the user typed a word and then swiped, the typed characters are
+        // already in the document (sent key-by-key). Commit the buffer and
+        // insert a space so the swiped word doesn't merge with the typed one.
+        if !currentWordBuffer.isEmpty {
+            commitCurrentWord()
+            KeystrokeEngine.typeString(" ")
+        }
+
         let count = settings.predictionCount
 
         // Re-rank using the language model (trie + bigrams + user learning)
@@ -406,9 +402,8 @@ final class KeyboardViewModel {
 
             // Swipe correction: delete the swiped word + trailing space
             debugLog("[Tap] swipe correction: \"\(swiped)\" → \"\(word)\"")
-            for _ in 0..<(swiped.count + 1) {
-                sendKey("delete")
-                usleep(2000)
+            if let deleteCode = KeystrokeEngine.keyCodes["delete"] {
+                KeystrokeEngine.sendRepeatedKeystroke(keyCode: deleteCode, count: swiped.count + 1)
             }
             lastSwipedWord = nil
 
@@ -422,9 +417,8 @@ final class KeyboardViewModel {
         } else {
             // Normal typing prediction: delete the partial buffer
             debugLog("[Tap] typing prediction: buffer=\"\(currentWordBuffer)\" → \"\(word)\"")
-            for _ in currentWordBuffer {
-                sendKey("delete")
-                usleep(2000)
+            if let deleteCode = KeystrokeEngine.keyCodes["delete"] {
+                KeystrokeEngine.sendRepeatedKeystroke(keyCode: deleteCode, count: currentWordBuffer.count)
             }
 
             KeystrokeEngine.typeString(word + " ")
@@ -487,7 +481,7 @@ final class KeyboardViewModel {
             if let data = entry.data(using: .utf8) {
                 handle.write(data)
             }
-            handle.closeFile()
+            try? handle.close()
         } else {
             try? entry.write(to: url, atomically: true, encoding: .utf8)
         }
@@ -512,12 +506,10 @@ final class KeyboardViewModel {
         if isPunctuation && lastActionInsertedTrailingSpace && permissions.isAccessibilityGranted {
             debugLog("[SmartPunct] \"\(char)\" — deleted trailing space after \"\(previousWord ?? "?")\"")
             sendKey("delete")
-            usleep(2000)
         }
         lastActionInsertedTrailingSpace = false
 
         // Only inject keystrokes if we have permission.
-        // Use the original key character for injection — the OS applies shift.
         if permissions.isAccessibilityGranted {
             var flags: CGEventFlags = []
             if shouldUpper { flags.insert(.maskShift) }
@@ -525,19 +517,37 @@ final class KeyboardViewModel {
             if isOptionActive { flags.insert(.maskAlternate) }
             if isControlActive { flags.insert(.maskControl) }
 
-            let charKey = String(injectionChar).lowercased()
-            if let keyCode = KeystrokeEngine.keyCodes[charKey] {
-                KeystrokeEngine.sendKeystroke(keyCode: keyCode, flags: flags)
+            // When modifier keys (Cmd/Opt/Ctrl) are held, use keyCode so the
+            // shortcut reaches the target app correctly (e.g., Cmd+/ to comment).
+            // For plain typing (no modifiers beyond shift), non-letter characters
+            // use typeString with the resolved character to avoid keyboard layout
+            // mismatches (e.g., US keyCode for "/" producing "¨" on Spanish layout).
+            let hasActionModifier = isCommandActive || isOptionActive || isControlActive
+            if injectionChar.isLetter || hasActionModifier {
+                let charKey = String(injectionChar).lowercased()
+                if let keyCode = KeystrokeEngine.keyCodes[charKey] {
+                    KeystrokeEngine.sendKeystroke(keyCode: keyCode, flags: flags)
+                } else {
+                    let output = shouldUpper ? Character(injectionChar.uppercased()) : injectionChar
+                    KeystrokeEngine.typeString(String(output))
+                }
             } else {
-                let output = shouldUpper ? Character(injectionChar.uppercased()) : injectionChar
-                KeystrokeEngine.typeString(String(output))
+                // Use the already-resolved character (char) — it accounts for
+                // shift state via shiftedLabel resolution in handleKeyTap.
+                KeystrokeEngine.typeString(String(char))
             }
         }
 
         // Punctuation after a word commits and resets, doesn't extend the buffer
         if isPunctuation {
-            shouldCapitalizeNext = Self.sentenceEndingChars.contains(char)
             commitCurrentWord()
+            // Sentence-ending punctuation: insert a trailing space and capitalize next
+            if Self.sentenceEndingChars.contains(char) && permissions.isAccessibilityGranted {
+                KeystrokeEngine.typeString(" ")
+                lastActionInsertedTrailingSpace = true
+            }
+            // Set capitalization AFTER commit — commit clears it when flushing the buffer
+            shouldCapitalizeNext = Self.sentenceEndingChars.contains(char)
             showNextWordPredictions()
             releaseOneShot()
             return
@@ -550,6 +560,8 @@ final class KeyboardViewModel {
             if char.isLetter {
                 let output = shouldUpper ? Character(char.uppercased()) : char
                 currentWordBuffer.append(output)
+                // Auto-capitalize consumed — clear so shift releases normally
+                shouldCapitalizeNext = false
                 updatePredictions()
             } else {
                 commitCurrentWord()
@@ -561,12 +573,16 @@ final class KeyboardViewModel {
     }
 
     /// Send a named key from the key code map. Only injects if permission is granted.
+    /// Auto-capitalize shift (`shouldCapitalizeNext`) is excluded from the flags
+    /// so that action keys like delete/return aren't sent as Shift+key.
     private func sendKey(_ name: String) {
         guard permissions.isAccessibilityGranted,
               let keyCode = KeystrokeEngine.keyCodes[name] else { return }
 
         var flags: CGEventFlags = []
-        if isShiftActive { flags.insert(.maskShift) }
+        // Only include shift when the user explicitly activated it (not auto-capitalize)
+        if isShiftActive && !shouldCapitalizeNext { flags.insert(.maskShift) }
+        if isCapsLockActive { flags.insert(.maskShift) }
         if isCommandActive { flags.insert(.maskCommand) }
         if isOptionActive { flags.insert(.maskAlternate) }
         if isControlActive { flags.insert(.maskControl) }
@@ -575,7 +591,7 @@ final class KeyboardViewModel {
     }
 
     private func releaseOneShot() {
-        if isShiftActive && !isCapsLockActive {
+        if isShiftActive && !isCapsLockActive && !shouldCapitalizeNext {
             isShiftActive = false
         }
         isCommandActive = false
@@ -605,7 +621,27 @@ final class KeyboardViewModel {
             return
         }
         syncLanguage()
-        let results = predictionEngine.predictNextWord(after: prev)
+        let count = settings.predictionCount
+        var results = predictionEngine.predictNextWord(after: prev)
+
+        // Pad with top unigram words if we don't have enough predictions
+        if results.count < count {
+            var seen = Set(results.map { $0.lowercased() })
+            // Use a common first letter to broaden the pool
+            for letter in "esacdptml" {
+                guard results.count < count else { break }
+                let extras = predictionEngine.predict(
+                    prefix: String(letter),
+                    previousWord: prev
+                )
+                for word in extras where results.count < count {
+                    if seen.insert(word.lowercased()).inserted {
+                        results.append(word)
+                    }
+                }
+            }
+        }
+
         guard !results.isEmpty else {
             predictions = []
             debugLog("[NextWord] after=\"\(prev)\" → (none)")
@@ -615,7 +651,7 @@ final class KeyboardViewModel {
         let capped = shouldCapitalizeNext
             ? results.map { $0.prefix(1).uppercased() + $0.dropFirst() }
             : results
-        let displayed = centerBestPrediction(Array(capped.prefix(settings.predictionCount)))
+        let displayed = centerBestPrediction(Array(capped.prefix(count)))
         predictions = displayed
         isShowingNextWordPredictions = true
         debugLog("[NextWord] after=\"\(prev)\" → \(capped)")
@@ -645,29 +681,52 @@ final class KeyboardViewModel {
             previousWord: previousWord
         )
 
-        // Fallback to NSSpellChecker if the engine returns nothing
-        // (happens when no bundled frequency data is available for the language)
-        if results.isEmpty {
-            let count = settings.predictionCount
+        // Pad with NSSpellChecker when the engine returns fewer than predictionCount
+        let count = settings.predictionCount
+        if results.count < count {
             let lang = LanguageManager.spellCheckerCode(for: settings.selectedLanguage)
             let checker = NSSpellChecker.shared
-            results = checker.completions(
+            var seen = Set(results.map { $0.lowercased() })
+
+            let completions = checker.completions(
                 forPartialWordRange: NSRange(location: 0, length: currentWordBuffer.utf16.count),
                 in: currentWordBuffer,
                 language: lang,
                 inSpellDocumentWithTag: 0
             ) ?? []
+            for word in completions where results.count < count {
+                if seen.insert(word.lowercased()).inserted {
+                    results.append(word)
+                }
+            }
 
-            if results.isEmpty {
-                results = checker.guesses(
+            // Still short — try spell checker guesses
+            if results.count < count {
+                let guesses = checker.guesses(
                     forWordRange: NSRange(location: 0, length: currentWordBuffer.utf16.count),
                     in: currentWordBuffer,
                     language: lang,
                     inSpellDocumentWithTag: 0
                 ) ?? []
+                for word in guesses where results.count < count {
+                    if seen.insert(word.lowercased()).inserted {
+                        results.append(word)
+                    }
+                }
             }
 
-            results = Array(results.prefix(count))
+            // Still short — pad with top frequency words starting with the same letter
+            if results.count < count, let first = currentWordBuffer.first {
+                let topWords = predictionEngine.predict(
+                    prefix: String(first).lowercased(),
+                    previousWord: previousWord
+                )
+                for word in topWords where results.count < count {
+                    if seen.insert(word.lowercased()).inserted {
+                        results.append(word)
+                    }
+                }
+            }
         }
 
         // Capitalize predictions after sentence-ending punctuation (. ? !)

@@ -101,12 +101,7 @@ final class SwipeEngine {
         return Array(results.prefix(10))
     }
 
-    func cancelSwipe() {
-        isSwiping = false
-        swipePath = []
-        swipedLetters = []
-        swipeProximities = []
-    }
+
 
     // MARK: - Intentional Key Extraction
 
@@ -278,10 +273,6 @@ final class SwipeEngine {
         }
 
         return scoreAndRank(candidates: candidates)
-    }
-
-    private func matchSwipe() -> [String] {
-        return matchSwipeWithScores().prefix(3).map(\.word)
     }
 
     /// Score candidates using multiplicative (Bayesian) scoring inspired by SHARK2.
@@ -860,7 +851,7 @@ final class SwipeEngine {
             if let data = content.data(using: .utf8) {
                 handle.write(data)
             }
-            handle.closeFile()
+            try? handle.close()
         } else {
             // File doesn't exist yet — create it
             try? content.write(to: Self.debugLogURL, atomically: true, encoding: .utf8)

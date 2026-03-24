@@ -2,49 +2,34 @@ import ApplicationServices
 import AppKit
 
 /// Manages Accessibility permission required for CGEvent posting.
-///
-/// In DEBUG builds, set `debugBypassPermission` to `true` to skip the
-/// Accessibility check. This lets you test the full UI (predictions,
-/// swipe trail, feedback) without re-granting permission after every build.
-/// CGEvent posting will still fail silently, but everything else works.
 @Observable
 final class PermissionsManager {
 
-    #if DEBUG
-    /// When `true`, the UI behaves as if Accessibility is granted.
-    /// CGEvent calls will still fail, but predictions, swipe, and
-    /// feedback all work normally for UI testing.
-    static let debugBypassPermission = true
-    #endif
-
     private(set) var isAccessibilityGranted: Bool = false
 
+    /// Background polling task that checks permission status periodically.
+    private var pollingTask: Task<Void, Never>?
+
     init() {
-        #if DEBUG
-        if Self.debugBypassPermission {
-            isAccessibilityGranted = true
-            return
-        }
-        #endif
         isAccessibilityGranted = AXIsProcessTrusted()
+        startPollingIfNeeded()
     }
 
     /// Check current Accessibility permission status.
     func refresh() {
-        #if DEBUG
-        if Self.debugBypassPermission {
-            isAccessibilityGranted = true
-            return
-        }
-        #endif
         isAccessibilityGranted = AXIsProcessTrusted()
     }
 
     /// Prompt the system dialog and open System Settings to the Accessibility pane.
-    /// The system prompt may not appear for accessory-mode apps, so we always
-    /// open Settings as well to ensure the user can find and enable the app.
+    /// No-op if permission is already granted.
     func requestAccessibility() {
-        // Try the system prompt first
+        // Re-check live — the cached value may be stale at this point
+        if AXIsProcessTrusted() {
+            isAccessibilityGranted = true
+            return
+        }
+
+        // Trigger the system prompt
         let options: NSDictionary = [
             kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true
         ]
@@ -53,25 +38,32 @@ final class PermissionsManager {
         // Also open System Settings directly — the prompt often doesn't show
         // for non-activating panel apps running in accessory mode
         openAccessibilitySettings()
-
-        // Poll for the user to grant permission
-        Task { @MainActor in
-            for _ in 0..<30 {
-                try? await Task.sleep(for: .seconds(2))
-                let granted = AXIsProcessTrusted()
-                if granted {
-                    isAccessibilityGranted = true
-                    return
-                }
-            }
-        }
     }
 
     /// Open System Settings directly to the Accessibility pane.
     func openAccessibilitySettings() {
-        // macOS 13+ deep link
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
             NSWorkspace.shared.open(url)
+        }
+    }
+
+    // MARK: - Private
+
+    /// Poll every 2 seconds until permission is granted, then stop.
+    private func startPollingIfNeeded() {
+        guard !isAccessibilityGranted else { return }
+        pollingTask?.cancel()
+        pollingTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(2))
+                guard let self, !Task.isCancelled else { return }
+                let granted = AXIsProcessTrusted()
+                if granted {
+                    self.isAccessibilityGranted = true
+                    self.pollingTask = nil
+                    return
+                }
+            }
         }
     }
 }

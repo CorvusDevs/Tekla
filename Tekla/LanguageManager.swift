@@ -190,7 +190,7 @@ enum LanguageManager {
             KeyModel(label: "Ñ", action: .character("ñ")),
             KeyModel(label: "´", action: .character("´"), shiftedLabel: "¨", secondaryLabel: "¨"),
             KeyModel(label: "Ç", action: .character("ç")),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -257,7 +257,7 @@ enum LanguageManager {
             KeyModel(label: "Ö", action: .character("ö")),
             KeyModel(label: "Ä", action: .character("ä")),
             KeyModel(label: "#", action: .character("#"), shiftedLabel: "'", secondaryLabel: "'"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -324,7 +324,7 @@ enum LanguageManager {
             KeyModel(label: "M", action: .character("m")),
             KeyModel(label: "ù", action: .character("ù"), shiftedLabel: "%", secondaryLabel: "%"),
             KeyModel(label: "`", action: .character("`"), shiftedLabel: "£", secondaryLabel: "£"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -391,7 +391,7 @@ enum LanguageManager {
             KeyModel(label: "Ç", action: .character("ç")),
             KeyModel(label: "º", action: .character("º"), shiftedLabel: "ª", secondaryLabel: "ª"),
             KeyModel(label: "~", action: .character("~"), shiftedLabel: "^", secondaryLabel: "^"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -458,7 +458,7 @@ enum LanguageManager {
             KeyModel(label: "ò", action: .character("ò"), shiftedLabel: "ç", secondaryLabel: "ç"),
             KeyModel(label: "à", action: .character("à"), shiftedLabel: "@", secondaryLabel: "@"),
             KeyModel(label: "#", action: .character("#"), shiftedLabel: "~", secondaryLabel: "~"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -525,7 +525,7 @@ enum LanguageManager {
             KeyModel(label: "Ö", action: .character("ö")),
             KeyModel(label: "Ä", action: .character("ä")),
             KeyModel(label: "'", action: .character("'"), shiftedLabel: "*", secondaryLabel: "*"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -592,7 +592,7 @@ enum LanguageManager {
             KeyModel(label: "Æ", action: .character("æ")),
             KeyModel(label: "Ø", action: .character("ø")),
             KeyModel(label: "'", action: .character("'"), shiftedLabel: "*", secondaryLabel: "*"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -659,7 +659,7 @@ enum LanguageManager {
             KeyModel(label: "Ø", action: .character("ø")),
             KeyModel(label: "Æ", action: .character("æ")),
             KeyModel(label: "'", action: .character("'"), shiftedLabel: "*", secondaryLabel: "*"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -726,7 +726,7 @@ enum LanguageManager {
             KeyModel(label: "Ş", action: .character("ş")),
             KeyModel(label: "İ", action: .character("i")),
             KeyModel(label: ",", action: .character(","), shiftedLabel: ";", secondaryLabel: ";"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),
@@ -793,7 +793,7 @@ enum LanguageManager {
             KeyModel(label: "Ж", action: .character("ж")),
             KeyModel(label: "Э", action: .character("э")),
             KeyModel(label: "\\", action: .character("\\"), shiftedLabel: "/", secondaryLabel: "/"),
-            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.0),
+            KeyModel(label: "⏎", action: .returnKey, widthMultiplier: 1.5),
         ],
         shiftRow: [
             KeyModel(label: "⇧", action: .shift, widthMultiplier: 1.3),

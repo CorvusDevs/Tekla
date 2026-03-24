@@ -26,6 +26,24 @@ enum KeystrokeEngine {
         keyUp.post(tap: .cgSessionEventTap)
     }
 
+    /// Send N consecutive presses of the same key (e.g., backspace).
+    /// Posts all events without sleeping — CGEvent queuing handles ordering.
+    static func sendRepeatedKeystroke(keyCode: CGKeyCode, count: Int, flags: CGEventFlags = []) {
+        guard count > 0 else { return }
+        let source = CGEventSource(stateID: .hidSystemState)
+        for _ in 0..<count {
+            guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyCode, keyDown: true),
+                  let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyCode, keyDown: false)
+            else { continue }
+            keyDown.flags = flags
+            keyUp.flags = flags
+            keyDown.setIntegerValueField(.eventSourceUserData, value: syntheticEventTag)
+            keyUp.setIntegerValueField(.eventSourceUserData, value: syntheticEventTag)
+            keyDown.post(tap: .cgSessionEventTap)
+            keyUp.post(tap: .cgSessionEventTap)
+        }
+    }
+
     /// Type an arbitrary Unicode string into the frontmost app.
     static func typeString(_ string: String) {
         let source = CGEventSource(stateID: .hidSystemState)

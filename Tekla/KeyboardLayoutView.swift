@@ -71,18 +71,27 @@ struct KeyboardLayoutView: View {
 
         let widthBase = usableWidth / (totalUnits + spacingFactor + navReserve)
 
-        // Solve for baseKey from height:
-        // 5 main rows * keyHeight + 4 * keySpacing + padding = availableHeight
-        // If function row: +1 row (smaller) + divider + spacing
+        // Solve for baseKey from height.
+        // All dimensions scale with (base/38), so express total height as:
+        //   totalHeight = (base/38) * heightUnits + fixedOverhead
+        // Then: base = (availableHeight - fixedOverhead) * 38 / heightUnits
         let numMainRows: CGFloat = CGFloat(rows.count)
-        let vPad: CGFloat = 8.0 // top + bottom padding (4 * scale each ≈ 8 baseline)
-        let usableHeight = availableHeight - vPad
-        let funcRowOverhead: CGFloat = showFunctionRow ? (28.0 + 8.0) : 0 // fn key height + divider+spacing
-        let mainRowsHeight = usableHeight - funcRowOverhead
-        // mainRowsHeight = numMainRows * 36*(base/38) + (numMainRows-1) * 3*(base/38) + spacing between fn/main
-        // = (base/38) * (numMainRows * 36 + (numMainRows-1) * 3 + interSectionSpacing)
-        let heightPerUnit = numMainRows * 36.0 + (numMainRows - 1) * 3.0 + 4.0
-        let heightBase = (mainRowsHeight / heightPerUnit) * 38.0
+        // Units that scale with base/38:
+        //   top padding: 4, bottom padding: 4, shadow clearance: 2
+        //   main rows: numMainRows * 36 (key heights)
+        //   main row gaps: (numMainRows - 1) * 3 (keySpacing)
+        //   VStack spacing between func row and main: 4
+        var heightUnits: CGFloat = 10.0 // top(4) + bottom(4) + shadow(2)
+            + numMainRows * 36.0
+            + (numMainRows - 1) * 3.0
+            + 4.0 // VStack internal spacing
+        if showFunctionRow {
+            heightUnits += 28.0 // function key height
+            + 4.0 // VStack spacing above divider
+        }
+        // Fixed overhead that doesn't scale: divider (~1pt)
+        let fixedOverhead: CGFloat = showFunctionRow ? 1.0 : 0.0
+        let heightBase = (availableHeight - fixedOverhead) / heightUnits * 38.0
 
         // Use the smaller of the two to avoid clipping
         let newBase = min(widthBase, heightBase)
@@ -99,7 +108,7 @@ struct KeyboardLayoutView: View {
             VStack(spacing: 4 * scaleFactor) {
                 if showFunctionRow {
                     functionRowSection
-                    Divider().padding(.horizontal, 4)
+                    Divider()
                 }
                 mainAndNavSection
             }
@@ -158,13 +167,36 @@ struct KeyboardLayoutView: View {
         }
     }
 
+    /// The widest row's total unit width, used to equalize all rows.
+    private var maxRowUnits: CGFloat {
+        currentRows.map { rowWidth($0) }.max() ?? 0
+    }
+
+    /// The maximum number of keys in any row, used to compute spacing.
+    private var maxRowKeyCount: Int {
+        currentRows.map(\.count).max() ?? 0
+    }
+
     @ViewBuilder
     private var mainSection: some View {
+        let maxUnits = maxRowUnits
+        let maxCount = maxRowKeyCount
+        // Total pixel width of the widest row (keys + inter-key spacing)
+        let maxRowPixelWidth = maxUnits * baseKeyWidth + CGFloat(maxCount - 1) * keySpacing
+
         VStack(spacing: keySpacing) {
             ForEach(Array(currentRows.enumerated()), id: \.offset) { _, row in
+                let naturalWidth = rowWidth(row) * baseKeyWidth + CGFloat(row.count - 1) * keySpacing
+                let extraWidth = maxRowPixelWidth - naturalWidth
+
                 HStack(spacing: keySpacing) {
-                    ForEach(row) { key in
-                        keyButton(key)
+                    ForEach(Array(row.enumerated()), id: \.element.id) { idx, key in
+                        if idx == row.count - 1 {
+                            // Last key stretches to fill the row
+                            keyButton(key, extraWidth: extraWidth)
+                        } else {
+                            keyButton(key)
+                        }
                     }
                 }
             }
@@ -303,9 +335,10 @@ struct KeyboardLayoutView: View {
 
     /// Key button used inside the main section — no gesture attached.
     /// All interaction is handled by the parent's unified gesture.
+    /// `extraWidth` is added to the last key in each row to equalize row widths.
     @ViewBuilder
-    private func keyButton(_ key: KeyModel) -> some View {
-        keyButtonView(key)
+    private func keyButton(_ key: KeyModel, extraWidth: CGFloat = 0) -> some View {
+        keyButtonView(key, extraWidth: extraWidth)
             .background(
                 GeometryReader { geo in
                     Color.clear
@@ -331,7 +364,7 @@ struct KeyboardLayoutView: View {
     }
 
     @ViewBuilder
-    private func keyButtonView(_ key: KeyModel) -> some View {
+    private func keyButtonView(_ key: KeyModel, extraWidth: CGFloat = 0) -> some View {
         KeyButtonView(
             key: key,
             isShiftActive: isShiftActive || isCapsLockActive,
@@ -339,7 +372,8 @@ struct KeyboardLayoutView: View {
             isPressed: pressedKeyID == key.id,
             visualFeedbackEnabled: visualFeedbackEnabled,
             baseKeyWidth: baseKeyWidth,
-            scaleFactor: scaleFactor
+            scaleFactor: scaleFactor,
+            extraWidth: extraWidth
         )
     }
 
@@ -369,6 +403,8 @@ struct KeyButtonView: View {
     let visualFeedbackEnabled: Bool
     var baseKeyWidth: CGFloat = 38
     var scaleFactor: CGFloat = 1.0
+    /// Extra width added to stretch this key so all rows have equal total width.
+    var extraWidth: CGFloat = 0
 
     private var displayLabel: String {
         switch key.action {
@@ -396,7 +432,7 @@ struct KeyButtonView: View {
     }
 
     private var keyWidth: CGFloat {
-        baseKeyWidth * key.widthMultiplier
+        baseKeyWidth * key.widthMultiplier + extraWidth
     }
 
     private var fontSize: Font {
