@@ -4,46 +4,83 @@ import SwiftUI
 struct SettingsView: View {
     @Bindable var settings: SettingsManager
     var predictionEngine: PredictionEngine
+    var onDismiss: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var showClearConfirmation = false
+    @State private var selectedTab: SettingsTab = .general
+
+    private enum SettingsTab: String, CaseIterable {
+        case general, feedback, language, appearance
+
+        var label: String {
+            switch self {
+            case .general: String(localized: "General")
+            case .feedback: String(localized: "Feedback")
+            case .language: String(localized: "Language")
+            case .appearance: String(localized: "Appearance")
+            }
+        }
+
+        var icon: String {
+            switch self {
+            case .general: "gearshape"
+            case .feedback: "speaker.wave.2"
+            case .language: "globe"
+            case .appearance: "paintbrush"
+            }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header with close button
-            HStack {
-                Text(String(localized: "Settings"))
-                    .font(.headline)
-                Spacer()
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+            // Title
+            Text(String(localized: "Settings"))
+                .font(.headline)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+
+            // Category bar
+            HStack(spacing: 4) {
+                ForEach(SettingsTab.allCases, id: \.self) { tab in
+                    Button {
+                        selectedTab = tab
+                    } label: {
+                        HStack(spacing: 5) {
+                            Image(systemName: tab.icon)
+                                .font(.system(size: 11))
+                            Text(tab.label)
+                                .font(.subheadline)
+                                .fixedSize()
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(selectedTab == tab
+                                      ? Color.accentColor.opacity(0.15)
+                                      : Color.primary.opacity(0.04))
+                        )
+                        .padding(.horizontal, 2)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: "Close Settings"))
-                .keyboardShortcut(.cancelAction)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
+            .padding(.horizontal, 10)
             .padding(.bottom, 4)
 
-            TabView {
-                generalTab
-                    .tabItem { Label(String(localized: "General"), systemImage: "gearshape") }
-
-                feedbackTab
-                    .tabItem { Label(String(localized: "Feedback"), systemImage: "speaker.wave.2") }
-
-                languageTab
-                    .tabItem { Label(String(localized: "Language"), systemImage: "globe") }
-
-                appearanceTab
-                    .tabItem { Label(String(localized: "Appearance"), systemImage: "paintbrush") }
+            // Content
+            Group {
+                switch selectedTab {
+                case .general: generalTab
+                case .feedback: feedbackTab
+                case .language: languageTab
+                case .appearance: appearanceTab
+                }
             }
         }
-        .frame(width: 420, height: 420)
+        .frame(width: 480, height: 380)
     }
 
     // MARK: - General
@@ -67,7 +104,6 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 
     // MARK: - Feedback
@@ -108,7 +144,6 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 
     // MARK: - Language
@@ -135,7 +170,6 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 
     // MARK: - Predictions
@@ -199,6 +233,5 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 }

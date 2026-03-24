@@ -84,6 +84,20 @@
 
 - **Handle permission denial gracefully.** If the user denies Accessibility permission, show a clear explanation of what won't work and how to grant it later. Never crash or show a blank screen.
 
+## Debugging
+
+- **Add debug logging when a problem persists.** When a bug is reported and the root cause isn't immediately clear, add targeted debug logging to the relevant code path (e.g., scoring, prediction, input handling) before attempting a fix. Write to the shared debug log at `SwipeEngine.debugLogURL` so all events appear in one file. Always ask the user to reproduce with logging enabled.
+
+- **Clean up debug logging when the problem is fixed.** Once a bug is resolved, review any debug logging added during investigation. Remove verbose or temporary traces that are no longer needed. Keep only logging that provides ongoing diagnostic value (e.g., per-swipe scoring summaries, prediction pipeline traces).
+
+- **Always read the debug log before diagnosing.** When the user reports incorrect behavior (wrong prediction, bad ranking, missing word), read `swipe_debug.log` first. Don't guess at causes — the log contains the actual scoring breakdown and pipeline data. Base your analysis on what the numbers show.
+
+## Data Quality
+
+- **Sanity-check bundled data files.** When adding or regenerating frequency, bigram, or other statistical data, always spot-check the output for the target language. Verify that common phrases rank highly (e.g., "hola como estas" in Spanish). Corpus bias (e.g., TV subtitles overrepresenting "cariño" and "papa") can silently degrade the user experience.
+
+- **Verify the full pipeline end-to-end.** After adding a new scoring channel, data source, or prediction method, trace through the entire pipeline: data loading → scoring → reranking → display. Code that exists but is never called (dead code) is an invisible bug. Build, run, and check the debug log to confirm the new signal actually appears in the output.
+
 ## Commits
 
 - **Always update the changelog when committing.** Every commit message should follow the pattern `vX.Y.Z — Summary` and include a bulleted list of what changed.

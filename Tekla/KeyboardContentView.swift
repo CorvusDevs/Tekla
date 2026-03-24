@@ -7,8 +7,6 @@ struct KeyboardContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            toolbarBar
-
             if !viewModel.permissions.isAccessibilityGranted {
                 permissionBanner
             }
@@ -24,35 +22,63 @@ struct KeyboardContentView: View {
             }
 
             keyboardArea
+
+            statusBar
         }
         .frame(minWidth: 700, minHeight: 200)
         .background(.ultraThinMaterial)
         .opacity(viewModel.settings.keyboardOpacity)
-        .sheet(isPresented: $showSettings) {
-            SettingsView(settings: viewModel.settings, predictionEngine: viewModel.predictionEngine)
+        .onChange(of: showSettings) { _, show in
+            if show {
+                SettingsWindowController.shared.show(
+                    settings: viewModel.settings,
+                    predictionEngine: viewModel.predictionEngine
+                ) {
+                    showSettings = false
+                }
+            } else {
+                SettingsWindowController.shared.close()
+            }
         }
     }
 
-    // MARK: - Toolbar
+    // MARK: - Status Bar
 
     @ViewBuilder
-    private var toolbarBar: some View {
-        HStack(spacing: 6) {
+    private var statusBar: some View {
+        HStack(spacing: 8) {
             Spacer()
 
-            // Current language indicator
-            let lang = LanguageManager.language(for: viewModel.settings.selectedLanguage)
-            Text(lang.id.uppercased())
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.primary.opacity(0.08), in: Capsule())
+            // Current language picker
+            Menu {
+                ForEach(LanguageManager.supportedLanguages) { lang in
+                    Button {
+                        viewModel.settings.selectedLanguage = lang.id
+                    } label: {
+                        HStack {
+                            Text("\(lang.nativeName) (\(lang.name))")
+                            if lang.id == viewModel.settings.selectedLanguage {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                Text(LanguageManager.language(for: viewModel.settings.selectedLanguage).id.uppercased())
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.primary.opacity(0.08), in: Capsule())
+            }
+            .menuStyle(.borderlessButton)
+            .fixedSize()
+            .accessibilityLabel(String(localized: "Language"))
 
             // Swipe mode indicator
             if viewModel.settings.swipeTypingEnabled {
                 Image(systemName: "scribble.variable")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(String(localized: "Swipe typing enabled"))
             }
@@ -62,14 +88,14 @@ struct KeyboardContentView: View {
                 showSettings.toggle()
             } label: {
                 Image(systemName: "gearshape")
-                    .font(.system(size: 12))
+                    .font(.system(size: 14))
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(String(localized: "Settings"))
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
     }
 
     // MARK: - Keyboard Area with Swipe

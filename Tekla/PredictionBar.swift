@@ -9,7 +9,7 @@ struct PredictionBar: View {
     let onSelect: (String) -> Void
 
     var body: some View {
-        HStack(spacing: 1) {
+        HStack(spacing: 0) {
             ForEach(Array(predictions.enumerated()), id: \.offset) { index, word in
                 Button {
                     onSelect(word)
@@ -18,24 +18,22 @@ struct PredictionBar: View {
                         .font(.body)
                         .fontWeight(index == primaryIndex ? .semibold : .regular)
                         .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.horizontal, 6)
                         .frame(maxWidth: .infinity, minHeight: 32)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(index == primaryIndex
+                                      ? Color.accentColor.opacity(0.18)
+                                      : Color.primary.opacity(0.05))
+                        )
+                        .padding(.horizontal, 2)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(index == primaryIndex
-                              ? Color.accentColor.opacity(0.18)
-                              : Color.primary.opacity(0.05))
-                )
                 .accessibilityLabel(index == primaryIndex
                     ? String(localized: "\(word), primary suggestion")
                     : word)
-
-                if index < predictions.count - 1 {
-                    Divider()
-                        .frame(height: 20)
-                }
             }
 
             // Always take up space so the bar doesn't collapse when empty

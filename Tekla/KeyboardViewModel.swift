@@ -37,6 +37,11 @@ final class KeyboardViewModel {
         predictionEngine.maxResults = settings.predictionCount
         predictionEngine.loadLanguage(settings.selectedLanguage)
         predictionEngine.pruneUserDictionary()
+        // First word typed should be capitalized (start of a new text).
+        // Set both: shouldCapitalizeNext for prediction capitalization,
+        // isShiftActive for visual uppercase keys (didSet doesn't fire in init).
+        shouldCapitalizeNext = true
+        isShiftActive = true
     }
 
     /// The current typed buffer for prediction.
@@ -68,7 +73,19 @@ final class KeyboardViewModel {
             // Any typing after a swipe clears the correction window
             lastSwipedWord = nil
             isShowingNextWordPredictions = false
-            handleCharacter(char)
+            // Resolve the actual character for prediction/buffer: when shift is active
+            // and the key has a shifted label (e.g., ' → ?), use the shifted character.
+            // Letter keys don't need this — their shift behavior is uppercasing.
+            let resolvedChar: Character
+            if (isShiftActive || isCapsLockActive),
+               let shifted = key.shiftedLabel,
+               let shiftedChar = shifted.first,
+               !char.isLetter {
+                resolvedChar = shiftedChar
+            } else {
+                resolvedChar = char
+            }
+            handleCharacter(resolvedChar, keyChar: char)
 
         case .space:
             sendKey("space")
@@ -102,9 +119,10 @@ final class KeyboardViewModel {
                 KeystrokeEngine.typeString(primary + " ")
                 lastActionInsertedTrailingSpace = true
                 if settings.learnFromTyping {
-                    predictionEngine.recordWordInContext(primary, after: previousWord)
+                    predictionEngine.recordWordInContext(primary.lowercased(), after: previousWord)
                 }
                 previousWord = primary.lowercased()
+                shouldCapitalizeNext = false
                 isShowingNextWordPredictions = false
                 predictions = []
                 showNextWordPredictions()
@@ -172,6 +190,20 @@ final class KeyboardViewModel {
     /// Characters that should be placed directly against the previous word
     /// (deleting any auto-inserted trailing space).
     private static let smartPunctuationChars: Set<Character> = [".", ",", "?", "!", ";", ":", "…"]
+
+    /// Punctuation that ends a sentence — next-word predictions should be capitalized
+    /// and shift auto-activates so the keyboard visually reflects uppercase.
+    private static let sentenceEndingChars: Set<Character> = [".", "?", "!"]
+
+    /// When true, the next predicted/typed word should be capitalized.
+    /// Setting this also auto-activates shift so the keyboard shows uppercase keys.
+    private var shouldCapitalizeNext = false {
+        didSet {
+            if shouldCapitalizeNext {
+                isShiftActive = true
+            }
+        }
+    }
 
     /// Called during a swipe as the finger crosses new letters — updates the
     /// prediction bar with live completions so the user gets real-time feedback.
@@ -332,6 +364,12 @@ final class KeyboardViewModel {
             }
         }
 
+        // Capitalize after sentence-ending punctuation (. ? !)
+        if shouldCapitalizeNext {
+            ranked = ranked.map { $0.prefix(1).uppercased() + $0.dropFirst() }
+            shouldCapitalizeNext = false
+        }
+
         // Reorder so the best prediction sits in the center slot
         let displayed = centerBestPrediction(Array(ranked.prefix(count)))
         predictions = displayed
@@ -343,7 +381,7 @@ final class KeyboardViewModel {
         KeystrokeEngine.typeString(best + " ")
         lastActionInsertedTrailingSpace = true
         if settings.learnFromTyping {
-            predictionEngine.recordWordInContext(best, after: previousWord)
+            predictionEngine.recordWordInContext(best.lowercased(), after: previousWord)
         }
         lastSwipedWord = best
         previousWord = best
@@ -378,7 +416,7 @@ final class KeyboardViewModel {
 
             // Record with extra weight — this is an explicit correction
             if settings.learnFromTyping {
-                predictionEngine.recordWord(word, weight: 3)
+                predictionEngine.recordWord(word.lowercased(), weight: 3)
             }
             previousWord = word.lowercased()
         } else {
@@ -393,13 +431,14 @@ final class KeyboardViewModel {
 
             // Record for learning and update context
             if settings.learnFromTyping {
-                predictionEngine.recordWordInContext(word, after: previousWord)
+                predictionEngine.recordWordInContext(word.lowercased(), after: previousWord)
             }
             previousWord = word.lowercased()
         }
 
         currentWordBuffer = ""
         predictions = []
+        shouldCapitalizeNext = false
         lastActionInsertedTrailingSpace = true
         // User explicitly picked a word — show next-word predictions
         showNextWordPredictions()
@@ -456,8 +495,15 @@ final class KeyboardViewModel {
 
     // MARK: - Private Helpers
 
-    private func handleCharacter(_ char: Character) {
+    /// - Parameters:
+    ///   - char: The resolved character (shifted symbol for non-letter keys, base for letters).
+    ///           Used for prediction, buffer, and punctuation logic.
+    ///   - keyChar: The original key action character (always the base/unshifted).
+    ///             Used for keystroke injection (shift flag handles the actual output).
+    ///             Defaults to `char` when not provided (e.g., for direct calls).
+    private func handleCharacter(_ char: Character, keyChar: Character? = nil) {
         let shouldUpper = isShiftActive || isCapsLockActive
+        let injectionChar = keyChar ?? char
 
         // Smart punctuation: if the previous action inserted a trailing space
         // and this character is punctuation, delete the space first so the
@@ -470,7 +516,8 @@ final class KeyboardViewModel {
         }
         lastActionInsertedTrailingSpace = false
 
-        // Only inject keystrokes if we have permission
+        // Only inject keystrokes if we have permission.
+        // Use the original key character for injection — the OS applies shift.
         if permissions.isAccessibilityGranted {
             var flags: CGEventFlags = []
             if shouldUpper { flags.insert(.maskShift) }
@@ -478,28 +525,36 @@ final class KeyboardViewModel {
             if isOptionActive { flags.insert(.maskAlternate) }
             if isControlActive { flags.insert(.maskControl) }
 
-            let charKey = String(char).lowercased()
+            let charKey = String(injectionChar).lowercased()
             if let keyCode = KeystrokeEngine.keyCodes[charKey] {
                 KeystrokeEngine.sendKeystroke(keyCode: keyCode, flags: flags)
             } else {
-                let output = shouldUpper ? Character(char.uppercased()) : char
+                let output = shouldUpper ? Character(injectionChar.uppercased()) : injectionChar
                 KeystrokeEngine.typeString(String(output))
             }
         }
 
         // Punctuation after a word commits and resets, doesn't extend the buffer
         if isPunctuation {
+            shouldCapitalizeNext = Self.sentenceEndingChars.contains(char)
             commitCurrentWord()
             showNextWordPredictions()
             releaseOneShot()
             return
         }
 
-        // Always update predictions regardless of permission
+        // Only append letters to the word buffer. Non-letter, non-punctuation
+        // characters (apostrophe, quotes, @, #, etc.) act as word boundaries:
+        // commit the current word and reset the buffer.
         if !isCommandActive && !isControlActive {
-            let output = shouldUpper ? Character(char.uppercased()) : char
-            currentWordBuffer.append(output)
-            updatePredictions()
+            if char.isLetter {
+                let output = shouldUpper ? Character(char.uppercased()) : char
+                currentWordBuffer.append(output)
+                updatePredictions()
+            } else {
+                commitCurrentWord()
+                showNextWordPredictions()
+            }
         }
 
         releaseOneShot()
@@ -532,9 +587,11 @@ final class KeyboardViewModel {
     private func commitCurrentWord() {
         if !currentWordBuffer.isEmpty {
             if settings.learnFromTyping {
-                predictionEngine.recordWordInContext(currentWordBuffer, after: previousWord)
+                predictionEngine.recordWordInContext(currentWordBuffer.lowercased(), after: previousWord)
             }
             previousWord = currentWordBuffer.lowercased()
+            // A word was committed — clear auto-capitalization
+            shouldCapitalizeNext = false
         }
         currentWordBuffer = ""
         predictions = []
@@ -554,10 +611,14 @@ final class KeyboardViewModel {
             debugLog("[NextWord] after=\"\(prev)\" → (none)")
             return
         }
-        let displayed = centerBestPrediction(Array(results.prefix(settings.predictionCount)))
+        // Capitalize predictions after sentence-ending punctuation (. ? !)
+        let capped = shouldCapitalizeNext
+            ? results.map { $0.prefix(1).uppercased() + $0.dropFirst() }
+            : results
+        let displayed = centerBestPrediction(Array(capped.prefix(settings.predictionCount)))
         predictions = displayed
         isShowingNextWordPredictions = true
-        debugLog("[NextWord] after=\"\(prev)\" → \(results)")
+        debugLog("[NextWord] after=\"\(prev)\" → \(capped)")
     }
 
     /// Keep language and settings in sync across engines.
@@ -607,6 +668,11 @@ final class KeyboardViewModel {
             }
 
             results = Array(results.prefix(count))
+        }
+
+        // Capitalize predictions after sentence-ending punctuation (. ? !)
+        if shouldCapitalizeNext {
+            results = results.map { $0.prefix(1).uppercased() + $0.dropFirst() }
         }
 
         // Reorder so the best prediction sits in the center slot

@@ -17,9 +17,22 @@
 		71319AD92F7074B000690183 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		714932DF2F727218001109D8 /* Exceptions for "Tekla" folder in "Tekla" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 71319ACA2F7070B100690183 /* Tekla */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		71319ACD2F7070B100690183 /* Tekla */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				714932DF2F727218001109D8 /* Exceptions for "Tekla" folder in "Tekla" target */,
+			);
 			path = Tekla;
 			sourceTree = "<group>";
 		};
@@ -100,6 +113,19 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
+				fr,
+				de,
+				it,
+				"pt-PT",
+				da,
+				sv,
+				"da-DK",
+				nb,
+				fi,
+				pl,
+				tr,
+				ru,
 			);
 			mainGroup = 71319AC22F7070B100690183;
 			minimizedProjectReferenceProxies = 1;
@@ -266,6 +292,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tekla/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -296,6 +323,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tekla/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

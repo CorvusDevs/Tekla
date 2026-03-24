@@ -23,8 +23,6 @@ struct KeyboardLayoutView: View {
     /// Called during a swipe when the swiped letters change, for live prediction updates.
     var onSwipeLettersChanged: (([Character]) -> Void)?
 
-    private let keySpacing: CGFloat = 3
-    private let sectionGap: CGFloat = 14
     private let keyboardCoordinateSpace = "keyboardLayout"
 
     /// Main rows customized for the current language.
@@ -36,25 +34,89 @@ struct KeyboardLayoutView: View {
     @State private var pressedKeyID: UUID?
     /// Whether the current gesture has become a swipe (moved > threshold).
     @State private var isDragging = false
+    /// Base key unit width derived from available space.
+    @State private var baseKeyWidth: CGFloat = 38
+    /// Scale factor for non-width dimensions (heights, fonts, spacing).
+    @State private var scaleFactor: CGFloat = 1.0
+
+    private var keySpacing: CGFloat { 3 * scaleFactor }
+    private var sectionGap: CGFloat { 14 * scaleFactor }
+
+    /// Compute base key width from available space so keys fill width without overflowing height.
+    private func computeLayout(availableWidth: CGFloat, availableHeight: CGFloat) {
+        let hPad: CGFloat = 32 // 16pt each side
+        let usableWidth = availableWidth - hPad
+
+        // The widest row determines the unit width.
+        let rows = currentRows
+        let widestRow = rows.max(by: { rowWidth($0) < rowWidth($1) }) ?? rows[0]
+        let totalUnits = rowWidth(widestRow)
+        let numKeys = CGFloat(widestRow.count)
+
+        // Solve for baseKey from width:
+        // totalUnits * baseKey + (numKeys-1) * keySpacing = effectiveWidth
+        // keySpacing = 3 * (baseKey / 38)
+        let spacingFactor = (numKeys - 1) * 3.0 / 38.0
+
+        // Reserve space for nav cluster proportionally
+        let navReserve: CGFloat
+        if showNavigationCluster {
+            // Nav cluster: 3 keys wide + spacing + section gap, all scale proportionally
+            // At base=38: 3*38 + 2*3 + 14 = 134
+            let navFactor: CGFloat = (3.0 + 2.0 * 3.0 / 38.0 + 14.0 / 38.0)
+            navReserve = navFactor
+        } else {
+            navReserve = 0
+        }
+
+        let widthBase = usableWidth / (totalUnits + spacingFactor + navReserve)
+
+        // Solve for baseKey from height:
+        // 5 main rows * keyHeight + 4 * keySpacing + padding = availableHeight
+        // If function row: +1 row (smaller) + divider + spacing
+        let numMainRows: CGFloat = CGFloat(rows.count)
+        let vPad: CGFloat = 8.0 // top + bottom padding (4 * scale each ≈ 8 baseline)
+        let usableHeight = availableHeight - vPad
+        let funcRowOverhead: CGFloat = showFunctionRow ? (28.0 + 8.0) : 0 // fn key height + divider+spacing
+        let mainRowsHeight = usableHeight - funcRowOverhead
+        // mainRowsHeight = numMainRows * 36*(base/38) + (numMainRows-1) * 3*(base/38) + spacing between fn/main
+        // = (base/38) * (numMainRows * 36 + (numMainRows-1) * 3 + interSectionSpacing)
+        let heightPerUnit = numMainRows * 36.0 + (numMainRows - 1) * 3.0 + 4.0
+        let heightBase = (mainRowsHeight / heightPerUnit) * 38.0
+
+        // Use the smaller of the two to avoid clipping
+        let newBase = min(widthBase, heightBase)
+        baseKeyWidth = max(20, newBase)
+        scaleFactor = max(0.6, baseKeyWidth / 38.0)
+    }
+
+    private func rowWidth(_ row: [KeyModel]) -> CGFloat {
+        row.reduce(0) { $0 + $1.widthMultiplier }
+    }
 
     var body: some View {
-        VStack(spacing: 6) {
-            if showFunctionRow {
-                functionRowSection
-                Divider().padding(.horizontal, 4)
+        GeometryReader { geo in
+            VStack(spacing: 4 * scaleFactor) {
+                if showFunctionRow {
+                    functionRowSection
+                    Divider().padding(.horizontal, 4)
+                }
+                mainAndNavSection
             }
-            mainAndNavSection
-        }
-        .padding(.top, 8)
-        .padding(.horizontal, 8)
-        .padding(.bottom, 12)
-        .coordinateSpace(name: keyboardCoordinateSpace)
-        .overlay {
-            SwipeTrailView(
-                swipePath: swipeEngine.swipePath,
-                isSwiping: swipeEngine.isSwiping,
-                maxTrailPoints: swipeTrailLength
-            )
+            .padding(.top, 4 * scaleFactor)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 4 * scaleFactor)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .coordinateSpace(name: keyboardCoordinateSpace)
+            .overlay {
+                SwipeTrailView(
+                    swipePath: swipeEngine.swipePath,
+                    isSwiping: swipeEngine.isSwiping,
+                    maxTrailPoints: swipeTrailLength
+                )
+            }
+            .onAppear { computeLayout(availableWidth: geo.size.width, availableHeight: geo.size.height) }
+            .onChange(of: geo.size) { computeLayout(availableWidth: geo.size.width, availableHeight: geo.size.height) }
         }
     }
 
@@ -77,6 +139,7 @@ struct KeyboardLayoutView: View {
                 standaloneKeyButton(key)
             }
         }
+        .padding(.horizontal, 4)
     }
 
     // MARK: - Main + Nav + Arrows
@@ -210,7 +273,7 @@ struct KeyboardLayoutView: View {
                 }
             }
             HStack(spacing: keySpacing) {
-                Color.clear.frame(width: 38, height: 36)
+                Color.clear.frame(width: 38 * scaleFactor, height: 36 * scaleFactor)
                 ForEach(KeyboardLayout.navBottomRow) { key in
                     standaloneKeyButton(key)
                 }
@@ -222,11 +285,11 @@ struct KeyboardLayoutView: View {
     private var arrowCluster: some View {
         VStack(spacing: keySpacing) {
             HStack(spacing: keySpacing) {
-                Color.clear.frame(width: 38, height: 36)
+                Color.clear.frame(width: 38 * scaleFactor, height: 36 * scaleFactor)
                 ForEach(KeyboardLayout.arrowTopRow) { key in
                     standaloneKeyButton(key)
                 }
-                Color.clear.frame(width: 38, height: 36)
+                Color.clear.frame(width: 38 * scaleFactor, height: 36 * scaleFactor)
             }
             HStack(spacing: keySpacing) {
                 ForEach(KeyboardLayout.arrowBottomRow) { key in
@@ -274,7 +337,9 @@ struct KeyboardLayoutView: View {
             isShiftActive: isShiftActive || isCapsLockActive,
             isModifierActive: activeModifiers.contains(key.action),
             isPressed: pressedKeyID == key.id,
-            visualFeedbackEnabled: visualFeedbackEnabled
+            visualFeedbackEnabled: visualFeedbackEnabled,
+            baseKeyWidth: baseKeyWidth,
+            scaleFactor: scaleFactor
         )
     }
 
@@ -302,12 +367,18 @@ struct KeyButtonView: View {
     let isModifierActive: Bool
     let isPressed: Bool
     let visualFeedbackEnabled: Bool
+    var baseKeyWidth: CGFloat = 38
+    var scaleFactor: CGFloat = 1.0
 
     private var displayLabel: String {
         switch key.action {
-        case .character:
+        case .character(let char):
             if isShiftActive, let shifted = key.shiftedLabel {
                 return shifted
+            }
+            // Show lowercase for letter keys when shift is not active
+            if char.isLetter && !isShiftActive {
+                return key.label.lowercased()
             }
             return key.label
         default:
@@ -318,25 +389,25 @@ struct KeyButtonView: View {
     private var keyHeight: CGFloat {
         switch key.action {
         case .functionKey, .escape:
-            return 28
+            return 28 * scaleFactor
         default:
-            return 36
+            return 36 * scaleFactor
         }
     }
 
     private var keyWidth: CGFloat {
-        let base: CGFloat = 38
-        return base * key.widthMultiplier
+        baseKeyWidth * key.widthMultiplier
     }
 
     private var fontSize: Font {
+        let scale = scaleFactor
         switch key.action {
         case .functionKey, .escape, .fn, .globe:
-            return .caption2
+            return .system(size: 10 * scale)
         case .character:
-            return .body
+            return .system(size: 15 * scale)
         default:
-            return .caption
+            return .system(size: 12 * scale)
         }
     }
 
@@ -374,7 +445,7 @@ struct KeyButtonView: View {
         if let secondary = key.secondaryLabel, !isShiftActive {
             VStack(spacing: 0) {
                 Text(secondary)
-                    .font(.system(size: 9))
+                    .font(.system(size: 9 * scaleFactor))
                     .foregroundStyle(.secondary)
                 Text(displayLabel)
                     .font(fontSize)
