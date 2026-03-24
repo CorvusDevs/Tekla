@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct TeklaApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        // The keyboard lives in a floating NSPanel managed by AppDelegate.
+        // Settings window can be added here later.
+        Settings {
+            EmptyView()
         }
     }
 }
