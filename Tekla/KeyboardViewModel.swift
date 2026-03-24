@@ -67,17 +67,21 @@ final class KeyboardViewModel {
         case .character(let char):
             // Any typing after a swipe clears the correction window
             lastSwipedWord = nil
+            isShowingNextWordPredictions = false
             handleCharacter(char)
 
         case .space:
             sendKey("space")
             lastSwipedWord = nil
+            lastActionInsertedTrailingSpace = false
             commitCurrentWord()
+            showNextWordPredictions()
             releaseOneShot()
 
         case .backspace:
             sendKey("delete")
             lastSwipedWord = nil
+            lastActionInsertedTrailingSpace = false
             if !currentWordBuffer.isEmpty {
                 currentWordBuffer.removeLast()
             }
@@ -90,9 +94,26 @@ final class KeyboardViewModel {
             releaseOneShot()
 
         case .returnKey:
-            sendKey("return")
-            lastSwipedWord = nil
-            commitCurrentWord()
+            if isShowingNextWordPredictions, !predictions.isEmpty {
+                // Insert the primary (center) prediction
+                let primaryIdx = predictions.count / 2
+                let primary = predictions[primaryIdx]
+                debugLog("[Enter] inserted next-word prediction \"\(primary)\" (prev=\"\(previousWord ?? "nil")\")")
+                KeystrokeEngine.typeString(primary + " ")
+                lastActionInsertedTrailingSpace = true
+                if settings.learnFromTyping {
+                    predictionEngine.recordWordInContext(primary, after: previousWord)
+                }
+                previousWord = primary.lowercased()
+                isShowingNextWordPredictions = false
+                predictions = []
+                showNextWordPredictions()
+            } else {
+                sendKey("return")
+                lastSwipedWord = nil
+                lastActionInsertedTrailingSpace = false
+                commitCurrentWord()
+            }
             releaseOneShot()
 
         case .tab:
@@ -139,6 +160,19 @@ final class KeyboardViewModel {
     /// The last word typed by swipe, used for correction when the user picks an alternative.
     private var lastSwipedWord: String?
 
+    /// When true, the prediction bar shows next-word suggestions (not corrections).
+    /// Enter key inserts the primary prediction in this mode.
+    private var isShowingNextWordPredictions = false
+
+    /// When true, the last action inserted a word followed by a trailing space.
+    /// Used for smart punctuation: if the next character is punctuation, the
+    /// trailing space is deleted first so the symbol sits against the word.
+    private var lastActionInsertedTrailingSpace = false
+
+    /// Characters that should be placed directly against the previous word
+    /// (deleting any auto-inserted trailing space).
+    private static let smartPunctuationChars: Set<Character> = [".", ",", "?", "!", ";", ":", "…"]
+
     /// Called during a swipe as the finger crosses new letters — updates the
     /// prediction bar with live completions so the user gets real-time feedback.
     ///
@@ -148,6 +182,7 @@ final class KeyboardViewModel {
     /// filters by both first and last letter — much more specific.
     func handleSwipeLettersChanged(_ letters: [Character]) {
         guard settings.predictionsEnabled else { return }
+        isShowingNextWordPredictions = false
 
         // Use intentional key extraction to filter out transit noise.
         // This gives us only the keys the user actually dwelled on,
@@ -249,12 +284,30 @@ final class KeyboardViewModel {
             ? Array(scoredCandidates.prefix(count).map(\.word))
             : reranked
 
-        // Always fill all prediction slots — pad with first-letter prefix predictions
+        // Inject bigram-predicted words into the alternatives. When a strong
+        // contextual prediction exists (e.g. "como" after "hola"), it should appear
+        // as a tappable alternative even if it scored poorly geometrically.
+        if let prev = previousWord,
+           let firstChar = ranked.first?.first ?? scoredCandidates.first?.word.first {
+            var seen = Set(ranked.map { $0.lowercased() })
+            let bigramWords = predictionEngine.bigramCompletions(
+                after: prev, startingWith: firstChar
+            )
+            // Insert bigram suggestions right after the best candidate (position 2+)
+            // so they're prominently visible but don't override the geometric winner.
+            for word in bigramWords {
+                guard ranked.count < count else { break }
+                if seen.insert(word.lowercased()).inserted {
+                    ranked.append(word)
+                }
+            }
+        }
+
+        // Fill remaining prediction slots with first-letter prefix predictions
         // so the user never sees a prediction bar with empty spaces.
         if ranked.count < count, let firstChar = ranked.first?.first ?? scoredCandidates.first?.word.first {
             var seen = Set(ranked.map { $0.lowercased() })
 
-            // Try predictions matching the first letter of the best candidate
             let prefixPredictions = predictionEngine.predict(
                 prefix: String(firstChar),
                 previousWord: previousWord
@@ -288,6 +341,7 @@ final class KeyboardViewModel {
         guard !best.isEmpty else { return }
 
         KeystrokeEngine.typeString(best + " ")
+        lastActionInsertedTrailingSpace = true
         if settings.learnFromTyping {
             predictionEngine.recordWordInContext(best, after: previousWord)
         }
@@ -303,14 +357,17 @@ final class KeyboardViewModel {
         guard permissions.isAccessibilityGranted else { return }
 
         if let swiped = lastSwipedWord {
-            // If the user taps the already-typed primary word, just dismiss the bar
+            // If the user taps the already-typed primary word, confirm it
             if word.lowercased() == swiped.lowercased() {
+                debugLog("[Tap] confirmed swiped word \"\(word)\"")
                 lastSwipedWord = nil
                 predictions = []
+                showNextWordPredictions()
                 return
             }
 
             // Swipe correction: delete the swiped word + trailing space
+            debugLog("[Tap] swipe correction: \"\(swiped)\" → \"\(word)\"")
             for _ in 0..<(swiped.count + 1) {
                 sendKey("delete")
                 usleep(2000)
@@ -326,6 +383,7 @@ final class KeyboardViewModel {
             previousWord = word.lowercased()
         } else {
             // Normal typing prediction: delete the partial buffer
+            debugLog("[Tap] typing prediction: buffer=\"\(currentWordBuffer)\" → \"\(word)\"")
             for _ in currentWordBuffer {
                 sendKey("delete")
                 usleep(2000)
@@ -342,6 +400,9 @@ final class KeyboardViewModel {
 
         currentWordBuffer = ""
         predictions = []
+        lastActionInsertedTrailingSpace = true
+        // User explicitly picked a word — show next-word predictions
+        showNextWordPredictions()
     }
 
     // MARK: - Prediction Helpers
@@ -374,10 +435,40 @@ final class KeyboardViewModel {
         return result
     }
 
+    // MARK: - Debug Logging
+
+    /// Append a timestamped line to the shared debug log (same file as SwipeEngine).
+    private func debugLog(_ line: String) {
+        print(line)
+        let url = SwipeEngine.debugLogURL
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)
+        let entry = "[\(timestamp)] \(line)\n"
+        if let handle = try? FileHandle(forWritingTo: url) {
+            handle.seekToEndOfFile()
+            if let data = entry.data(using: .utf8) {
+                handle.write(data)
+            }
+            handle.closeFile()
+        } else {
+            try? entry.write(to: url, atomically: true, encoding: .utf8)
+        }
+    }
+
     // MARK: - Private Helpers
 
     private func handleCharacter(_ char: Character) {
         let shouldUpper = isShiftActive || isCapsLockActive
+
+        // Smart punctuation: if the previous action inserted a trailing space
+        // and this character is punctuation, delete the space first so the
+        // symbol sits directly against the word (e.g. "hola." not "hola .").
+        let isPunctuation = Self.smartPunctuationChars.contains(char)
+        if isPunctuation && lastActionInsertedTrailingSpace && permissions.isAccessibilityGranted {
+            debugLog("[SmartPunct] \"\(char)\" — deleted trailing space after \"\(previousWord ?? "?")\"")
+            sendKey("delete")
+            usleep(2000)
+        }
+        lastActionInsertedTrailingSpace = false
 
         // Only inject keystrokes if we have permission
         if permissions.isAccessibilityGranted {
@@ -394,6 +485,14 @@ final class KeyboardViewModel {
                 let output = shouldUpper ? Character(char.uppercased()) : char
                 KeystrokeEngine.typeString(String(output))
             }
+        }
+
+        // Punctuation after a word commits and resets, doesn't extend the buffer
+        if isPunctuation {
+            commitCurrentWord()
+            showNextWordPredictions()
+            releaseOneShot()
+            return
         }
 
         // Always update predictions regardless of permission
@@ -439,6 +538,26 @@ final class KeyboardViewModel {
         }
         currentWordBuffer = ""
         predictions = []
+    }
+
+    /// Show next-word predictions based on the previous word.
+    /// Called after a word is committed (typed, swiped, or prediction-inserted).
+    private func showNextWordPredictions() {
+        guard settings.predictionsEnabled, let prev = previousWord else {
+            predictions = []
+            return
+        }
+        syncLanguage()
+        let results = predictionEngine.predictNextWord(after: prev)
+        guard !results.isEmpty else {
+            predictions = []
+            debugLog("[NextWord] after=\"\(prev)\" → (none)")
+            return
+        }
+        let displayed = centerBestPrediction(Array(results.prefix(settings.predictionCount)))
+        predictions = displayed
+        isShowingNextWordPredictions = true
+        debugLog("[NextWord] after=\"\(prev)\" → \(results)")
     }
 
     /// Keep language and settings in sync across engines.
@@ -492,5 +611,9 @@ final class KeyboardViewModel {
 
         // Reorder so the best prediction sits in the center slot
         predictions = centerBestPrediction(results)
+
+        // Debug: log prefix query and results
+        let prev = previousWord ?? "nil"
+        debugLog("[Typing] prefix=\"\(currentWordBuffer.lowercased())\" prev=\(prev) → \(results)")
     }
 }

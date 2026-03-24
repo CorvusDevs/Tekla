@@ -706,6 +706,54 @@ final class PredictionEngine {
         return userWeight * log(1.0 + decayed)
     }
 
+    /// Predict the next word given the previous word, without any prefix.
+    ///
+    /// Uses bigram context when available, falling back to the most frequent
+    /// unigram words if no bigrams are found for the given word.
+    ///
+    /// - Parameter word: The word that was just completed.
+    /// - Returns: Up to `maxResults` predicted next words, best first.
+    func predictNextWord(after word: String) -> [String] {
+        let lowWord = word.lowercased()
+        var candidates: [String: Double] = [:]
+
+        // 1. Bigram candidates from the model
+        if let bigrams = bigramModel[lowWord] {
+            for bigram in bigrams {
+                candidates[bigram.nextWord] = bigram.logProbability
+            }
+        }
+
+        // 2. If no bigrams, fall back to top unigram words
+        if candidates.isEmpty {
+            let topUnigrams = unigramLogProbs.sorted { $0.value > $1.value }.prefix(maxResults)
+            for (unigramWord, logProb) in topUnigrams {
+                candidates[unigramWord] = logProb
+            }
+        }
+
+        // 3. Sort by score, return top N
+        return candidates.sorted { $0.value > $1.value }
+            .prefix(maxResults)
+            .map(\.key)
+    }
+
+    /// Returns top bigram-predicted words after `previousWord` that start with
+    /// `firstLetter`. Used to inject contextually likely words into swipe alternatives.
+    ///
+    /// For example, after "hola" with firstLetter "c", returns ["como", "cariño", ...]
+    func bigramCompletions(after previousWord: String, startingWith firstLetter: Character, limit: Int = 3) -> [String] {
+        let prev = previousWord.lowercased()
+        guard let bigrams = bigramModel[prev] else { return [] }
+
+        let lower = Character(firstLetter.lowercased())
+        return bigrams
+            .filter { $0.nextWord.first == lower }
+            .sorted { $0.logProbability > $1.logProbability }
+            .prefix(limit)
+            .map(\.nextWord)
+    }
+
     // MARK: - User Learning
 
     /// Record that the user typed or selected a word.
@@ -791,13 +839,17 @@ final class PredictionEngine {
                 ?? unigramLogProbs[wordStripped]
                 ?? -15.0
 
-            // Bigram probability (with Stupid Backoff)
-            var contextProb = backoffAlpha * unigramScore // Default: back off to unigram
+            // Bigram context: check if a real bigram exists for this candidate.
+            // A direct bigram hit is a strong signal that this word naturally follows
+            // the previous word (e.g., "hola" → "como"). Backoff to unigram is much
+            // weaker and should not compete with real bigram matches.
+            var hasBigramHit = false
+            var bigramLogProb = 0.0
             if let prev = previousWord?.lowercased(),
                let bigrams = bigramModel[prev] {
-                // Try exact and accent-stripped match
                 if let match = bigrams.first(where: { $0.nextWord == word || $0.nextWord == wordStripped }) {
-                    contextProb = match.logProbability
+                    hasBigramHit = true
+                    bigramLogProb = match.logProbability
                 }
             }
 
@@ -814,23 +866,23 @@ final class PredictionEngine {
             }
 
             // Combined score: geometric + language model + user learning.
-            // Normalize unigram and context to 0..1 range.
-            // unigramScore is in ~[-15, 0] where 0 = most common.
-            // Map to [0, 1] where 1 = most common.
             let normalizedUnigram = max(0, 1.0 + unigramScore / 15.0)
-            let normalizedContext = max(0, 1.0 + contextProb / 15.0)
 
-            // Base score from geometric, frequency, and context (all 0..1, weighted).
+            // Bigram bonus: when a real bigram exists, give an additive bonus
+            // proportional to the bigram probability.
+            // Bigram log probs range from ~-6 (very common) to ~-12 (rare).
+            // Map to a bonus of ~0.05 to ~0.25.
+            let bigramBonus = hasBigramHit ? max(0.05, 0.25 * (1.0 + bigramLogProb / 12.0)) : 0.0
+
+            // Base score: geometry dominates, unigram is a tiebreaker.
             // The geometric score already incorporates frequency via its pFrequency
-            // channel, so we give it dominant weight here. Unigram and context serve
-            // only as light tiebreakers to avoid double-counting frequency.
-            let baseScore = 0.70 * geoSim
-                          + 0.15 * normalizedUnigram
-                          + 0.15 * normalizedContext
+            // channel, so we give it dominant weight here.
+            let baseScore = 0.80 * geoSim
+                          + 0.20 * normalizedUnigram
 
-            // User learning is additive on top, not bounded by 0..1.
-            // This lets even moderate user history decisively shift rankings.
-            let finalScore = baseScore + userBonus
+            // Bigram and user bonuses are additive — they lift candidates above
+            // their geometric ranking when strong contextual evidence exists.
+            let finalScore = baseScore + bigramBonus + userBonus
 
             scored.append((word, finalScore))
         }

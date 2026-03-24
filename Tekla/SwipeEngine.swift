@@ -419,10 +419,12 @@ final class SwipeEngine {
             }
             let pLength = exp(-0.5 * (lengthDev / lengthSigma) * (lengthDev / lengthSigma))
 
+            // Path order channel: fraction of consecutive letter pairs in
+            // correct sequential order along the swipe path.
+            let pOrder = max(pathOrderScore(for: word), 0.05)
+
             // --- Multiplicative combination with exponents ---
             // score = ∏ P_i^α_i  (higher is better)
-            // Arc-length ratio has the highest exponent (2.0) because it is
-            // the single strongest signal for discriminating word length.
             let score = pow(pShape, shapeExponent)
                       * pow(pLocation, locationExponent)
                       * pow(pArcLength, arcLengthExponent)
@@ -430,6 +432,7 @@ final class SwipeEngine {
                       * pow(pDistinct, distinctExponent)
                       * pow(pFrequency, frequencyExponent)
                       * pow(pLength, lengthExponent)
+                      * pow(pOrder, orderExponent)
 
             scored.append((word: word, geometricScore: score))
         }
@@ -728,6 +731,7 @@ final class SwipeEngine {
     private let distinctExponent: Double = 1.0  // Distinct letter match — discriminates words with same shape but different letters
     private let frequencyExponent: Double = 0.5 // LM prior — reduced to avoid accent-inflated words dominating geometric evidence
     private let lengthExponent: Double = 1.5   // Length penalty — penalizes words outside the adaptive estimate range
+    private let orderExponent: Double = 1.5    // Path order — letters should appear sequentially along swipe
 
     /// Resample a path into `count` equidistant points.
     private func resample(_ points: [CGPoint], count: Int) -> [CGPoint] {
@@ -979,11 +983,13 @@ final class SwipeEngine {
                 lengthDev = 0.0
             }
             let pLen = exp(-0.5 * (lengthDev / lengthSigma) * (lengthDev / lengthSigma))
+            let pOrd = max(pathOrderScore(for: word), 0.05)
             let total = pow(pShape, shapeExponent) * pow(pLoc, locationExponent)
                       * pow(pArc, arcLengthExponent)
                       * pow(pProx, proximityExponent)
                       * pow(pDist, distinctExponent)
                       * pow(pFreq, frequencyExponent) * pow(pLen, lengthExponent)
+                      * pow(pOrd, orderExponent)
 
             debugLog("[SwipeDebug]  #\(rank + 1) \"\(word)\" (len=\(word.count)) "
                 + "pSh=\(String(format: "%.4f", pShape)) "
@@ -993,6 +999,7 @@ final class SwipeEngine {
                 + "pDl=\(String(format: "%.4f", pDist)) "
                 + "pFr=\(String(format: "%.4f", pFreq)) "
                 + "pLn=\(String(format: "%.4f", pLen)) "
+                + "pOr=\(String(format: "%.4f", pOrd)) "
                 + "SCORE=\(String(format: "%.6f", total))")
         }
         debugLog("[SwipeDebug] ══════════════════════════════════════")
