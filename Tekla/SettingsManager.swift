@@ -76,6 +76,23 @@ final class SettingsManager {
         didSet { UserDefaults.standard.set(keyboardOpacity, forKey: Keys.keyboardOpacity) }
     }
 
+    // MARK: - Activation
+
+    var isUnlocked: Bool {
+        didSet { UserDefaults.standard.set(isUnlocked, forKey: Keys.isUnlocked) }
+    }
+
+    private static let unlockCode = "TEKLA-UNLOCK-9V3R"
+
+    /// Validates the code and persists the unlock state. Returns `true` on success.
+    func activate(code: String) -> Bool {
+        if code.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() == Self.unlockCode {
+            isUnlocked = true
+            return true
+        }
+        return false
+    }
+
     // MARK: - Init
 
     init() {
@@ -97,6 +114,7 @@ final class SettingsManager {
         showFunctionRow = defaults.bool(forKey: Keys.showFunctionRow)
         showNavigationCluster = defaults.bool(forKey: Keys.showNavCluster)
         keyboardOpacity = defaults.double(forKey: Keys.keyboardOpacity)
+        isUnlocked = defaults.bool(forKey: Keys.isUnlocked)
     }
 
     private static func registerDefaults() {
@@ -137,5 +155,6 @@ final class SettingsManager {
         static let showFunctionRow = "tekla.showFunctionRow"
         static let showNavCluster = "tekla.showNavCluster"
         static let keyboardOpacity = "tekla.keyboardOpacity"
+        static let isUnlocked = "tekla.isUnlocked"
     }
 }
