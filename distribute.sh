@@ -121,14 +121,16 @@ fi
 echo "==> Stapling notarization ticket..."
 xcrun stapler staple "$APP_PATH"
 
-# --- Step 5: Create DMG ---
+# --- Step 5: Create styled DMG ---
 
 echo "==> Creating DMG..."
 DMG_TEMP="build/${APP_NAME}-temp.dmg"
 DMG_VOLUME="${APP_NAME}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BG_IMG="${SCRIPT_DIR}/dmg_resources/background.png"
 
 # Create a temporary read-write DMG
-hdiutil create -size 50m -fs HFS+ -volname "$DMG_VOLUME" "$DMG_TEMP" -quiet
+hdiutil create -size 100m -fs HFS+ -volname "$DMG_VOLUME" "$DMG_TEMP" -quiet
 
 # Mount it
 MOUNT_DIR=$(hdiutil attach "$DMG_TEMP" -nobrowse | grep "/Volumes/" | awk '{for(i=3;i<=NF;i++) printf "%s ", $i; print ""}' | sed 's/ *$//')
@@ -136,6 +138,38 @@ MOUNT_DIR=$(hdiutil attach "$DMG_TEMP" -nobrowse | grep "/Volumes/" | awk '{for(
 # Copy app and create Applications symlink
 cp -R "$APP_PATH" "$MOUNT_DIR/"
 ln -s /Applications "$MOUNT_DIR/Applications"
+
+# Copy background image into a hidden folder
+mkdir -p "$MOUNT_DIR/.background"
+cp "$BG_IMG" "$MOUNT_DIR/.background/background.png"
+
+# Style the DMG with AppleScript
+echo "==> Styling DMG window..."
+osascript <<APPLESCRIPT
+tell application "Finder"
+    tell disk "$DMG_VOLUME"
+        open
+        set current view of container window to icon view
+        set toolbar visible of container window to false
+        set statusbar visible of container window to false
+        set bounds of container window to {100, 100, 760, 500}
+        set theViewOptions to icon view options of container window
+        set arrangement of theViewOptions to not arranged
+        set icon size of theViewOptions to 128
+        set background picture of theViewOptions to file ".background:background.png"
+        set position of item "${APP_NAME}.app" of container window to {165, 200}
+        set position of item "Applications" of container window to {495, 200}
+        close
+        open
+        update without registering applications
+        delay 2
+        close
+    end tell
+end tell
+APPLESCRIPT
+
+# Ensure Finder releases the volume
+sync
 
 # Unmount
 hdiutil detach "$MOUNT_DIR" -quiet
