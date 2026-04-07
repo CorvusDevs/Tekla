@@ -24,6 +24,17 @@
 
 - **Localize every user-facing string.** Wrap all new text in `String(localized:)`. This includes button labels, empty-state messages, error descriptions, section headers, and any text the user sees. Never use bare string literals in views.
 
+- **All text-matching fixes must be multi-language.** When modifying, replacing, or removing text strings from system or third-party UI (e.g. native buttons, labels, or menus), never match against a single language. The user's device locale may be any language. Use locale-agnostic patterns (regex with character classes for accented variants, semantic selectors, or view structure) instead of hardcoded English strings.
+
+## Screenshots & Image Attachments
+
+- **macOS screenshot filenames contain Unicode non-breaking spaces** (narrow no-break space `U+202F` and no-break space `U+00A0`) that cause the `Read` tool to fail with "File does not exist". Never attempt to read the path directly. Instead, always use this pattern:
+  ```
+  Bash: cp "/path/to/Attachments/"*.png /tmp/screenshot.png
+  Read: /tmp/screenshot.png
+  ```
+  Use a glob (`*.png`) to copy to `/tmp`, then read from there. This must be the first and only approach — do not attempt `Read` on the original path.
+
 ## Workflow
 
 - **Never assume the user hasn't rebuilt.** When the user reports a bug, they have already rebuilt and rerun the app. Never suggest "try rebuilding" or blame stale builds. The error is real — investigate the actual root cause immediately.
@@ -90,6 +101,8 @@
 
 - **Clean up debug logging when the problem is fixed.** Once a bug is resolved, review any debug logging added during investigation. Remove verbose or temporary traces that are no longer needed. Keep only logging that provides ongoing diagnostic value (e.g., per-swipe scoring summaries, prediction pipeline traces).
 
+- **CRITICAL: Never remove debug, profiling, or logging features without explicit user approval.** Debug infrastructure (profiling tools, performance reporters, log statements, debug flags) must never be deleted or disabled without first asking the user for confirmation. These tools are essential for diagnosing future issues. You may propose cleanup, but must wait for approval before acting.
+
 - **Always read the debug log before diagnosing.** When the user reports incorrect behavior (wrong prediction, bad ranking, missing word), read `swipe_debug.log` first. Don't guess at causes — the log contains the actual scoring breakdown and pipeline data. Base your analysis on what the numbers show.
 
 ## Data Quality
@@ -101,3 +114,4 @@
 ## Commits
 
 - **Always update the changelog when committing.** Every commit message should follow the pattern `vX.Y.Z — Summary` and include a bulleted list of what changed. Also update `CHANGELOG.md` at the project root with the same version entry so there is a single file tracking all releases.
+- **Never include Claude attribution in commits.** Do not add "Co-Authored-By: Claude" or any Claude/AI attribution to commit messages. Do not add Claude as a contributor on any GitHub repository. All commits should appear as solely authored by the user.
