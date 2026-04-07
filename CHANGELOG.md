@@ -2,6 +2,36 @@
 
 All notable changes to Tekla are documented in this file.
 
+## v1.5.1 — Add accessibility section to landing page
+
+- Add "Built for Accessibility" section to landing page with 3 feature cards (motor accessibility, flexible input, fewer keystrokes)
+- Localize accessibility section in all 14 languages
+
+## v1.5.0 — Activation gate with unlock code
+
+- Add activation window gating keyboard behind a license code on first launch
+- ActivationView with code input, validation, shake animation on wrong code, and link to purchase page
+- Persist unlock state in UserDefaults via SettingsManager
+- "Enter License" menu bar item when not yet unlocked
+- Show app in Dock during activation, switch to accessory mode after unlock
+- Create GitHub Release with signed, notarized DMG
+
+## v1.4.3 — Styled DMG installer
+
+- Add custom dark gradient background image for DMG window
+- Style DMG with AppleScript: 128px icons, app + Applications shortcut, no toolbar
+- Update distribute.sh with DMG styling step
+
+## v1.4.2 — Add Paddle checkout credentials
+
+- Integrate Paddle client-side token and price ID into landing page checkout flow
+
+## v1.4.1 — Add language picker to landing page
+
+- Add globe icon language picker dropdown to navigation bar
+- Support all 14 languages with manual switching
+- Persist language choice in localStorage, auto-detect browser language on first visit
+
 ## v1.4.0 — Accessibility fixes, keyboard layout polish, prediction padding
 
 - Fix Accessibility permission: remove debug bypass, disable App Sandbox, add continuous polling until granted
