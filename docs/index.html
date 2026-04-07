@@ -539,13 +539,11 @@
     <!-- Paddle Checkout -->
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script>
-        // TODO: Replace with your Paddle client-side token
-        Paddle.Initialize({ token: "live_YOUR_PADDLE_TOKEN_HERE" });
+        Paddle.Initialize({ token: "live_56066aaf7cbe507b874f560dbcd" });
 
         function openCheckout() {
             Paddle.Checkout.open({
-                // TODO: Replace with your Tekla price ID from Paddle
-                items: [{ priceId: "pri_YOUR_TEKLA_PRICE_ID", quantity: 1 }],
+                items: [{ priceId: "pri_01knk6sd6sxsxg1q5we0rqwb0j", quantity: 1 }],
                 settings: {
                     successUrl: "https://corvusdevs.github.io/Tekla/success",
                 },
