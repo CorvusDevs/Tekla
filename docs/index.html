@@ -323,6 +323,73 @@
             margin: 0 10px;
         }
 
+        /* ── Language picker ── */
+        .lang-picker {
+            position: relative;
+        }
+
+        .lang-picker-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .lang-picker-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 160px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            z-index: 200;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .lang-dropdown.open { display: block; }
+
+        .lang-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .lang-dropdown button:hover {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .lang-dropdown button.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 640px) {
             h1 { font-size: 34px; }
@@ -343,6 +410,28 @@
             <a href="#how" data-i18n="nav_how">How it works</a>
             <a href="#languages" data-i18n="nav_languages">Languages</a>
             <a href="mailto:corvusdevs@outlook.com" data-i18n="nav_contact">Contact</a>
+            <div class="lang-picker">
+                <button class="lang-picker-btn" aria-label="Change language">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><ellipse cx="8" cy="8" rx="3" ry="6.5" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="8" x2="14.5" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+                    <span class="lang-picker-label">EN</span>
+                </button>
+                <div class="lang-dropdown">
+                    <button data-lang="en">English</button>
+                    <button data-lang="es">Espa&#241;ol</button>
+                    <button data-lang="de">Deutsch</button>
+                    <button data-lang="fr">Fran&#231;ais</button>
+                    <button data-lang="pt">Portugu&#234;s</button>
+                    <button data-lang="it">Italiano</button>
+                    <button data-lang="nl">Nederlands</button>
+                    <button data-lang="sv">Svenska</button>
+                    <button data-lang="no">Norsk</button>
+                    <button data-lang="da">Dansk</button>
+                    <button data-lang="fi">Suomi</button>
+                    <button data-lang="tr">T&#252;rk&#231;e</button>
+                    <button data-lang="pl">Polski</button>
+                    <button data-lang="ru">&#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -735,16 +824,52 @@
         },
     };
 
-    function applyLang() {
-        const lang = (navigator.language || "en").slice(0, 2);
+    const langNames = {en:"EN",es:"ES",de:"DE",fr:"FR",pt:"PT",it:"IT",nl:"NL",sv:"SV",no:"NO",da:"DA",fi:"FI",tr:"TR",pl:"PL",ru:"RU"};
+
+    function setLanguage(lang) {
         const t = T[lang] || T.en;
         document.querySelectorAll("[data-i18n]").forEach(el => {
             const key = el.getAttribute("data-i18n");
             if (t[key]) el.innerHTML = t[key];
         });
         document.documentElement.lang = lang;
+        // Update picker label
+        const label = document.querySelector(".lang-picker-label");
+        if (label) label.textContent = langNames[lang] || lang.toUpperCase();
+        // Mark active in dropdown
+        document.querySelectorAll(".lang-dropdown button").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.lang === lang);
+        });
+        // Close dropdown
+        document.querySelector(".lang-dropdown")?.classList.remove("open");
+        // Persist
+        try { localStorage.setItem("tekla-lang", lang); } catch(e) {}
     }
-    applyLang();
+
+    // Toggle dropdown
+    document.querySelector(".lang-picker-btn")?.addEventListener("click", e => {
+        e.stopPropagation();
+        document.querySelector(".lang-dropdown")?.classList.toggle("open");
+    });
+
+    // Language buttons
+    document.querySelectorAll(".lang-dropdown button[data-lang]").forEach(btn => {
+        btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+    });
+
+    // Close on outside click
+    document.addEventListener("click", () => {
+        document.querySelector(".lang-dropdown")?.classList.remove("open");
+    });
+
+    // Init: saved > browser > English
+    (function initLang() {
+        let lang;
+        try { lang = localStorage.getItem("tekla-lang"); } catch(e) {}
+        if (!lang || !T[lang]) lang = (navigator.language || "en").slice(0, 2);
+        if (!T[lang]) lang = "en";
+        setLanguage(lang);
+    })();
     </script>
 </body>
 </html>
