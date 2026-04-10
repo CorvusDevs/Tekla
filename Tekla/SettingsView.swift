@@ -1,4 +1,5 @@
 import SwiftUI
+import Sparkle
 
 /// Settings panel for Tekla preferences.
 struct SettingsView: View {
@@ -10,7 +11,7 @@ struct SettingsView: View {
     @State private var selectedTab: SettingsTab = .general
 
     private enum SettingsTab: String, CaseIterable {
-        case general, feedback, language, appearance
+        case general, feedback, language, appearance, about
 
         var label: String {
             switch self {
@@ -18,6 +19,7 @@ struct SettingsView: View {
             case .feedback: String(localized: "Feedback")
             case .language: String(localized: "Language")
             case .appearance: String(localized: "Appearance")
+            case .about: String(localized: "About")
             }
         }
 
@@ -27,6 +29,7 @@ struct SettingsView: View {
             case .feedback: "speaker.wave.2"
             case .language: "globe"
             case .appearance: "paintbrush"
+            case .about: "info.circle"
             }
         }
     }
@@ -77,6 +80,7 @@ struct SettingsView: View {
                 case .feedback: feedbackTab
                 case .language: languageTab
                 case .appearance: appearanceTab
+                case .about: aboutTab
                 }
             }
         }
@@ -233,5 +237,63 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    // MARK: - About
+
+    @ViewBuilder
+    private var aboutTab: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            // App icon and version
+            if let icon = NSImage(named: NSImage.applicationIconName) {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 64, height: 64)
+            }
+
+            Text("Tekla")
+                .font(.title2.bold())
+
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                Text("v\(version)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Check for Updates
+            Button(String(localized: "Check for Updates…")) {
+                if let delegate = NSApp.delegate as? AppDelegate {
+                    delegate.updaterController.checkForUpdates(nil)
+                }
+            }
+            .controlSize(.large)
+
+            Spacer()
+
+            // Corvus Devs branding
+            VStack(spacing: 6) {
+                Text(String(localized: "Made by"))
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+
+                Button {
+                    if let url = URL(string: "https://corvusdevs.github.io") {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Corvus Devs")
+                            .font(.headline)
+                    }
+                }
+                .buttonStyle(.link)
+            }
+
+            Spacer()
+                .frame(height: 12)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
