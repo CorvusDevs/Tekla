@@ -7,13 +7,13 @@
         <language>en</language>
         <item>
             <title>Tekla v1.5.2</title>
-            <pubDate>Fri, 10 Apr 2026 06:37:03 -0300</pubDate>
-            <sparkle:version>2</sparkle:version>
+            <pubDate>Fri, 10 Apr 2026 17:35:32 -0300</pubDate>
+            <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>1.5.2</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg"
-                       sparkle:edSignature="G9PtY5kl0LRnhhUksGFpQLluOkE728IiZjkR+fW0YPA6m8ki3mtR06gyMTaYg+eep/CQ/lKkHpAnEPG70jyxDg=="
-                       length="10058344"
+                       sparkle:edSignature="N5uQ3Wwt3fs67Di9GsdEFgRITu2ojpbAAS4vwQWRyr49eDzPIluQgWQIU+I2emzPYeUH67pJLOEvLlurFaKkDA=="
+                       length="10255648"
                        type="application/octet-stream" />
         </item>
     </channel>
