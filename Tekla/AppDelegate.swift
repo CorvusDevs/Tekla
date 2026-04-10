@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Sparkle
 
 /// Sets up the floating keyboard panel on launch and provides
 /// a menu bar status item for show/hide and quit.
@@ -9,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var activationWindow: NSWindow?
     let settings = SettingsManager()
+    let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
@@ -82,6 +84,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSMenuItem(title: String(localized: "Hide Keyboard"), action: #selector(hideKeyboard), keyEquivalent: "h")
         )
         menu.addItem(.separator())
+        let updateItem = NSMenuItem(title: String(localized: "Check for Updates…"), action: #selector(checkForUpdates), keyEquivalent: "")
+        updateItem.target = self
+        menu.addItem(updateItem)
+        menu.addItem(.separator())
         if !settings.isUnlocked {
             menu.addItem(
                 NSMenuItem(title: String(localized: "Enter License"), action: #selector(showActivation), keyEquivalent: "l")
@@ -93,6 +99,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
 
         statusItem?.menu = menu
+    }
+
+    @objc private func checkForUpdates() {
+        updaterController.checkForUpdates(nil)
     }
 
     @objc private func showActivation() {

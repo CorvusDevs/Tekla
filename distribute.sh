@@ -178,6 +178,55 @@ hdiutil detach "$MOUNT_DIR" -quiet
 hdiutil convert "$DMG_TEMP" -format UDZO -o "$DMG_PATH" -quiet
 rm -f "$DMG_TEMP"
 
+# --- Step 6: Sparkle — Sign DMG & Update Appcast ---
+
+SPARKLE_BIN=$(find ~/Library/Developer/Xcode/DerivedData -path "*/sparkle/Sparkle/bin/sign_update" -print -quit 2>/dev/null | xargs dirname)
+
+if [ -n "$SPARKLE_BIN" ]; then
+    echo "==> Signing DMG for Sparkle..."
+    SIGNATURE=$("$SPARKLE_BIN/sign_update" "$DMG_PATH")
+    # signature output looks like: sparkle:edSignature="..." length="..."
+    ED_SIGNATURE=$(echo "$SIGNATURE" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')
+    DMG_LENGTH=$(echo "$SIGNATURE" | sed -n 's/.*length="\([^"]*\)".*/\1/p')
+
+    # Read version from the built app
+    APP_VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP_PATH/Contents/Info.plist")
+    APP_BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$APP_PATH/Contents/Info.plist")
+
+    echo "==> Updating appcast.xml (v${APP_VERSION} build ${APP_BUILD})..."
+
+    APPCAST_PATH="docs/appcast.xml"
+    PUB_DATE=$(date -R)
+
+    cat > "$APPCAST_PATH" <<APPCAST
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Tekla Updates</title>
+        <link>https://corvusdevs.github.io/Tekla/appcast.xml</link>
+        <description>Tekla update feed</description>
+        <language>en</language>
+        <item>
+            <title>Tekla v${APP_VERSION}</title>
+            <pubDate>${PUB_DATE}</pubDate>
+            <sparkle:version>${APP_BUILD}</sparkle:version>
+            <sparkle:shortVersionString>${APP_VERSION}</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg"
+                       sparkle:edSignature="${ED_SIGNATURE}"
+                       length="${DMG_LENGTH}"
+                       type="application/octet-stream" />
+        </item>
+    </channel>
+</rss>
+APPCAST
+
+    echo "==> Appcast updated: $APPCAST_PATH"
+else
+    echo "WARNING: Sparkle tools not found in DerivedData. Skipping appcast update."
+    echo "         Build the project in Xcode first to download Sparkle, then re-run."
+fi
+
 # --- Done ---
 
 echo ""
@@ -185,4 +234,10 @@ echo "============================================="
 echo "  Distribution complete!"
 echo "  DMG: $DMG_PATH"
 echo "  The app is signed and notarized."
+echo "============================================="
+echo ""
+echo "Next steps:"
+echo "  1. git add docs/appcast.xml && git commit && git push"
+echo "  2. Create GitHub Release with tag v\${APP_VERSION}"
+echo "  3. Upload $DMG_PATH to the release as 'Tekla.dmg'"
 echo "============================================="
