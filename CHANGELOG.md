@@ -2,6 +2,12 @@
 
 All notable changes to Tekla are documented in this file.
 
+## v1.5.2 — About tab with Corvus Devs branding, Sparkle auto-updates
+
+- Add About tab to Settings with app icon, version, and "Check for Updates" button
+- Add Corvus Devs branding with link to corvusdevs.github.io
+- Populate appcast.xml with v1.5.0 release (EdDSA signed) for Sparkle auto-updates
+
 ## v1.5.1 — Add accessibility section to landing page
 
 - Add "Built for Accessibility" section to landing page with 3 feature cards (motor accessibility, flexible input, fewer keystrokes)
