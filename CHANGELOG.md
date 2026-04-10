@@ -2,6 +2,14 @@
 
 All notable changes to Tekla are documented in this file.
 
+## v1.5.3 — Wikipedia prediction data, vertical settings tabs, Sparkle fix
+
+- Replace OpenSubtitles frequency and bigram data with Wikipedia-sourced data for all 14 languages
+- Predictions are now based on general-purpose text instead of movie dialogue
+- Fix Sparkle "Check for Updates" button (use static updaterController, bypass NSApplicationDelegateAdaptor cast issue)
+- Redesign Settings to use vertical sidebar tabs instead of horizontal tab bar
+- Widen sidebar to prevent "Appearance" label truncation
+
 ## v1.5.2 — About tab with Corvus Devs branding, Sparkle auto-updates
 
 - Add About tab to Settings with app icon, version, and "Check for Updates" button

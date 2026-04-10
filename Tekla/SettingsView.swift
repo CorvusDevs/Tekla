@@ -35,43 +35,44 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Title
-            Text(String(localized: "Settings"))
-                .font(.headline)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
-
-            // Category bar
-            HStack(spacing: 4) {
+        HStack(spacing: 0) {
+            // Sidebar
+            VStack(spacing: 2) {
                 ForEach(SettingsTab.allCases, id: \.self) { tab in
                     Button {
-                        selectedTab = tab
-                    } label: {
-                        HStack(spacing: 5) {
-                            Image(systemName: tab.icon)
-                                .font(.system(size: 11))
-                            Text(tab.label)
-                                .font(.subheadline)
-                                .fixedSize()
+                        withAnimation(.easeInOut(duration: 0.15)) {
+                            selectedTab = tab
                         }
-                        .padding(.vertical, 6)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: tab.icon)
+                                .font(.system(size: 13))
+                                .frame(width: 20)
+                            Text(tab.label)
+                                .font(.system(size: 12))
+                            Spacer()
+                        }
+                        .padding(.vertical, 7)
                         .padding(.horizontal, 10)
-                        .frame(maxWidth: .infinity)
                         .background(
                             RoundedRectangle(cornerRadius: 6)
                                 .fill(selectedTab == tab
                                       ? Color.accentColor.opacity(0.15)
-                                      : Color.primary.opacity(0.04))
+                                      : Color.clear)
                         )
-                        .padding(.horizontal, 2)
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .foregroundStyle(selectedTab == tab ? .primary : .secondary)
                 }
+                Spacer()
             }
-            .padding(.horizontal, 10)
-            .padding(.bottom, 4)
+            .padding(.top, 12)
+            .padding(.horizontal, 8)
+            .frame(width: 150)
+            .background(Color(.windowBackgroundColor).opacity(0.5))
+
+            Divider()
 
             // Content
             Group {
@@ -83,8 +84,9 @@ struct SettingsView: View {
                 case .about: aboutTab
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(width: 480, height: 380)
+        .frame(width: 540, height: 400)
     }
 
     // MARK: - General
@@ -264,9 +266,7 @@ struct SettingsView: View {
 
             // Check for Updates
             Button(String(localized: "Check for Updates…")) {
-                if let delegate = NSApp.delegate as? AppDelegate {
-                    delegate.updaterController.checkForUpdates(nil)
-                }
+                AppDelegate.updaterController.checkForUpdates(nil)
             }
             .controlSize(.large)
 

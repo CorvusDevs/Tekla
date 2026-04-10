@@ -27,16 +27,16 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         })
 
         let hostingView = NSHostingView(rootView: settingsView)
-        hostingView.frame = NSRect(x: 0, y: 0, width: 480, height: 380)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 540, height: 400)
 
         let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
         let origin = NSPoint(
-            x: screenFrame.midX - 240,
-            y: screenFrame.midY - 190
+            x: screenFrame.midX - 270,
+            y: screenFrame.midY - 200
         )
 
         let win = NSPanel(
-            contentRect: NSRect(origin: origin, size: NSSize(width: 480, height: 380)),
+            contentRect: NSRect(origin: origin, size: NSSize(width: 540, height: 400)),
             styleMask: [.titled, .closable, .miniaturizable, .nonactivatingPanel],
             backing: .buffered,
             defer: false

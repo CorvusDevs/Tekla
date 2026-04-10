@@ -6,11 +6,12 @@ import Sparkle
 /// a menu bar status item for show/hide and quit.
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
+    static let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+
     private var keyboardPanel: KeyboardPanel?
     private var statusItem: NSStatusItem?
     private var activationWindow: NSWindow?
     let settings = SettingsManager()
-    let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusItem()
@@ -102,7 +103,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func checkForUpdates() {
-        updaterController.checkForUpdates(nil)
+        AppDelegate.updaterController.checkForUpdates(nil)
     }
 
     @objc private func showActivation() {
