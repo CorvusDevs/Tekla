@@ -2,6 +2,19 @@
 
 All notable changes to Tekla are documented in this file.
 
+## v1.5.4 — HIG audit fixes, blended prediction data, HID Return key
+
+- Blend Wikipedia + OpenSubtitles frequency and bigram data for all 14 languages (balanced conversational + encyclopedic vocabulary)
+- Return key now uses HID event tap — works correctly in chat apps (Xcode, Slack, Discord)
+- Apple HIG compliance audit: use text styles instead of fixed font sizes, enforce 10pt minimum, 28pt click targets
+- Respect Reduce Motion accessibility setting for key press, tab switch, and error shake animations
+- Merge Appearance tab into General settings (opacity slider moved)
+- Fix "Made by" contrast in About tab (tertiary → secondary)
+- Settings window now resizable
+- Use semantic system colors for permission banner
+- Prediction bar height adjusted to HIG default (28pt)
+- Use .snappy spring animations for micro-interactions
+
 ## v1.5.3 — Wikipedia prediction data, vertical settings tabs, Sparkle fix
 
 - Replace OpenSubtitles frequency and bigram data with Wikipedia-sourced data for all 14 languages
