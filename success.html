@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Complete — Tekla</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: #141418;
+            --border: #2a2a32;
+            --text: #e8e8ed;
+            --text-secondary: #8e8e93;
+            --accent: #0a84ff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 560px;
+            width: 100%;
+            padding: 60px 24px;
+            text-align: center;
+        }
+        .icon-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 32px;
+        }
+        .icon {
+            width: 160px;
+            height: 160px;
+            border-radius: 36px;
+            position: relative;
+            z-index: 1;
+        }
+        .icon-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.3) 0%, rgba(10, 132, 255, 0.12) 40%, transparent 70%);
+            filter: blur(40px);
+            z-index: 0;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+        }
+        .key-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 20px;
+            user-select: all;
+            cursor: text;
+            color: var(--accent);
+            line-height: 1.6;
+        }
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-copy {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-copy:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(10, 132, 255, 0.1);
+        }
+        .btn-download {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-download:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(10, 132, 255, 0.35);
+        }
+        .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .steps {
+            text-align: left;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+        .steps h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .steps ol {
+            padding-left: 20px;
+        }
+        .steps li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .help-note {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .help-note a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .help-note a:hover { text-decoration: underline; }
+        .back-link {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 28px;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        @media (max-width: 480px) {
+            .btn-row { flex-direction: column; }
+            .icon { width: 120px; height: 120px; border-radius: 28px; }
+            .icon-glow { width: 220px; height: 220px; }
+            h1 { font-size: 26px; }
+            .key-box { font-size: 15px; letter-spacing: 1.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon-wrapper">
+            <div class="icon-glow"></div>
+            <img src="icon.png" alt="Tekla" class="icon">
+        </div>
+        <h1 data-i18n="title">Thank you for purchasing Tekla!</h1>
+        <p class="subtitle" data-i18n="subtitle">Here's your unlock code:</p>
+
+        <div class="key-box" id="keyBox">TEKLA-UNLOCK-9V3R</div>
+        <div class="btn-row">
+            <button class="btn btn-copy" id="copyBtn" onclick="copyCode()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <span data-i18n="copy">Copy Code</span>
+            </button>
+            <a href="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg" class="btn btn-download">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3"/></svg>
+                <span data-i18n="download">Download Tekla</span>
+            </a>
+        </div>
+
+        <div class="steps">
+            <h3 data-i18n="steps_title">To get started:</h3>
+            <ol>
+                <li data-i18n="step1">Download and open <strong>Tekla.dmg</strong></li>
+                <li data-i18n="step2">Drag Tekla to your Applications folder</li>
+                <li data-i18n="step3">Open Tekla and grant Accessibility permission</li>
+                <li data-i18n="step4">Enter the unlock code above and click <strong>Unlock</strong></li>
+            </ol>
+        </div>
+        <p class="help-note" data-i18n="help_note">Need help? Contact <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a></p>
+
+        <a href="./" class="back-link" data-i18n="back">&larr; Back to Tekla</a>
+    </div>
+
+    <script>
+        const T = {
+            en: { title: "Thank you for purchasing Tekla!", subtitle: "Here's your unlock code:", copy: "Copy Code", copied: "Copied!", download: "Download Tekla", steps_title: "To get started:", step1: 'Download and open <strong>Tekla.dmg</strong>', step2: "Drag Tekla to your Applications folder", step3: "Open Tekla and grant Accessibility permission", step4: 'Enter the unlock code above and click <strong>Unlock</strong>', help_note: 'Need help? Contact <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Back to Tekla" },
+            es: { title: "\u00a1Gracias por comprar Tekla!", subtitle: "Tu c\u00f3digo de desbloqueo:", copy: "Copiar", copied: "\u00a1Copiado!", download: "Descargar Tekla", steps_title: "Para empezar:", step1: 'Descarga y abre <strong>Tekla.dmg</strong>', step2: "Arrastra Tekla a tu carpeta de Aplicaciones", step3: "Abre Tekla y concede permiso de Accesibilidad", step4: 'Ingresa el c\u00f3digo y haz clic en <strong>Desbloquear</strong>', help_note: '\u00bfNecesitas ayuda? Contacta a <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Volver a Tekla" },
+            de: { title: "Danke f\u00fcr den Kauf von Tekla!", subtitle: "Ihr Freischaltcode:", copy: "Kopieren", copied: "Kopiert!", download: "Tekla herunterladen", steps_title: "So geht\u2019s los:", step1: '<strong>Tekla.dmg</strong> herunterladen und \u00f6ffnen', step2: "Tekla in den Programme-Ordner ziehen", step3: "Tekla \u00f6ffnen und Bedienungshilfen-Zugriff gew\u00e4hren", step4: 'Code eingeben und <strong>Freischalten</strong> klicken', help_note: 'Hilfe? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Zur\u00fcck zu Tekla" },
+            fr: { title: "Merci d\u2019avoir achet\u00e9 Tekla !", subtitle: "Votre code de d\u00e9verrouillage :", copy: "Copier", copied: "Copi\u00e9 !", download: "T\u00e9l\u00e9charger Tekla", steps_title: "Pour commencer :", step1: 'T\u00e9l\u00e9chargez et ouvrez <strong>Tekla.dmg</strong>', step2: "Glissez Tekla dans votre dossier Applications", step3: "Ouvrez Tekla et accordez l\u2019acc\u00e8s Accessibilit\u00e9", step4: 'Entrez le code et cliquez sur <strong>D\u00e9verrouiller</strong>', help_note: 'Besoin d\u2019aide ? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Retour \u00e0 Tekla" },
+            pt: { title: "Obrigado por comprar o Tekla!", subtitle: "Seu c\u00f3digo de desbloqueio:", copy: "Copiar", copied: "Copiado!", download: "Baixar Tekla", steps_title: "Para come\u00e7ar:", step1: 'Baixe e abra o <strong>Tekla.dmg</strong>', step2: "Arraste o Tekla para a pasta Aplicativos", step3: "Abra o Tekla e conceda permiss\u00e3o de Acessibilidade", step4: 'Insira o c\u00f3digo e clique em <strong>Desbloquear</strong>', help_note: 'Precisa de ajuda? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Voltar ao Tekla" },
+            it: { title: "Grazie per aver acquistato Tekla!", subtitle: "Il tuo codice di sblocco:", copy: "Copia", copied: "Copiato!", download: "Scarica Tekla", steps_title: "Per iniziare:", step1: 'Scarica e apri <strong>Tekla.dmg</strong>', step2: "Trascina Tekla nella cartella Applicazioni", step3: "Apri Tekla e concedi il permesso di Accessibilit\u00e0", step4: 'Inserisci il codice e clicca <strong>Sblocca</strong>', help_note: 'Aiuto? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Torna a Tekla" },
+            nl: { title: "Bedankt voor de aankoop van Tekla!", subtitle: "Je ontgrendelcode:", copy: "Kopi\u00ebren", copied: "Gekopieerd!", download: "Tekla downloaden", steps_title: "Aan de slag:", step1: 'Download en open <strong>Tekla.dmg</strong>', step2: "Sleep Tekla naar je map Programma\u2019s", step3: "Open Tekla en geef toegankelijkheidstoegang", step4: 'Voer de code in en klik op <strong>Ontgrendelen</strong>', help_note: 'Hulp nodig? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Terug naar Tekla" },
+            sv: { title: "Tack f\u00f6r att du k\u00f6pte Tekla!", subtitle: "Din uppl\u00e5sningskod:", copy: "Kopiera", copied: "Kopierad!", download: "Ladda ner Tekla", steps_title: "Kom ig\u00e5ng:", step1: 'Ladda ner och \u00f6ppna <strong>Tekla.dmg</strong>', step2: "Dra Tekla till mappen Program", step3: "\u00d6ppna Tekla och ge tillg\u00e4nglighets\u00e5tkomst", step4: 'Ange koden och klicka p\u00e5 <strong>L\u00e5s upp</strong>', help_note: 'Beh\u00f6ver du hj\u00e4lp? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Tillbaka till Tekla" },
+            no: { title: "Takk for at du kj\u00f8pte Tekla!", subtitle: "Din oppl\u00e5singskode:", copy: "Kopier", copied: "Kopiert!", download: "Last ned Tekla", steps_title: "Slik kommer du i gang:", step1: 'Last ned og \u00e5pne <strong>Tekla.dmg</strong>', step2: "Dra Tekla til Programmer-mappen", step3: "\u00c5pne Tekla og gi tilgjengelighetstilgang", step4: 'Skriv inn koden og klikk <strong>L\u00e5s opp</strong>', help_note: 'Trenger du hjelp? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Tilbake til Tekla" },
+            da: { title: "Tak fordi du k\u00f8bte Tekla!", subtitle: "Din opl\u00e5sningskode:", copy: "Kopier", copied: "Kopieret!", download: "Download Tekla", steps_title: "S\u00e5dan kommer du i gang:", step1: 'Download og \u00e5bn <strong>Tekla.dmg</strong>', step2: "Tr\u00e6k Tekla til mappen Programmer", step3: "\u00c5bn Tekla og giv tilg\u00e6ngelighedsadgang", step4: 'Indtast koden og klik <strong>L\u00e5s op</strong>', help_note: 'Brug for hj\u00e6lp? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Tilbage til Tekla" },
+            fi: { title: "Kiitos Teklan ostamisesta!", subtitle: "Avauskoodi:", copy: "Kopioi", copied: "Kopioitu!", download: "Lataa Tekla", steps_title: "N\u00e4in p\u00e4\u00e4set alkuun:", step1: 'Lataa ja avaa <strong>Tekla.dmg</strong>', step2: "Ved\u00e4 Tekla Ohjelmat-kansioon", step3: "Avaa Tekla ja my\u00f6nn\u00e4 esteett\u00f6myys-k\u00e4ytt\u00f6oikeus", step4: 'Sy\u00f6t\u00e4 koodi ja napsauta <strong>Avaa</strong>', help_note: 'Tarvitsetko apua? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Takaisin Teklaan" },
+            tr: { title: "Tekla'y\u0131 sat\u0131n ald\u0131\u011f\u0131n\u0131z i\u00e7in te\u015fekk\u00fcrler!", subtitle: "Kilit a\u00e7ma kodunuz:", copy: "Kopyala", copied: "Kopyaland\u0131!", download: "Tekla'y\u0131 \u0130ndir", steps_title: "Ba\u015flamak i\u00e7in:", step1: '<strong>Tekla.dmg</strong> dosyas\u0131n\u0131 indirin ve a\u00e7\u0131n', step2: "Tekla'y\u0131 Uygulamalar klas\u00f6r\u00fcne s\u00fcr\u00fckleyin", step3: "Tekla'y\u0131 a\u00e7\u0131n ve Eri\u015filebilirlik izni verin", step4: 'Kodu girin ve <strong>Kilidi A\u00e7</strong> d\u00fc\u011fmesine t\u0131klay\u0131n', help_note: 'Yard\u0131ma m\u0131 ihtiyac\u0131n\u0131z var? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Tekla'ya d\u00f6n" },
+            pl: { title: "Dzi\u0119kujemy za zakup Tekla!", subtitle: "Tw\u00f3j kod odblokowuj\u0105cy:", copy: "Kopiuj", copied: "Skopiowano!", download: "Pobierz Tekla", steps_title: "Jak zacz\u0105\u0107:", step1: 'Pobierz i otw\u00f3rz <strong>Tekla.dmg</strong>', step2: "Przeci\u0105gnij Tekla do folderu Programy", step3: "Otw\u00f3rz Tekla i przyznaj dost\u0119p do u\u0142atwie\u0144", step4: 'Wprowad\u017a kod i kliknij <strong>Odblokuj</strong>', help_note: 'Potrzebujesz pomocy? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 Powr\u00f3t do Tekla" },
+            ru: { title: "\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043f\u043e\u043a\u0443\u043f\u043a\u0443 Tekla!", subtitle: "\u0412\u0430\u0448 \u043a\u043e\u0434 \u0440\u0430\u0437\u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0438:", copy: "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c", copied: "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e!", download: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c Tekla", steps_title: "\u041a\u0430\u043a \u043d\u0430\u0447\u0430\u0442\u044c:", step1: '\u0421\u043a\u0430\u0447\u0430\u0439\u0442\u0435 \u0438 \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 <strong>Tekla.dmg</strong>', step2: "\u041f\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 Tekla \u0432 \u043f\u0430\u043f\u043a\u0443 \u041f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u044b", step3: "\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 Tekla \u0438 \u0434\u0430\u0439\u0442\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043d\u0438\u0435 \u0423\u043d\u0438\u0432\u0435\u0440\u0441\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0434\u043e\u0441\u0442\u0443\u043f\u0430", step4: '\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u043e\u0434 \u0438 \u043d\u0430\u0436\u043c\u0438\u0442\u0435 <strong>\u0420\u0430\u0437\u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u0430\u0442\u044c</strong>', help_note: '\u041d\u0443\u0436\u043d\u0430 \u043f\u043e\u043c\u043e\u0449\u044c? <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>', back: "\u2190 \u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u043a Tekla" },
+        };
+
+        function applyLang() {
+            const lang = (navigator.language || "en").slice(0, 2);
+            const t = T[lang] || T.en;
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (t[key]) el.innerHTML = t[key];
+            });
+            document.documentElement.lang = lang;
+        }
+        applyLang();
+
+        function copyCode() {
+            const lang = (navigator.language || "en").slice(0, 2);
+            const t = T[lang] || T.en;
+            const code = document.getElementById("keyBox").textContent;
+            navigator.clipboard.writeText(code);
+            const span = document.querySelector("#copyBtn span");
+            span.textContent = t.copied;
+            setTimeout(() => { span.textContent = t.copy; }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Tekla Updates</title>
+        <link>https://corvusdevs.github.io/Tekla/appcast.xml</link>
+        <description>Tekla update feed</description>
+        <language>en</language>
+        <item>
+            <title>Tekla v1.5.2</title>
+            <pubDate>Fri, 10 Apr 2026 17:35:32 -0300</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.5.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg"
+                       sparkle:edSignature="N5uQ3Wwt3fs67Di9GsdEFgRITu2ojpbAAS4vwQWRyr49eDzPIluQgWQIU+I2emzPYeUH67pJLOEvLlurFaKkDA=="
+                       length="10255648"
+                       type="application/octet-stream" />
+        </item>
+    </channel>
+</rss>
