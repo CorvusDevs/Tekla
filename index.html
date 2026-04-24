@@ -43,7 +43,7 @@
         "applicationSubCategory": "Virtual Keyboard",
         "description": "Swipe-to-type virtual keyboard for macOS with smart predictions and 14 language support.",
         "downloadUrl": "https://apps.apple.com/app/id6740211838",
-        "screenshot": "https://corvusdevs.github.io/Tekla/og-image.png",
+        "screenshot": "https://corvusdevs.github.io/Tekla/screenshot.png",
         "offers": {
             "@type": "Offer",
             "price": "4.99",
@@ -193,6 +193,36 @@
             margin-top: 12px;
             font-size: 13px;
             color: var(--text-secondary);
+        }
+
+        /* ── Screenshot showcase ── */
+        .showcase {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+            text-align: center;
+        }
+
+        .showcase-frame {
+            position: relative;
+            display: inline-block;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 24px 80px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.06),
+                0 0 60px rgba(10,132,255,0.08);
+            transition: transform 0.4s ease;
+        }
+
+        .showcase-frame:hover {
+            transform: translateY(-4px);
+        }
+
+        .showcase-frame img {
+            display: block;
+            width: 100%;
+            max-width: 640px;
         }
 
         /* ── Features ── */
@@ -460,6 +490,13 @@
         <p class="tagline" data-i18n="tagline">A floating virtual keyboard with swipe-to-type, smart predictions, and support for 14 languages. Fully offline. Fully private.</p>
         <button class="cta-button" onclick="openCheckout()" data-i18n="cta">Get Tekla</button>
         <p class="platform-note" data-i18n="platform_note">Requires macOS 14 Sonoma or later</p>
+    </section>
+
+    <!-- Screenshot -->
+    <section class="showcase">
+        <div class="showcase-frame">
+            <img src="screenshot.png" alt="Tekla virtual keyboard with multilingual predictions on macOS">
+        </div>
     </section>
 
     <!-- Features -->
