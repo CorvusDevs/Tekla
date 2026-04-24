@@ -197,32 +197,56 @@
 
         /* ── Screenshot showcase ── */
         .showcase {
-            max-width: 720px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 0 24px 60px;
+            padding: 20px 24px 80px;
             text-align: center;
+            position: relative;
+        }
+
+        .showcase::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%; height: 120%;
+            background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 60%);
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.5;
         }
 
         .showcase-frame {
             position: relative;
             display: inline-block;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow:
-                0 24px 80px rgba(0,0,0,0.5),
-                0 0 0 1px rgba(255,255,255,0.06),
-                0 0 60px rgba(10,132,255,0.08);
-            transition: transform 0.4s ease;
+                0 32px 100px rgba(0,0,0,0.6),
+                0 0 0 1px rgba(255,255,255,0.08),
+                0 0 80px rgba(10,132,255,0.15),
+                0 0 160px rgba(10,132,255,0.06);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .showcase-frame:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow:
+                0 40px 120px rgba(0,0,0,0.7),
+                0 0 0 1px rgba(255,255,255,0.1),
+                0 0 100px rgba(10,132,255,0.25),
+                0 0 200px rgba(10,132,255,0.1);
         }
 
         .showcase-frame img {
             display: block;
             width: 100%;
-            max-width: 640px;
+            max-width: 900px;
+        }
+
+        @media (max-width: 640px) {
+            .showcase-frame img { max-width: 100%; }
         }
 
         /* ── Features ── */
