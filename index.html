@@ -43,7 +43,7 @@
         "applicationSubCategory": "Virtual Keyboard",
         "description": "Swipe-to-type virtual keyboard for macOS with smart predictions and 14 language support.",
         "downloadUrl": "https://apps.apple.com/app/id6740211838",
-        "screenshot": "https://corvusdevs.github.io/Tekla/screenshot.png",
+        "screenshot": "https://corvusdevs.github.io/Tekla/og-image.png",
         "offers": {
             "@type": "Offer",
             "price": "4.99",
@@ -83,7 +83,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Nav ── */
+        /* FROSTED GLASS NAV */
         nav {
             position: fixed;
             top: 0;
@@ -94,6 +94,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .nav-brand {
@@ -132,30 +136,66 @@
 
         .nav-links a:hover { color: var(--text); }
 
+        /* GRADIENT TEXT utility */
+        .gradient-text {
+            background: linear-gradient(135deg, #0a84ff 0%, #5ac8fa 40%, #fff 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* SCROLL REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* ── Hero ── */
         .hero {
             text-align: center;
-            padding: 140px 24px 60px;
+            padding: 160px 24px 80px;
             max-width: 720px;
             margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -300px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.06) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .hero-icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 28px;
+            width: 140px;
+            height: 140px;
+            border-radius: 32px;
             margin-bottom: 32px;
+            position: relative;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 60px 20px rgba(10, 132, 255, 0.25), 0 0 120px 50px rgba(10, 132, 255, 0.12), 0 0 200px 80px rgba(10, 132, 255, 0.06);
         }
 
         h1 {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
-            margin-bottom: 16px;
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
         }
 
-        h1 span { color: var(--accent); }
+        h1 span { -webkit-text-fill-color: var(--accent); }
 
         .tagline {
             font-size: 18px;
@@ -195,60 +235,6 @@
             color: var(--text-secondary);
         }
 
-        /* ── Screenshot showcase ── */
-        .showcase {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 20px 24px 80px;
-            text-align: center;
-            position: relative;
-        }
-
-        .showcase::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%; height: 120%;
-            background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 60%);
-            pointer-events: none;
-            filter: blur(80px);
-            opacity: 0.5;
-        }
-
-        .showcase-frame {
-            position: relative;
-            display: inline-block;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow:
-                0 32px 100px rgba(0,0,0,0.6),
-                0 0 0 1px rgba(255,255,255,0.08),
-                0 0 80px rgba(10,132,255,0.15),
-                0 0 160px rgba(10,132,255,0.06);
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .showcase-frame:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow:
-                0 40px 120px rgba(0,0,0,0.7),
-                0 0 0 1px rgba(255,255,255,0.1),
-                0 0 100px rgba(10,132,255,0.25),
-                0 0 200px rgba(10,132,255,0.1);
-        }
-
-        .showcase-frame img {
-            display: block;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        @media (max-width: 640px) {
-            .showcase-frame img { max-width: 100%; }
-        }
-
         /* ── Features ── */
         .features {
             display: grid;
@@ -268,14 +254,21 @@
         }
 
         .feature-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
+            border-color: rgba(10, 132, 255, 0.3);
         }
 
         .feature-icon {
-            font-size: 28px;
-            margin-bottom: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 0 20px rgba(10, 132, 255, 0.15);
         }
+        .feature-icon svg { width: 24px; height: 24px; }
 
         .feature-card h3 {
             font-size: 16px;
@@ -298,9 +291,9 @@
         }
 
         .how-section h2 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
-            letter-spacing: -0.8px;
+            letter-spacing: -1px;
             margin-bottom: 40px;
         }
 
@@ -351,7 +344,7 @@
         }
 
         .languages-section h2 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
             letter-spacing: -0.8px;
             margin-bottom: 32px;
@@ -516,42 +509,47 @@
         <p class="platform-note" data-i18n="platform_note">Requires macOS 14 Sonoma or later</p>
     </section>
 
-    <!-- Screenshot -->
-    <section class="showcase">
-        <div class="showcase-frame">
-            <img src="screenshot.png" alt="Tekla virtual keyboard with multilingual predictions on macOS">
-        </div>
-    </section>
-
     <!-- Features -->
     <section class="features" id="features">
-        <div class="feature-card">
-            <div class="feature-icon">👆</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3-3 3 3"/></svg>
+            </div>
             <h3 data-i18n="feat1_title">Swipe-to-Type</h3>
             <p data-i18n="feat1_desc">Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">🧠</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M20 12a8 8 0 0 0-8-8v8h8z" opacity="0.5"/></svg>
+            </div>
             <h3 data-i18n="feat2_title">Smart Predictions</h3>
             <p data-i18n="feat2_desc">Context-aware predictions powered by bigram language models and frequency data. The more you type, the better it gets.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">🌍</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
             <h3 data-i18n="feat3_title">14 Languages</h3>
             <p data-i18n="feat3_desc">Full keyboard layouts and prediction data for English, Spanish, German, French, Portuguese, Italian, and 8 more languages.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">🔒</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
             <h3 data-i18n="feat4_title">100% Offline</h3>
             <p data-i18n="feat4_desc">No internet required. No data leaves your Mac. Your typing patterns, predictions, and preferences stay entirely on your device.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">⌨️</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
+            </div>
             <h3 data-i18n="feat5_title">Full Desktop Layout</h3>
             <p data-i18n="feat5_desc">Complete Mac keyboard with function keys, modifier keys, and navigation cluster. Resizable floating window that works with any app.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
             <h3 data-i18n="feat6_title">Lightweight</h3>
             <p data-i18n="feat6_desc">Near-zero CPU when idle. Event-driven architecture means it only works when you do. No background polling, no battery drain.</p>
         </div>
@@ -559,21 +557,27 @@
 
     <!-- Accessibility -->
     <section class="how-section" id="accessibility">
-        <h2 data-i18n="a11y_title">Built for accessibility</h2>
+        <h2 class="gradient-text reveal" data-i18n="a11y_title">Built for accessibility</h2>
     </section>
     <section class="features">
-        <div class="feature-card">
-            <div class="feature-icon">🦾</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
             <h3 data-i18n="a11y1_title">Motor Accessibility</h3>
             <p data-i18n="a11y1_desc">Designed for users with limited hand mobility. Swipe typing lets you form words with a single continuous gesture instead of pressing individual keys — less movement, less strain.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎯</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
             <h3 data-i18n="a11y2_title">Flexible Input</h3>
             <p data-i18n="a11y2_desc">Works with trackpads, mice, styluses, head pointers, and any pointing device. The resizable floating window adapts to your setup — make keys as large as you need.</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">💬</div>
+        <div class="feature-card reveal">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
             <h3 data-i18n="a11y3_title">Fewer Keystrokes</h3>
             <p data-i18n="a11y3_desc">Smart predictions and next-word suggestions mean you type less to say more. Swipe a word, pick a prediction — full sentences with minimal effort.</p>
         </div>
@@ -581,23 +585,23 @@
 
     <!-- How it works -->
     <section class="how-section" id="how">
-        <h2 data-i18n="how_title">How it works</h2>
+        <h2 class="gradient-text reveal" data-i18n="how_title">How it works</h2>
         <div class="steps">
-            <div class="step">
+            <div class="step reveal">
                 <div class="step-num">1</div>
                 <div class="step-text">
                     <h3 data-i18n="step1_title">Open Tekla</h3>
                     <p data-i18n="step1_desc">A floating keyboard appears on screen. Grant Accessibility permission so it can type into any app.</p>
                 </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
                 <div class="step-num">2</div>
                 <div class="step-text">
                     <h3 data-i18n="step2_title">Swipe or tap</h3>
                     <p data-i18n="step2_desc">Slide across letters to swipe-type whole words, or tap individual keys like a regular keyboard.</p>
                 </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
                 <div class="step-num">3</div>
                 <div class="step-text">
                     <h3 data-i18n="step3_title">Pick predictions</h3>
@@ -609,7 +613,7 @@
 
     <!-- Languages -->
     <section class="languages-section" id="languages">
-        <h2 data-i18n="lang_title">Supports 14 languages</h2>
+        <h2 class="gradient-text reveal" data-i18n="lang_title">Supports 14 languages</h2>
         <div class="lang-grid">
             <span class="lang-tag">English</span>
             <span class="lang-tag">Espa&#241;ol</span>
@@ -646,10 +650,27 @@
             Paddle.Checkout.open({
                 items: [{ priceId: "pri_01knk6sd6sxsxg1q5we0rqwb0j", quantity: 1 }],
                 settings: {
-                    successUrl: "https://corvusdevs.github.io/Tekla/success",
+                    successUrl: "https://tekla-license.soyelale.workers.dev/success",
                 },
             });
         }
+    </script>
+
+    <!-- Scroll reveal -->
+    <script>
+    (function() {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(function(el) {
+            observer.observe(el);
+        });
+    })();
     </script>
 
     <!-- Localization -->
