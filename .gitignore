@@ -1,0 +1,10 @@
+# App source code (private)
+Tekla/
+Tekla.xcodeproj/
+Scripts/
+SwipeTrailView.swift
+distribute.sh
+dmg_resources/
+CLAUDE.md
+PADDLE_SETUP.md
+plan.md

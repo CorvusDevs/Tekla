@@ -1,0 +1,7 @@
+# Tekla — files allowed to be pushed to the PUBLIC GitHub repo.
+# Everything else is BLOCKED by the pre-push hook.
+
+.gitignore
+.push-allowed
+CHANGELOG.md
+docs/**
