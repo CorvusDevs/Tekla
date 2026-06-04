@@ -6,14 +6,14 @@
         <description>Tekla update feed</description>
         <language>en</language>
         <item>
-            <title>Tekla v1.5.4</title>
-            <pubDate>Mon, 25 May 2026 20:49:44 -0300</pubDate>
-            <sparkle:version>3</sparkle:version>
-            <sparkle:shortVersionString>1.5.4</sparkle:shortVersionString>
+            <title>Tekla v1.5.5</title>
+            <pubDate>Thu, 04 Jun 2026 20:18:39 -0300</pubDate>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>1.5.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/CorvusDevs/Tekla/releases/download/v1.5.4/Tekla.dmg"
-                       sparkle:edSignature="yusleZlsRC/FN6E9XlzNAcdgPUDsKyGnyD89wexvDtyoqCWQzPq4RbXzpbhb3Ocqh0zNCfGgXwi5E1hSLsNbCA=="
-                       length="10235073"
+            <enclosure url="https://github.com/CorvusDevs/Tekla/releases/download/v1.5.5/Tekla.dmg"
+                       sparkle:edSignature="/cQ5K79JDVztr+pjJ4QKOgVbYG3c71XRnbcVgNIE27u7+XFVv4W2rkSCGYDyJIPhJVfi4wIv7te4b2G6qi3QCg=="
+                       length="10235665"
                        type="application/octet-stream" />
         </item>
     </channel>
