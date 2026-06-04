@@ -3,8 +3,8 @@
   <h1>Tekla</h1>
   <p><strong>Swipe to type on macOS: a floating virtual keyboard with smart predictions</strong></p>
   <p>
-    <a href="https://apps.apple.com/app/id6740211838">
-      <img src="https://img.shields.io/badge/Download_on_the-App_Store-0D96F6?style=for-the-badge&logo=app-store&logoColor=white" alt="Download on the App Store">
+    <a href="https://corvusdevs.github.io/Tekla/">
+      <img src="https://img.shields.io/badge/Download_for-macOS-0A84FF?style=for-the-badge&logo=apple&logoColor=white" alt="Download for macOS">
     </a>
   </p>
   <p>
