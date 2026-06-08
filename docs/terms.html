@@ -14,6 +14,20 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <style>
+        /* ac-no-horizontal-scroll v1 */
+        html, body {
+            overflow-x: clip;
+            max-width: 100%;
+        }
+        img, video, iframe {
+            max-width: 100%;
+            height: auto;
+        }
+        pre, table {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
         :root {
             --bg: #0a0a0c;
             --surface: #141418;
