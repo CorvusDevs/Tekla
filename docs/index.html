@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>window.__corvusAppsPromise=fetch('https://corvusdevs.github.io/apps.json',{cache:'default'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekla | Swipe-to-Type Virtual Keyboard for macOS</title>
-    <meta name="description" content="Tekla is a swipe-to-type virtual keyboard for macOS. Type faster with swipe gestures, smart predictions, and support for 14 languages.">
+    <meta name="description" content="Tekla is a floating swipe-to-type virtual keyboard for macOS. Type faster with swipe gestures, smart predictions, and 14 languages. Fully offline, fully private. 14-day free trial, then a one-time $2.99.">
     <link rel="canonical" href="https://corvusdevs.github.io/Tekla/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://corvusdevs.github.io/Tekla/">
@@ -13,429 +14,248 @@
     <meta property="og:image" content="https://corvusdevs.github.io/Tekla/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="CorvusDevs">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Tekla | Swipe-to-Type Virtual Keyboard for macOS">
     <meta name="twitter:description" content="A floating virtual keyboard with swipe-to-type, smart predictions, and 14 language support. Fully offline, fully private.">
     <meta name="twitter:image" content="https://corvusdevs.github.io/Tekla/og-image.png">
     <meta name="robots" content="index, follow">
+    <meta name="keywords" content="virtual keyboard, swipe to type, glide typing, macos keyboard, accessibility, on-screen keyboard, word prediction, offline, apple silicon">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Tekla",
-        "operatingSystem": "macOS",
-        "applicationCategory": "UtilitiesApplication",
         "description": "Swipe-to-type virtual keyboard for macOS with smart predictions and 14 language support.",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock",
-            "description": "Free 14-day trial, then $4.99"
-        },
-        "author": {
-            "@type": "Organization",
-            "name": "CorvusDevs",
-            "url": "https://corvusdevs.github.io"
-        }
+        "operatingSystem": "macOS 14.0+",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": { "@type": "Offer", "price": "2.99", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "name": "Tekla", "description": "Free 14-day trial, then a one-time $2.99 purchase." },
+        "author": { "@type": "Organization", "name": "CorvusDevs", "url": "https://corvusdevs.github.io" }
     }
     </script>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <style>
         /* ac-no-horizontal-scroll v1 */
-        html, body {
-            overflow-x: clip;
-            max-width: 100%;
-        }
-        img, video, iframe {
-            max-width: 100%;
-            height: auto;
-        }
-        pre, table {
-            max-width: 100%;
-            overflow-x: auto;
-        }
+        html, body { overflow-x: clip; max-width: 100%; }
+        img, video, iframe { max-width: 100%; height: auto; }
+        pre, table { max-width: 100%; overflow-x: auto; }
 
         :root {
-            --bg: #0a0a0c;
-            --surface: #141418;
-            --surface-2: #1c1c22;
-            --border: #2a2a32;
-            --text: #e8e8ed;
-            --text-secondary: #8e8e93;
-            --accent: #0a84ff;
-            --accent-dim: #0a84ff20;
-            --accent-glow: #0a84ff40;
+            --bg: #0a0a0c; --surface: #141418; --surface-2: #1c1c22; --border: #2a2a32;
+            --text: #e8e8ed; --text-secondary: #8e8e93; --accent: #0a84ff; --accent-light: #4da3ff;
+            --accent-dim: rgba(10, 132, 255, 0.1);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            background: var(--bg); color: var(--text); line-height: 1.6;
+            -webkit-font-smoothing: antialiased; min-height: 100vh;
         }
-
-        /* ── Nav ── */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
         }
-
         .nav-brand {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-            text-decoration: none;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none;
+            letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
         }
-
-        .nav-brand img {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: block;
-        }
-
+        .nav-brand img { width: 34px; height: 34px; border-radius: 9px; display: block; }
         .nav-brand span { color: var(--accent); }
-
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { font-size: 14px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); }
 
-        /* ── Hero ── */
-        .hero {
-            text-align: center;
-            padding: 140px 24px 60px;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .hero-icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 28px;
-            margin-bottom: 32px;
-        }
-
-        h1 {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
-            margin-bottom: 16px;
-        }
-
-        h1 span { color: var(--accent); }
-
-        .tagline {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 520px;
-            margin: 0 auto 36px;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 36px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            background: var(--accent);
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .cta-button:hover {
-            filter: brightness(1.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
-        }
-
-        .cta-button svg { width: 20px; height: 20px; }
-
-        .platform-note {
-            margin-top: 12px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* ── Features ── */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
-        }
-
-        .feature-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-
-        .feature-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .feature-icon {
-            font-size: 28px;
-            margin-bottom: 14px;
-        }
-
-        .feature-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .feature-card p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* ── How it works ── */
-        .how-section {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
-            text-align: center;
-        }
-
-        .how-section h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            margin-bottom: 40px;
-        }
-
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            text-align: left;
-        }
-
-        .step {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .step-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--accent-dim);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .step-text h3 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .step-text p {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        /* ── Languages ── */
-        .languages-section {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
-            text-align: center;
-        }
-
-        .languages-section h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            margin-bottom: 32px;
-        }
-
-        .lang-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .lang-tag {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* ── Footer ── */
-        footer {
-            text-align: center;
-            padding: 32px 24px;
-            border-top: 1px solid var(--border);
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        footer a {
-            color: var(--text-secondary);
-            text-decoration: underline;
-        }
-
-        footer .legal-links {
-            margin-top: 8px;
-        }
-
-        footer .legal-links a {
-            margin: 0 10px;
-        }
-
-        /* ── Language picker ── */
-        .lang-picker {
-            position: relative;
-        }
-
+        /* Language picker (JS switcher, 文A glyph) */
+        .lang-picker { position: relative; flex-shrink: 0; }
         .lang-picker-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: border-color 0.2s, color 0.2s;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            padding: 6px 10px; color: var(--text); font-size: 13px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+            transition: border-color 0.2s;
         }
-
-        .lang-picker-btn:hover {
-            border-color: var(--accent);
-            color: var(--text);
-        }
-
+        .lang-picker-btn:hover { border-color: var(--accent); }
+        .lang-picker-btn .lang-glyph { font-weight: 700; letter-spacing: -1px; }
         .lang-dropdown {
-            display: none;
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 6px;
-            min-width: 160px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-            z-index: 200;
-            max-height: 320px;
-            overflow-y: auto;
+            display: none; position: absolute; top: calc(100% + 6px); right: 0; z-index: 300;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 180px; max-height: 60vh; overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
-
         .lang-dropdown.open { display: block; }
-
         .lang-dropdown button {
-            display: block;
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 14px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
+            display: block; width: 100%; text-align: left; background: none; border: none;
+            color: var(--text); font-size: 13px; padding: 8px 12px; border-radius: 8px; cursor: pointer;
             transition: background 0.15s, color 0.15s;
         }
+        .lang-dropdown button:hover { background: rgba(255,255,255,0.08); }
+        .lang-dropdown button.active { color: var(--accent); font-weight: 600; }
 
-        .lang-dropdown button:hover {
-            background: var(--surface-2);
-            color: var(--text);
+        .hero { text-align: center; padding: 150px 24px 0; }
+        .hero-icon { width: 150px; height: 150px; border-radius: 34px; display: block; margin: 0 auto 28px; box-shadow: 0 24px 60px rgba(10,132,255,0.22); }
+        .hero h1 {
+            font-size: 60px; font-weight: 800; letter-spacing: -2.5px; line-height: 1.06; margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+            max-width: 760px; margin-left: auto; margin-right: auto;
+        }
+        .hero h1 span { -webkit-text-fill-color: var(--accent); color: var(--accent); }
+        .hero .subtitle { font-size: 19px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 40px; font-weight: 400; line-height: 1.6; }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 10px; padding: 16px 36px;
+            background: var(--accent); color: #fff; font-size: 16px; font-weight: 600;
+            border-radius: 14px; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .hero-cta:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(10, 132, 249, 0.3); }
+        .hero-cta svg { width: 20px; height: 20px; }
+        .hero-free { display: block; margin-top: 14px; font-size: 14px; color: var(--text-secondary); }
+
+        .section-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); text-align: center; margin-bottom: 12px; }
+        .section-title { font-size: 44px; font-weight: 700; text-align: center; letter-spacing: -1.5px; margin-bottom: 56px; line-height: 1.1; }
+        .gradient-text { background: linear-gradient(135deg, #0a84ff 0%, #4da3ff 40%, #fff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .features { max-width: 960px; margin: 0 auto; padding: 130px 24px 40px; }
+        .features.tight { padding-top: 40px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .features-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; transition: border-color 0.3s, transform 0.3s; }
+        .feature-card:hover { border-color: rgba(10, 132, 255, 0.4); transform: translateY(-2px); }
+        .feature-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 0 20px rgba(10, 132, 255, 0.15); }
+        .feature-icon svg { width: 24px; height: 24px; }
+        .feature-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+        .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+        /* How it works */
+        .how { max-width: 720px; margin: 0 auto; padding: 40px 24px 40px; }
+        .steps { display: flex; flex-direction: column; gap: 20px; margin-top: 8px; }
+        .step { display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; }
+        .step-num { width: 40px; height: 40px; border-radius: 11px; background: var(--accent-dim); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+        .step-body h3 { font-size: 16px; font-weight: 600; margin: 2px 0 4px; }
+        .step-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+
+        .why { max-width: 960px; margin: 0 auto; padding: 40px 24px 40px; }
+        .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .why-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
+        .why-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+        .why-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+        .pricing { max-width: 440px; margin: 0 auto; padding: 40px 24px 60px; }
+        .pricing-card { background: var(--surface); border: 1px solid var(--accent); border-radius: 20px; padding: 40px 36px; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(10, 132, 255, 0.12), 0 0 0 1px rgba(10, 132, 255, 0.3); position: relative; }
+        .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: 12px; font-weight: 600; padding: 4px 16px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
+        .pricing-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .pricing-card .price { font-size: 44px; font-weight: 800; margin: 12px 0 4px; letter-spacing: -1px; }
+        .pricing-card .price-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+        .pricing-features { list-style: none; flex: 1; margin-bottom: 28px; }
+        .pricing-features li { font-size: 14px; color: var(--text-secondary); padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+        .pricing-features li::before { content: '\2713'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+        .pricing-btn { display: block; text-align: center; padding: 15px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; width: 100%; background: var(--accent); color: #fff; }
+        .pricing-btn:hover { filter: brightness(1.15); box-shadow: 0 8px 32px rgba(10, 132, 255, 0.3); }
+        .pricing-trial { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+        .pricing-trial:hover { color: var(--text); }
+
+        .req { text-align: center; padding: 0 24px 60px; font-size: 14px; color: var(--text-secondary); }
+
+        footer { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; border-top: 1px solid var(--border); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+        .footer-brand .logo { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .footer-brand .logo span { color: var(--accent); }
+        .footer-brand p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .footer-col h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 14px; }
+        .footer-col a { display: block; font-size: 14px; color: var(--text); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .footer-bottom p { font-size: 12px; color: var(--text-secondary); }
+        .footer-socials { display: flex; gap: 16px; }
+        .footer-socials a { color: var(--text-secondary); transition: color 0.2s; }
+        .footer-socials a:hover { color: var(--text); }
+        .footer-socials svg { width: 18px; height: 18px; }
+
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 900px) { .features-grid, .why-grid { grid-template-columns: repeat(2, 1fr); } .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; } }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 38px; letter-spacing: -1.5px; }
+            .hero .subtitle { font-size: 16px; } .hero { padding-top: 120px; }
+            .section-title { font-size: 30px; } .features { padding-top: 90px; }
+            .features-grid, .why-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; gap: 12px; align-items: flex-start; } nav { padding: 14px 16px; }
         }
 
-        .lang-dropdown button.active {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 640px) {
-            h1 { font-size: 34px; }
-            .tagline { font-size: 16px; }
-            .nav-links { display: none; }
-            .features { grid-template-columns: 1fr; }
-        }
-    
-        /* ac-footer-mobile v1 */
+        /* ac-nav-hamburger v1 */
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; padding: 8px; align-items: center; justify-content: center; }
+        .nav-toggle svg { display: block; }
         @media (max-width: 720px) {
-            body { min-height: 0; }
-            footer { padding-bottom: 24px; padding-top: 24px; }
+            .nav-toggle { display: inline-flex; }
+            .nav-links {
+                display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column;
+                background: rgba(10,10,12,0.95); border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border); padding: 4px 24px 8px; margin: 0; list-style: none; gap: 0;
+                -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+            }
+            .nav-links li { width: 100%; }
+            .nav-links li a { display: block; padding: 14px 0; border-top: 1px solid var(--border); }
+            .nav-links li:first-child a { border-top: 0; }
+            body.nav-open .nav-links { display: flex; }
+            body.nav-open .nav-toggle { background: var(--surface); }
         }
-</style>
+        /* ac-footer-mobile v1 */
+        @media (max-width: 720px) { body { min-height: 0; } footer { padding-bottom: 24px; padding-top: 24px; } }
+
+        /* page-carousel template v2 */
+        .corvus-carousel { max-width: 1200px; margin: 40px auto 40px; padding: 0 24px; }
+        .corvus-carousel__title { font-size: 32px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.5px; color: var(--text); }
+        .corvus-carousel__sub { font-size: 15px; color: var(--text-secondary); margin: 0 0 28px; }
+        .corvus-carousel__viewport { position: relative; }
+        .corvus-carousel__track {
+            display: flex; gap: 16px; overflow-x: auto; overflow-y: visible; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+            padding: 4px 4px 16px; margin: 0 -4px; scrollbar-width: thin; touch-action: pan-x; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+            --fade-l: 0px; --fade-r: 0px;
+            -webkit-mask-image: linear-gradient(to right, transparent 0, black var(--fade-l), black calc(100% - var(--fade-r)), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, black var(--fade-l), black calc(100% - var(--fade-r)), transparent 100%);
+            transition: -webkit-mask-image 0.25s, mask-image 0.25s;
+        }
+        .corvus-carousel__track::-webkit-scrollbar { height: 6px; }
+        .corvus-carousel__track::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .corvus-carousel__card { flex: 0 0 280px; scroll-snap-align: start; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        .corvus-carousel__card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .corvus-carousel__card-icon { width: 56px; height: 56px; border-radius: 12px; object-fit: contain; }
+        .corvus-carousel__card-name { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .corvus-carousel__card-tagline { font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .corvus-carousel__card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .corvus-carousel__card-cta { font-size: 13px; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; margin-top: auto; }
+        .corvus-carousel__nav { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: var(--accent); border: 1px solid var(--accent); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(10,132,255,0.35); transition: filter 0.2s, transform 0.2s; z-index: 2; }
+        .corvus-carousel__nav:hover { filter: brightness(1.1); transform: translateY(-50%) scale(1.05); }
+        .corvus-carousel__nav:disabled { background: var(--surface); color: var(--text-secondary); border-color: var(--border); box-shadow: none; cursor: default; filter: none; }
+        .corvus-carousel__nav svg { width: 20px; height: 20px; fill: none; }
+        .corvus-carousel__nav--prev { left: -18px; }
+        .corvus-carousel__nav--next { right: -18px; }
+        @media (max-width: 600px) { .corvus-carousel { margin-top: 24px; } .corvus-carousel__title { font-size: 26px; } .corvus-carousel__card { flex-basis: 240px; padding: 16px; } .corvus-carousel__nav { display: none; } }
+        @media (prefers-reduced-motion: reduce) { .corvus-carousel__track { scroll-behavior: auto; transition: none; } .corvus-carousel__card, .feature-card { transition: none; } }
+        .corvus-carousel:has(.corvus-carousel__track:empty) { display: none; }
+    </style>
 </head>
 <body>
     <nav>
-        <a href="#" class="nav-brand">
-            <img src="icon.png" alt="Tekla">
-            <span>Tekla</span>
-        </a>
-        <div class="nav-links">
-            <a href="#features" data-i18n="nav_features">Features</a>
-            <a href="#how" data-i18n="nav_how">How it works</a>
-            <a href="#languages" data-i18n="nav_languages">Languages</a>
-            <a href="mailto:corvusdevs@outlook.com" data-i18n="nav_contact">Contact</a>
+        <a href="#" class="nav-brand"><img src="icon.png" alt="Tekla" width="34" height="34">Tekla</a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="var o=document.body.classList.toggle('nav-open');this.setAttribute('aria-expanded',o);event.stopPropagation();"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#features" data-i18n="nav_features">Features</a></li>
+                <li><a href="#how" data-i18n="nav_how">How it works</a></li>
+                <li><a href="#why" data-i18n="nav_why">Why Tekla</a></li>
+                <li><a href="#pricing" data-i18n="nav_pricing">Pricing</a></li>
+            </ul>
             <div class="lang-picker">
-                <button class="lang-picker-btn" aria-label="Change language">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><ellipse cx="8" cy="8" rx="3" ry="6.5" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="8" x2="14.5" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
-                    <span class="lang-picker-label">EN</span>
-                </button>
+                <button class="lang-picker-btn" aria-label="Language" onclick="var m=this.parentNode.querySelector('.lang-dropdown');m.classList.toggle('open');event.stopPropagation();"><span class="lang-glyph">文A</span> <span class="lang-picker-label">EN</span></button>
                 <div class="lang-dropdown">
                     <button data-lang="en">English</button>
                     <button data-lang="es">Espa&#241;ol</button>
@@ -454,471 +274,1323 @@
                 </div>
             </div>
         </div>
+        <script>(function(){document.addEventListener("click",function(e){var n=document.querySelector("nav");if(document.body.classList.contains("nav-open")&&n&&!n.contains(e.target)){document.body.classList.remove("nav-open");var b=document.querySelector(".nav-toggle");if(b)b.setAttribute("aria-expanded","false");}});})();</script>
     </nav>
 
-    <!-- Hero -->
     <section class="hero">
         <img src="icon.png" alt="Tekla" class="hero-icon">
         <h1 data-i18n="hero_title">Swipe to type on <span>macOS</span></h1>
-        <p class="tagline" data-i18n="tagline">A floating virtual keyboard with swipe-to-type, smart predictions, and support for 14 languages. Fully offline. Fully private.</p>
-        <a class="cta-button" href="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg" data-i18n="cta">Download Free Trial</a>
-        <p class="platform-note" data-i18n="platform_note">Free for 14 days, then $4.99. Requires macOS 14 Sonoma or later.</p>
+        <p class="subtitle" data-i18n="tagline">A floating virtual keyboard with swipe-to-type, smart predictions, and support for 14 languages. Fully offline. Fully private.</p>
+        <a href="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg" class="hero-cta">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="cta">Download Free Trial</span>
+        </a>
+        <span class="hero-free" data-i18n="platform_note">Free for 14 days, then $2.99. Requires macOS 14 Sonoma or later.</span>
     </section>
 
-    <!-- Features -->
+    <!-- TODO: add app screenshots -->
+
     <section class="features" id="features">
-        <div class="feature-card">
-            <div class="feature-icon">👆</div>
-            <h3 data-i18n="feat1_title">Swipe-to-Type</h3>
-            <p data-i18n="feat1_desc">Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🧠</div>
-            <h3 data-i18n="feat2_title">Smart Predictions</h3>
-            <p data-i18n="feat2_desc">Context-aware predictions powered by bigram language models and frequency data. The more you type, the better it gets.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🌍</div>
-            <h3 data-i18n="feat3_title">14 Languages</h3>
-            <p data-i18n="feat3_desc">Full keyboard layouts and prediction data for English, Spanish, German, French, Portuguese, Italian, and 8 more languages.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🔒</div>
-            <h3 data-i18n="feat4_title">100% Offline</h3>
-            <p data-i18n="feat4_desc">No internet required. No data leaves your Mac. Your typing patterns, predictions, and preferences stay entirely on your device.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">⌨️</div>
-            <h3 data-i18n="feat5_title">Full Desktop Layout</h3>
-            <p data-i18n="feat5_desc">Complete Mac keyboard with function keys, modifier keys, and navigation cluster. Resizable floating window that works with any app.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3 data-i18n="feat6_title">Lightweight</h3>
-            <p data-i18n="feat6_desc">Near-zero CPU when idle. Event-driven architecture means it only works when you do. No background polling, no battery drain.</p>
-        </div>
-    </section>
-
-    <!-- Accessibility -->
-    <section class="how-section" id="accessibility">
-        <h2 data-i18n="a11y_title">Built for accessibility</h2>
-    </section>
-    <section class="features">
-        <div class="feature-card">
-            <div class="feature-icon">🦾</div>
-            <h3 data-i18n="a11y1_title">Motor Accessibility</h3>
-            <p data-i18n="a11y1_desc">Designed for users with limited hand mobility. Swipe typing lets you form words with a single continuous gesture instead of pressing individual keys. Less movement, less strain.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎯</div>
-            <h3 data-i18n="a11y2_title">Flexible Input</h3>
-            <p data-i18n="a11y2_desc">Works with trackpads, mice, styluses, head pointers, and any pointing device. The resizable floating window adapts to your setup. Make keys as large as you need.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">💬</div>
-            <h3 data-i18n="a11y3_title">Fewer Keystrokes</h3>
-            <p data-i18n="a11y3_desc">Smart predictions and next-word suggestions mean you type less to say more. Swipe a word, pick a prediction. Full sentences with minimal effort.</p>
+        <div class="section-label fade-in" data-i18n="sec_features">Features</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="sec_features_title">Type by swiping, right on your Mac</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13c2.5-3.5 5-3.5 7.5 0s5 3.5 7.5 0"/><circle cx="19" cy="15" r="1.6" fill="#0a84ff" stroke="none"/></svg></div>
+                <h3 data-i18n="feat1_title">Swipe-to-Type</h3>
+                <p data-i18n="feat1_desc">Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.9L18.7 9l-4.9 1.8L12 15.7l-1.8-4.9L5.3 9l4.9-1.1z"/><path d="M18.5 15l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z"/></svg></div>
+                <h3 data-i18n="feat2_title">Smart Predictions</h3>
+                <p data-i18n="feat2_desc">Context-aware predictions powered by bigram language models and frequency data. The more you type, the better it gets.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h9v6H7l-3 3v-3H3z"/><path d="M12 11h9v6h-2v3l-3-3h-4z"/></svg></div>
+                <h3 data-i18n="feat3_title">14 Languages</h3>
+                <p data-i18n="feat3_desc">Full keyboard layouts and prediction data for English, Spanish, German, French, Portuguese, Italian, and 8 more languages.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4-3 7.2-7 9-4-1.8-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                <h3 data-i18n="feat4_title">100% Offline</h3>
+                <p data-i18n="feat4_desc">No internet required. No data leaves your Mac. Your typing patterns, predictions, and preferences stay entirely on your device.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg></div>
+                <h3 data-i18n="feat5_title">Full Desktop Layout</h3>
+                <p data-i18n="feat5_desc">Complete Mac keyboard with function keys, modifier keys, and navigation cluster. Resizable floating window that works with any app.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
+                <h3 data-i18n="feat6_title">Lightweight</h3>
+                <p data-i18n="feat6_desc">Near-zero CPU when idle. Event-driven architecture means it only works when you do. No background polling, no battery drain.</p>
+            </div>
         </div>
     </section>
 
-    <!-- How it works -->
-    <section class="how-section" id="how">
-        <h2 data-i18n="how_title">How it works</h2>
+    <section class="features tight" id="accessibility">
+        <div class="section-label fade-in" data-i18n="sec_a11y">Accessibility</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="a11y_title">Built for accessibility</h2>
+        <div class="features-grid cols-3">
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M5 8h14"/><path d="M12 7v7"/><path d="M9 21l1.2-7"/><path d="M15 21l-1.2-7"/></svg></div>
+                <h3 data-i18n="a11y1_title">Motor Accessibility</h3>
+                <p data-i18n="a11y1_desc">Designed for users with limited hand mobility. Swipe typing lets you form words with a single continuous gesture instead of pressing individual keys.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l6 16 2.2-6.8L20 10z"/></svg></div>
+                <h3 data-i18n="a11y2_title">Flexible Input</h3>
+                <p data-i18n="a11y2_desc">Works with trackpads, mice, styluses, head pointers, and any pointing device. The resizable floating window adapts to your setup.</p>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                <h3 data-i18n="a11y3_title">Fewer Keystrokes</h3>
+                <p data-i18n="a11y3_desc">Smart predictions and next-word suggestions mean you type less to say more. Swipe a word, pick a prediction, full sentences with minimal effort.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how" id="how">
+        <div class="section-label fade-in" data-i18n="sec_how">How it works</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="how_title">How it works</h2>
         <div class="steps">
-            <div class="step">
+            <div class="step fade-in">
                 <div class="step-num">1</div>
-                <div class="step-text">
-                    <h3 data-i18n="step1_title">Open Tekla</h3>
-                    <p data-i18n="step1_desc">A floating keyboard appears on screen. Grant Accessibility permission so it can type into any app.</p>
-                </div>
+                <div class="step-body"><h3 data-i18n="step1_title">Open Tekla</h3><p data-i18n="step1_desc">A floating keyboard appears on screen. Grant Accessibility permission so it can type into any app.</p></div>
             </div>
-            <div class="step">
+            <div class="step fade-in">
                 <div class="step-num">2</div>
-                <div class="step-text">
-                    <h3 data-i18n="step2_title">Swipe or tap</h3>
-                    <p data-i18n="step2_desc">Slide across letters to swipe-type whole words, or tap individual keys like a regular keyboard.</p>
-                </div>
+                <div class="step-body"><h3 data-i18n="step2_title">Swipe or tap</h3><p data-i18n="step2_desc">Slide across letters to swipe-type whole words, or tap individual keys like a regular keyboard.</p></div>
             </div>
-            <div class="step">
+            <div class="step fade-in">
                 <div class="step-num">3</div>
-                <div class="step-text">
-                    <h3 data-i18n="step3_title">Pick predictions</h3>
-                    <p data-i18n="step3_desc">Smart predictions update in real-time as you type or swipe. Tap a prediction to insert it instantly.</p>
-                </div>
+                <div class="step-body"><h3 data-i18n="step3_title">Pick predictions</h3><p data-i18n="step3_desc">Smart predictions update in real-time as you type or swipe. Tap a prediction to insert it instantly.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- Languages -->
-    <section class="languages-section" id="languages">
-        <h2 data-i18n="lang_title">Supports 14 languages</h2>
-        <div class="lang-grid">
-            <span class="lang-tag">English</span>
-            <span class="lang-tag">Espa&#241;ol</span>
-            <span class="lang-tag">Deutsch</span>
-            <span class="lang-tag">Fran&#231;ais</span>
-            <span class="lang-tag">Portugu&#234;s</span>
-            <span class="lang-tag">Italiano</span>
-            <span class="lang-tag">Nederlands</span>
-            <span class="lang-tag">Svenska</span>
-            <span class="lang-tag">Norsk</span>
-            <span class="lang-tag">Dansk</span>
-            <span class="lang-tag">Suomi</span>
-            <span class="lang-tag">T&#252;rk&#231;e</span>
-            <span class="lang-tag">Polski</span>
-            <span class="lang-tag">&#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</span>
+    <section class="why" id="why">
+        <div class="section-label fade-in" data-i18n="sec_why">Why Tekla</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="sec_why_title">A keyboard that gets out of your way</h2>
+        <div class="why-grid">
+            <div class="why-card fade-in">
+                <h3 data-i18n="why1_t">Type without a keyboard</h3>
+                <p data-i18n="why1_d">A full floating keyboard on screen, driven by any pointing device. No hardware keyboard required, no extra desk space taken.</p>
+            </div>
+            <div class="why-card fade-in">
+                <h3 data-i18n="why2_t">Natively macOS</h3>
+                <p data-i18n="why2_d">Built for the Mac, not ported from somewhere else. A light, resizable window that floats above every app.</p>
+            </div>
+            <div class="why-card fade-in">
+                <h3 data-i18n="why3_t">Private by design</h3>
+                <p data-i18n="why3_d">No account, no telemetry, no network. Your typing, predictions, and language data never leave your Mac.</p>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <section class="pricing" id="pricing">
+        <div class="section-label fade-in" data-i18n="sec_pricing">Pricing</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="sec_pricing_title">One price. Every feature.</h2>
+        <div class="pricing-card fade-in">
+            <div class="pricing-badge" data-i18n="pricing_badge">14-Day Free Trial</div>
+            <h3>Tekla</h3>
+            <div class="price">$2.99</div>
+            <div class="price-sub" data-i18n="pricing_sub">One-time purchase, no subscription</div>
+            <ul class="pricing-features">
+                <li data-i18n="pf1">Every feature, no tiers</li>
+                <li data-i18n="pf2">Swipe-to-type and smart predictions</li>
+                <li data-i18n="pf3">14 languages, fully offline</li>
+                <li data-i18n="pf4">Full desktop keyboard layout</li>
+                <li data-i18n="pf5">Built for accessibility</li>
+                <li data-i18n="pf6">Free updates</li>
+            </ul>
+            <button class="pricing-btn" id="buy" onclick="openCheckout()" data-i18n="pricing_buy">Buy Tekla</button>
+            <a href="https://github.com/CorvusDevs/Tekla/releases/latest/download/Tekla.dmg" class="pricing-trial" data-i18n="pricing_trial">or download the 14-day free trial</a>
+        </div>
+    </section>
+
+    <p class="req" data-i18n="req">Requires macOS 14 Sonoma or later</p>
+
+    <section id="corvus-carousel" class="corvus-carousel" aria-labelledby="corvus-carousel-title" data-current-slug="Tekla">
+        <h2 id="corvus-carousel-title" class="corvus-carousel__title" data-i18n="carousel_title">More from CorvusDevs</h2>
+        <p class="corvus-carousel__sub" data-i18n="carousel_sub">Privacy-first apps for macOS, iOS, and Safari.</p>
+        <div class="corvus-carousel__viewport">
+            <button class="corvus-carousel__nav corvus-carousel__nav--prev" type="button" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg></button>
+            <div class="corvus-carousel__track" role="list"></div>
+            <button class="corvus-carousel__nav corvus-carousel__nav--next" type="button" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+    </section>
+
     <footer>
-        &copy; 2026 CorvusDevs. <span data-i18n="footer_rights">All rights reserved.</span> <span data-i18n="footer_payments">Payments processed by</span> <a href="https://paddle.com">Paddle</a>.
-        <div class="legal-links">
-            <a href="terms" data-i18n="nav_terms">Terms of Service</a>
-            <a href="privacy" data-i18n="nav_privacy">Privacy Policy</a>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo">Tekla</div>
+                <p data-i18n="foot_tagline">Swipe-to-type virtual keyboard for macOS.</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="foot_product">Product</h4>
+                <a href="#features" data-i18n="nav_features">Features</a>
+                <a href="#why" data-i18n="nav_why">Why Tekla</a>
+                <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="foot_support">Support</h4>
+                <a href="mailto:corvusdevs@outlook.com" data-i18n="foot_contact">Contact</a>
+                <a href="https://github.com/CorvusDevs/Tekla/issues" data-i18n="foot_bug">Report a Bug</a>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="foot_legal">Legal</h4>
+                <a href="privacy.html" data-i18n="foot_privacy">Privacy</a>
+                <a href="terms.html" data-i18n="foot_terms">Terms</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CorvusDevs. <span data-i18n="footer_rights">All rights reserved.</span> <span data-i18n="footer_payments">Payments processed by</span> <a href="https://paddle.com" style="color:inherit;text-decoration:underline;">Paddle</a>.</p>
+            <div class="footer-socials">
+                <a href="https://github.com/CorvusDevs" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+            </div>
         </div>
     </footer>
 
-    <!-- Paddle Checkout -->
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script>
+        Paddle.Environment.set('production');
         Paddle.Initialize({ token: "live_56066aaf7cbe507b874f560dbcd" });
-
         function openCheckout() {
             Paddle.Checkout.open({
-                items: [{ priceId: "pri_01knk6sd6sxsxg1q5we0rqwb0j", quantity: 1 }],
-                settings: {
-                    successUrl: "https://corvusdevs.github.io/Tekla/success",
-                },
+                items: [{ priceId: "pri_01kxe8y7sjx2tjqf19jcbrekas", quantity: 1 }],
+                settings: { successUrl: "https://corvusdevs.github.io/Tekla/success" }
             });
         }
+        (function(){ var els=document.querySelectorAll('.fade-in'); if(!('IntersectionObserver' in window)){ els.forEach(function(el){el.classList.add('visible');}); return; } var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} }); },{threshold:0.12}); els.forEach(function(el){io.observe(el);}); })();
+    </script>
+
+    <script>
+    (function(){
+        var APPS='https://corvusdevs.github.io/apps.json';
+        var FALLBACK=[
+            {slug:'CorvusDisplay',name:'Corvus Display',url:'https://corvusdevs.github.io/CorvusDisplay/',icon:'https://corvusdevs.github.io/icons/corvus-display.png',tagline:'macOS Display Control',description:'Brightness, color, and resolution control for every Mac display.'},
+            {slug:'Corvus-Player',name:'Corvus Player',url:'https://corvusdevs.github.io/Corvus-Player/',icon:'https://corvusdevs.github.io/icons/corvus-player.png',tagline:'macOS Media Player',description:'The most powerful media player for macOS.'},
+            {slug:'Ekual',name:'Ekual',url:'https://corvusdevs.github.io/Ekual/',icon:'https://corvusdevs.github.io/icons/ekual.png',tagline:'macOS Loudness Equalization',description:'Automatic loudness equalization for macOS.'},
+            {slug:'Corvus-RSS-Reader-For-Safari',name:'Corvus RSS Reader',url:'https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/',icon:'https://corvusdevs.github.io/icons/corvus-rss.png',tagline:'Safari RSS Extension',description:'Privacy-first RSS reader for Safari.'}
+        ];
+        var section=document.getElementById('corvus-carousel'); if(!section) return;
+        var track=section.querySelector('.corvus-carousel__track'); if(!track) return;
+        function slug(){ var e=section.getAttribute('data-current-slug'); if(e) return e.toLowerCase(); var s=location.pathname.split('/').filter(Boolean); return s.length?s[0].toLowerCase():''; }
+        function card(app){ var a=document.createElement('a'); a.className='corvus-carousel__card'; a.href=app.url; a.setAttribute('role','listitem');
+            var img=document.createElement('img'); img.className='corvus-carousel__card-icon'; img.src=app.icon; img.alt=''; img.loading='lazy'; img.width=56; img.height=56;
+            var tag=document.createElement('div'); tag.className='corvus-carousel__card-tagline'; tag.textContent=app.tagline||'';
+            var name=document.createElement('div'); name.className='corvus-carousel__card-name'; name.textContent=app.name;
+            var desc=document.createElement('p'); desc.className='corvus-carousel__card-desc'; desc.textContent=app.description||'';
+            var cta=document.createElement('span'); cta.className='corvus-carousel__card-cta'; cta.textContent='Learn more →';
+            a.append(img,tag,name,desc,cta); return a; }
+        function render(list){ var cur=slug(); var f=list.filter(function(a){return (a.slug||'').toLowerCase()!==cur;});
+            if(!f.length){section.style.display='none';return;} f.sort(function(a,b){return (b.featured?1:0)-(a.featured?1:0);});
+            var frag=document.createDocumentFragment(); f.forEach(function(a){frag.appendChild(card(a));}); track.appendChild(frag); wire(); }
+        function wire(){ var p=section.querySelector('.corvus-carousel__nav--prev'),n=section.querySelector('.corvus-carousel__nav--next'); if(!p||!n) return; var F=80; var step=function(){return Math.max(track.clientWidth*0.8,296);};
+            p.addEventListener('click',function(){track.scrollBy({left:-step(),behavior:'smooth'});}); n.addEventListener('click',function(){track.scrollBy({left:step(),behavior:'smooth'});});
+            function sync(){ var s=track.scrollLeft<=4, e=track.scrollLeft+track.clientWidth>=track.scrollWidth-4; p.disabled=s; n.disabled=e; track.style.setProperty('--fade-l',s?'0px':F+'px'); track.style.setProperty('--fade-r',e?'0px':F+'px'); }
+            track.addEventListener('scroll',sync,{passive:true}); window.addEventListener('resize',sync,{passive:true}); sync(); }
+        (window.__corvusAppsPromise||fetch(APPS,{cache:'default'}).then(function(r){return r.ok?r.json():null;})).then(function(data){
+            var apps=(data&&Array.isArray(data.apps))?data.apps:[]; render(apps.length?apps:FALLBACK);
+        }).catch(function(){ render(FALLBACK); });
+    })();
     </script>
 
     <!-- Localization -->
     <script>
     const T = {
         en: {
-            nav_features: "Features", nav_how: "How it works", nav_languages: "Languages", nav_contact: "Contact",
-            nav_terms: "Terms of Service", nav_privacy: "Privacy Policy",
-            hero_title: 'Swipe to type on <span>macOS</span>',
+            nav_features: "Features",
+            nav_how: "How it works",
+            nav_languages: "Languages",
+            nav_contact: "Contact",
+            nav_terms: "Terms of Service",
+            nav_privacy: "Privacy Policy",
+            hero_title: "Swipe to type on <span>macOS</span>",
             tagline: "A floating virtual keyboard with swipe-to-type, smart predictions, and support for 14 languages. Fully offline. Fully private.",
-            cta: "Download Free Trial", platform_note: "Free for 14 days, then $4.99. Requires macOS 14 Sonoma or later.",
-            feat1_title: "Swipe-to-Type", feat1_desc: "Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.",
-            feat2_title: "Smart Predictions", feat2_desc: "Context-aware predictions powered by bigram language models and frequency data. The more you type, the better it gets.",
-            feat3_title: "14 Languages", feat3_desc: "Full keyboard layouts and prediction data for English, Spanish, German, French, Portuguese, Italian, and 8 more languages.",
-            feat4_title: "100% Offline", feat4_desc: "No internet required. No data leaves your Mac. Your typing patterns, predictions, and preferences stay entirely on your device.",
-            feat5_title: "Full Desktop Layout", feat5_desc: "Complete Mac keyboard with function keys, modifier keys, and navigation cluster. Resizable floating window that works with any app.",
-            feat6_title: "Lightweight", feat6_desc: "Near-zero CPU when idle. Event-driven architecture means it only works when you do. No background polling, no battery drain.",
+            cta: "Download Free Trial",
+            platform_note: "Free for 14 days, then $2.99. Requires macOS 14 Sonoma or later.",
+            feat1_title: "Swipe-to-Type",
+            feat1_desc: "Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.",
+            feat2_title: "Smart Predictions",
+            feat2_desc: "Context-aware predictions powered by bigram language models and frequency data. The more you type, the better it gets.",
+            feat3_title: "14 Languages",
+            feat3_desc: "Full keyboard layouts and prediction data for English, Spanish, German, French, Portuguese, Italian, and 8 more languages.",
+            feat4_title: "100% Offline",
+            feat4_desc: "No internet required. No data leaves your Mac. Your typing patterns, predictions, and preferences stay entirely on your device.",
+            feat5_title: "Full Desktop Layout",
+            feat5_desc: "Complete Mac keyboard with function keys, modifier keys, and navigation cluster. Resizable floating window that works with any app.",
+            feat6_title: "Lightweight",
+            feat6_desc: "Near-zero CPU when idle. Event-driven architecture means it only works when you do. No background polling, no battery drain.",
             how_title: "How it works",
-            step1_title: "Open Tekla", step1_desc: "A floating keyboard appears on screen. Grant Accessibility permission so it can type into any app.",
-            step2_title: "Swipe or tap", step2_desc: "Slide across letters to swipe-type whole words, or tap individual keys like a regular keyboard.",
-            step3_title: "Pick predictions", step3_desc: "Smart predictions update in real-time as you type or swipe. Tap a prediction to insert it instantly.",
+            step1_title: "Open Tekla",
+            step1_desc: "A floating keyboard appears on screen. Grant Accessibility permission so it can type into any app.",
+            step2_title: "Swipe or tap",
+            step2_desc: "Slide across letters to swipe-type whole words, or tap individual keys like a regular keyboard.",
+            step3_title: "Pick predictions",
+            step3_desc: "Smart predictions update in real-time as you type or swipe. Tap a prediction to insert it instantly.",
             lang_title: "Supports 14 languages",
             a11y_title: "Built for accessibility",
-            a11y1_title: "Motor Accessibility", a11y1_desc: "Designed for users with limited hand mobility. Swipe typing lets you form words with a single continuous gesture instead of pressing individual keys, less movement, less strain.",
-            a11y2_title: "Flexible Input", a11y2_desc: "Works with trackpads, mice, styluses, head pointers, and any pointing device. The resizable floating window adapts to your setup, make keys as large as you need.",
-            a11y3_title: "Fewer Keystrokes", a11y3_desc: "Smart predictions and next-word suggestions mean you type less to say more. Swipe a word, pick a prediction, full sentences with minimal effort.",
-            footer_rights: "All rights reserved.", footer_payments: "Payments processed by",
+            a11y1_title: "Motor Accessibility",
+            a11y1_desc: "Designed for users with limited hand mobility. Swipe typing lets you form words with a single continuous gesture instead of pressing individual keys, less movement, less strain.",
+            a11y2_title: "Flexible Input",
+            a11y2_desc: "Works with trackpads, mice, styluses, head pointers, and any pointing device. The resizable floating window adapts to your setup, make keys as large as you need.",
+            a11y3_title: "Fewer Keystrokes",
+            a11y3_desc: "Smart predictions and next-word suggestions mean you type less to say more. Swipe a word, pick a prediction, full sentences with minimal effort.",
+            footer_rights: "All rights reserved.",
+            footer_payments: "Payments processed by",
+            nav_why: "Why Tekla",
+            nav_pricing: "Pricing",
+            sec_features: "Features",
+            sec_features_title: "Type by swiping, right on your Mac",
+            sec_a11y: "Accessibility",
+            sec_how: "How it works",
+            sec_why: "Why Tekla",
+            sec_why_title: "A keyboard that gets out of your way",
+            why1_t: "Type without a keyboard",
+            why1_d: "A full floating keyboard on screen, driven by any pointing device. No hardware keyboard required, no extra desk space taken.",
+            why2_t: "Natively macOS",
+            why2_d: "Built for the Mac, not ported from somewhere else. A light, resizable window that floats above every app.",
+            why3_t: "Private by design",
+            why3_d: "No account, no telemetry, no network. Your typing, predictions, and language data never leave your Mac.",
+            sec_pricing: "Pricing",
+            sec_pricing_title: "One price. Every feature.",
+            pricing_badge: "14-Day Free Trial",
+            pricing_sub: "One-time purchase, no subscription",
+            pf1: "Every feature, no tiers",
+            pf2: "Swipe-to-type and smart predictions",
+            pf3: "14 languages, fully offline",
+            pf4: "Full desktop keyboard layout",
+            pf5: "Built for accessibility",
+            pf6: "Free updates",
+            pricing_buy: "Buy Tekla",
+            pricing_trial: "or download the 14-day free trial",
+            req: "Requires macOS 14 Sonoma or later",
+            carousel_title: "More from CorvusDevs",
+            carousel_sub: "Privacy-first apps for macOS, iOS, and Safari.",
+            foot_tagline: "Swipe-to-type virtual keyboard for macOS.",
+            foot_product: "Product",
+            foot_support: "Support",
+            foot_legal: "Legal",
+            foot_contact: "Contact",
+            foot_bug: "Report a Bug",
+            foot_privacy: "Privacy",
+            foot_terms: "Terms"
         },
         es: {
-            nav_features: "Funciones", nav_how: "C\u00f3mo funciona", nav_languages: "Idiomas", nav_contact: "Contacto",
-            nav_terms: "Condiciones de uso", nav_privacy: "Pol\u00edtica de privacidad",
-            hero_title: 'Escribe deslizando en <span>macOS</span>',
+            nav_features: "Funciones",
+            nav_how: "C\u00f3mo funciona",
+            nav_languages: "Idiomas",
+            nav_contact: "Contacto",
+            nav_terms: "Condiciones de uso",
+            nav_privacy: "Pol\u00edtica de privacidad",
+            hero_title: "Escribe deslizando en <span>macOS</span>",
             tagline: "Un teclado virtual flotante con escritura por deslizamiento, predicciones inteligentes y soporte para 14 idiomas. Sin conexi\u00f3n. Totalmente privado.",
-            cta: "Descargar prueba gratuita", platform_note: "Gratis durante 14 días, luego $4.99. Requiere macOS 14 Sonoma o posterior.",
-            feat1_title: "Escritura por deslizamiento", feat1_desc: "Desliza el dedo o el puntero sobre las letras para escribir palabras al instante. Puntuaci\u00f3n geom\u00e9trica y clasificaci\u00f3n bayesiana encuentran la palabra correcta.",
-            feat2_title: "Predicciones inteligentes", feat2_desc: "Predicciones contextuales impulsadas por modelos de bigramas y datos de frecuencia. Cuanto m\u00e1s escribes, mejor funciona.",
-            feat3_title: "14 idiomas", feat3_desc: "Distribuciones de teclado completas y datos de predicci\u00f3n para espa\u00f1ol, ingl\u00e9s, alem\u00e1n, franc\u00e9s, portugu\u00e9s, italiano y 8 idiomas m\u00e1s.",
-            feat4_title: "100% sin conexi\u00f3n", feat4_desc: "No requiere internet. Ning\u00fan dato sale de tu Mac. Tus patrones de escritura y preferencias permanecen en tu dispositivo.",
-            feat5_title: "Teclado completo", feat5_desc: "Teclado Mac completo con teclas de funci\u00f3n, modificadores y cl\u00faster de navegaci\u00f3n. Ventana flotante redimensionable que funciona con cualquier app.",
-            feat6_title: "Ligero", feat6_desc: "CPU casi nulo en reposo. Arquitectura basada en eventos: solo trabaja cuando t\u00fa lo haces. Sin consumo de bater\u00eda.",
+            cta: "Descargar prueba gratuita",
+            platform_note: "Gratis durante 14 d\u00edas, luego $2.99. Requiere macOS 14 Sonoma o posterior.",
+            feat1_title: "Escritura por deslizamiento",
+            feat1_desc: "Desliza el dedo o el puntero sobre las letras para escribir palabras al instante. Puntuaci\u00f3n geom\u00e9trica y clasificaci\u00f3n bayesiana encuentran la palabra correcta.",
+            feat2_title: "Predicciones inteligentes",
+            feat2_desc: "Predicciones contextuales impulsadas por modelos de bigramas y datos de frecuencia. Cuanto m\u00e1s escribes, mejor funciona.",
+            feat3_title: "14 idiomas",
+            feat3_desc: "Distribuciones de teclado completas y datos de predicci\u00f3n para espa\u00f1ol, ingl\u00e9s, alem\u00e1n, franc\u00e9s, portugu\u00e9s, italiano y 8 idiomas m\u00e1s.",
+            feat4_title: "100% sin conexi\u00f3n",
+            feat4_desc: "No requiere internet. Ning\u00fan dato sale de tu Mac. Tus patrones de escritura y preferencias permanecen en tu dispositivo.",
+            feat5_title: "Teclado completo",
+            feat5_desc: "Teclado Mac completo con teclas de funci\u00f3n, modificadores y cl\u00faster de navegaci\u00f3n. Ventana flotante redimensionable que funciona con cualquier app.",
+            feat6_title: "Ligero",
+            feat6_desc: "CPU casi nulo en reposo. Arquitectura basada en eventos: solo trabaja cuando t\u00fa lo haces. Sin consumo de bater\u00eda.",
             how_title: "C\u00f3mo funciona",
-            step1_title: "Abre Tekla", step1_desc: "Aparece un teclado flotante en pantalla. Concede permiso de Accesibilidad para que pueda escribir en cualquier app.",
-            step2_title: "Desliza o toca", step2_desc: "Desliza sobre las letras para escribir palabras o toca teclas individuales como un teclado normal.",
-            step3_title: "Elige predicciones", step3_desc: "Las predicciones se actualizan en tiempo real mientras escribes o deslizas. Toca una predicci\u00f3n para insertarla.",
+            step1_title: "Abre Tekla",
+            step1_desc: "Aparece un teclado flotante en pantalla. Concede permiso de Accesibilidad para que pueda escribir en cualquier app.",
+            step2_title: "Desliza o toca",
+            step2_desc: "Desliza sobre las letras para escribir palabras o toca teclas individuales como un teclado normal.",
+            step3_title: "Elige predicciones",
+            step3_desc: "Las predicciones se actualizan en tiempo real mientras escribes o deslizas. Toca una predicci\u00f3n para insertarla.",
             lang_title: "Soporta 14 idiomas",
             a11y_title: "Dise\u00f1ado para la accesibilidad",
-            a11y1_title: "Accesibilidad motora", a11y1_desc: "Dise\u00f1ado para usuarios con movilidad reducida en las manos. La escritura por deslizamiento permite formar palabras con un solo gesto continuo, menos movimiento, menos esfuerzo.",
-            a11y2_title: "Entrada flexible", a11y2_desc: "Funciona con trackpads, ratones, l\u00e1pices \u00f3pticos, punteros de cabeza y cualquier dispositivo se\u00f1alador. La ventana flotante se adapta a tu configuraci\u00f3n.",
-            a11y3_title: "Menos pulsaciones", a11y3_desc: "Las predicciones inteligentes y las sugerencias de siguiente palabra significan que escribes menos para decir m\u00e1s. Desliza una palabra, elige una predicci\u00f3n, frases completas con m\u00ednimo esfuerzo.",
-            footer_rights: "Todos los derechos reservados.", footer_payments: "Pagos procesados por",
+            a11y1_title: "Accesibilidad motora",
+            a11y1_desc: "Dise\u00f1ado para usuarios con movilidad reducida en las manos. La escritura por deslizamiento permite formar palabras con un solo gesto continuo, menos movimiento, menos esfuerzo.",
+            a11y2_title: "Entrada flexible",
+            a11y2_desc: "Funciona con trackpads, ratones, l\u00e1pices \u00f3pticos, punteros de cabeza y cualquier dispositivo se\u00f1alador. La ventana flotante se adapta a tu configuraci\u00f3n.",
+            a11y3_title: "Menos pulsaciones",
+            a11y3_desc: "Las predicciones inteligentes y las sugerencias de siguiente palabra significan que escribes menos para decir m\u00e1s. Desliza una palabra, elige una predicci\u00f3n, frases completas con m\u00ednimo esfuerzo.",
+            footer_rights: "Todos los derechos reservados.",
+            footer_payments: "Pagos procesados por",
+            nav_why: "Por qu\u00e9 Tekla",
+            nav_pricing: "Precio",
+            sec_features: "Funciones",
+            sec_features_title: "Escribe deslizando, en tu propio Mac",
+            sec_a11y: "Accesibilidad",
+            sec_how: "C\u00f3mo funciona",
+            sec_why: "Por qu\u00e9 Tekla",
+            sec_why_title: "Un teclado que no te estorba",
+            why1_t: "Escribe sin teclado",
+            why1_d: "Un teclado flotante completo en pantalla, controlado por cualquier dispositivo se\u00f1alador. Sin teclado f\u00edsico, sin ocupar espacio en el escritorio.",
+            why2_t: "Nativo de macOS",
+            why2_d: "Creado para el Mac, no adaptado de otra plataforma. Una ventana ligera y redimensionable que flota sobre cualquier app.",
+            why3_t: "Privado por dise\u00f1o",
+            why3_d: "Sin cuenta, sin telemetr\u00eda, sin red. Tu escritura, predicciones y datos de idioma nunca salen de tu Mac.",
+            sec_pricing: "Precio",
+            sec_pricing_title: "Un precio. Todas las funciones.",
+            pricing_badge: "Prueba gratuita de 14 d\u00edas",
+            pricing_sub: "Compra \u00fanica, sin suscripci\u00f3n",
+            pf1: "Todas las funciones, sin niveles",
+            pf2: "Escritura por deslizamiento y predicciones inteligentes",
+            pf3: "14 idiomas, totalmente sin conexi\u00f3n",
+            pf4: "Teclado de escritorio completo",
+            pf5: "Dise\u00f1ado para la accesibilidad",
+            pf6: "Actualizaciones gratuitas",
+            pricing_buy: "Comprar Tekla",
+            pricing_trial: "o descarga la prueba gratuita de 14 d\u00edas",
+            req: "Requiere macOS 14 Sonoma o posterior",
+            carousel_title: "M\u00e1s de CorvusDevs",
+            carousel_sub: "Apps que priorizan la privacidad para macOS, iOS y Safari.",
+            foot_tagline: "Teclado virtual con escritura por deslizamiento para macOS.",
+            foot_product: "Producto",
+            foot_support: "Soporte",
+            foot_legal: "Legal",
+            foot_contact: "Contacto",
+            foot_bug: "Informar de un error",
+            foot_privacy: "Privacidad",
+            foot_terms: "Condiciones"
         },
         de: {
-            nav_features: "Funktionen", nav_how: "So funktioniert's", nav_languages: "Sprachen", nav_contact: "Kontakt",
-            nav_terms: "Nutzungsbedingungen", nav_privacy: "Datenschutz",
-            hero_title: 'Wischen zum Tippen auf <span>macOS</span>',
+            nav_features: "Funktionen",
+            nav_how: "So funktioniert's",
+            nav_languages: "Sprachen",
+            nav_contact: "Kontakt",
+            nav_terms: "Nutzungsbedingungen",
+            nav_privacy: "Datenschutz",
+            hero_title: "Wischen zum Tippen auf <span>macOS</span>",
             tagline: "Eine schwebende virtuelle Tastatur mit Wisch-Eingabe, intelligenten Vorhersagen und Unterst\u00fctzung f\u00fcr 14 Sprachen. Komplett offline. Komplett privat.",
-            cta: "Kostenlose Testversion laden", platform_note: "14 Tage kostenlos, dann 4,99 $. Erfordert macOS 14 Sonoma oder neuer.",
-            feat1_title: "Wisch-Eingabe", feat1_desc: "Gleite mit dem Finger oder Zeiger \u00fcber Buchstaben, um W\u00f6rter sofort zu tippen. Geometrische Bewertung und Bayes'sche Rangfolge finden das richtige Wort.",
-            feat2_title: "Intelligente Vorhersagen", feat2_desc: "Kontextbewusste Vorhersagen basierend auf Bigramm-Sprachmodellen und Frequenzdaten. Je mehr du tippst, desto besser wird es.",
-            feat3_title: "14 Sprachen", feat3_desc: "Vollst\u00e4ndige Tastaturlayouts und Vorhersagedaten f\u00fcr Deutsch, Englisch, Spanisch, Franz\u00f6sisch, Portugiesisch, Italienisch und 8 weitere Sprachen.",
-            feat4_title: "100% offline", feat4_desc: "Kein Internet erforderlich. Keine Daten verlassen deinen Mac. Deine Tippmuster und Einstellungen bleiben auf deinem Ger\u00e4t.",
-            feat5_title: "Volles Desktop-Layout", feat5_desc: "Vollst\u00e4ndige Mac-Tastatur mit Funktionstasten, Modifikatoren und Navigationscluster. Gr\u00f6\u00dfenverstellbares schwebendes Fenster.",
-            feat6_title: "Leichtgewichtig", feat6_desc: "Nahezu keine CPU-Last im Leerlauf. Ereignisgesteuerte Architektur, arbeitet nur, wenn du es tust.",
+            cta: "Kostenlose Testversion laden",
+            platform_note: "14 Tage kostenlos, dann 2,99 $. Erfordert macOS 14 Sonoma oder neuer.",
+            feat1_title: "Wisch-Eingabe",
+            feat1_desc: "Gleite mit dem Finger oder Zeiger \u00fcber Buchstaben, um W\u00f6rter sofort zu tippen. Geometrische Bewertung und Bayes'sche Rangfolge finden das richtige Wort.",
+            feat2_title: "Intelligente Vorhersagen",
+            feat2_desc: "Kontextbewusste Vorhersagen basierend auf Bigramm-Sprachmodellen und Frequenzdaten. Je mehr du tippst, desto besser wird es.",
+            feat3_title: "14 Sprachen",
+            feat3_desc: "Vollst\u00e4ndige Tastaturlayouts und Vorhersagedaten f\u00fcr Deutsch, Englisch, Spanisch, Franz\u00f6sisch, Portugiesisch, Italienisch und 8 weitere Sprachen.",
+            feat4_title: "100% offline",
+            feat4_desc: "Kein Internet erforderlich. Keine Daten verlassen deinen Mac. Deine Tippmuster und Einstellungen bleiben auf deinem Ger\u00e4t.",
+            feat5_title: "Volles Desktop-Layout",
+            feat5_desc: "Vollst\u00e4ndige Mac-Tastatur mit Funktionstasten, Modifikatoren und Navigationscluster. Gr\u00f6\u00dfenverstellbares schwebendes Fenster.",
+            feat6_title: "Leichtgewichtig",
+            feat6_desc: "Nahezu keine CPU-Last im Leerlauf. Ereignisgesteuerte Architektur, arbeitet nur, wenn du es tust.",
             how_title: "So funktioniert's",
-            step1_title: "Tekla \u00f6ffnen", step1_desc: "Eine schwebende Tastatur erscheint. Gew\u00e4hre Bedienungshilfen-Zugriff, damit sie in jede App tippen kann.",
-            step2_title: "Wischen oder tippen", step2_desc: "Gleite \u00fcber Buchstaben f\u00fcr Wisch-Eingabe oder tippe einzelne Tasten wie gewohnt.",
-            step3_title: "Vorhersagen w\u00e4hlen", step3_desc: "Intelligente Vorhersagen aktualisieren sich in Echtzeit. Tippe auf eine Vorhersage, um sie einzuf\u00fcgen.",
+            step1_title: "Tekla \u00f6ffnen",
+            step1_desc: "Eine schwebende Tastatur erscheint. Gew\u00e4hre Bedienungshilfen-Zugriff, damit sie in jede App tippen kann.",
+            step2_title: "Wischen oder tippen",
+            step2_desc: "Gleite \u00fcber Buchstaben f\u00fcr Wisch-Eingabe oder tippe einzelne Tasten wie gewohnt.",
+            step3_title: "Vorhersagen w\u00e4hlen",
+            step3_desc: "Intelligente Vorhersagen aktualisieren sich in Echtzeit. Tippe auf eine Vorhersage, um sie einzuf\u00fcgen.",
             lang_title: "Unterst\u00fctzt 14 Sprachen",
             a11y_title: "F\u00fcr Barrierefreiheit entwickelt",
-            a11y1_title: "Motorische Barrierefreiheit", a11y1_desc: "Entwickelt f\u00fcr Nutzer mit eingeschr\u00e4nkter Handmobilit\u00e4t. Wisch-Eingabe erm\u00f6glicht W\u00f6rter mit einer einzigen durchgehenden Geste, weniger Bewegung, weniger Belastung.",
-            a11y2_title: "Flexible Eingabe", a11y2_desc: "Funktioniert mit Trackpads, M\u00e4usen, Stiften, Kopfzeigern und jedem Zeigeger\u00e4t. Das skalierbare schwebende Fenster passt sich deinem Setup an.",
-            a11y3_title: "Weniger Tastenanschl\u00e4ge", a11y3_desc: "Intelligente Vorhersagen und N\u00e4chstes-Wort-Vorschl\u00e4ge, weniger tippen, mehr sagen. Wische ein Wort, w\u00e4hle eine Vorhersage, ganze S\u00e4tze mit minimalem Aufwand.",
-            footer_rights: "Alle Rechte vorbehalten.", footer_payments: "Zahlungen verarbeitet von",
+            a11y1_title: "Motorische Barrierefreiheit",
+            a11y1_desc: "Entwickelt f\u00fcr Nutzer mit eingeschr\u00e4nkter Handmobilit\u00e4t. Wisch-Eingabe erm\u00f6glicht W\u00f6rter mit einer einzigen durchgehenden Geste, weniger Bewegung, weniger Belastung.",
+            a11y2_title: "Flexible Eingabe",
+            a11y2_desc: "Funktioniert mit Trackpads, M\u00e4usen, Stiften, Kopfzeigern und jedem Zeigeger\u00e4t. Das skalierbare schwebende Fenster passt sich deinem Setup an.",
+            a11y3_title: "Weniger Tastenanschl\u00e4ge",
+            a11y3_desc: "Intelligente Vorhersagen und N\u00e4chstes-Wort-Vorschl\u00e4ge, weniger tippen, mehr sagen. Wische ein Wort, w\u00e4hle eine Vorhersage, ganze S\u00e4tze mit minimalem Aufwand.",
+            footer_rights: "Alle Rechte vorbehalten.",
+            footer_payments: "Zahlungen verarbeitet von",
+            nav_why: "Warum Tekla",
+            nav_pricing: "Preis",
+            sec_features: "Funktionen",
+            sec_features_title: "Tippen durch Wischen, direkt auf dem Mac",
+            sec_a11y: "Barrierefreiheit",
+            sec_how: "So funktioniert's",
+            sec_why: "Warum Tekla",
+            sec_why_title: "Eine Tastatur, die dir nicht im Weg steht",
+            why1_t: "Tippen ohne Tastatur",
+            why1_d: "Eine vollst\u00e4ndige schwebende Tastatur am Bildschirm, gesteuert von jedem Zeigeger\u00e4t. Keine Hardware-Tastatur n\u00f6tig, kein zus\u00e4tzlicher Platz auf dem Schreibtisch.",
+            why2_t: "Nativ f\u00fcr macOS",
+            why2_d: "F\u00fcr den Mac gebaut, nicht von woanders portiert. Ein leichtes, skalierbares Fenster, das \u00fcber jeder App schwebt.",
+            why3_t: "Privat von Grund auf",
+            why3_d: "Kein Konto, keine Telemetrie, kein Netzwerk. Deine Eingaben, Vorhersagen und Sprachdaten verlassen deinen Mac nie.",
+            sec_pricing: "Preis",
+            sec_pricing_title: "Ein Preis. Alle Funktionen.",
+            pricing_badge: "14 Tage kostenlos testen",
+            pricing_sub: "Einmaliger Kauf, kein Abo",
+            pf1: "Alle Funktionen, keine Stufen",
+            pf2: "Wisch-Eingabe und intelligente Vorhersagen",
+            pf3: "14 Sprachen, komplett offline",
+            pf4: "Vollst\u00e4ndiges Desktop-Tastaturlayout",
+            pf5: "F\u00fcr Barrierefreiheit entwickelt",
+            pf6: "Kostenlose Updates",
+            pricing_buy: "Tekla kaufen",
+            pricing_trial: "oder lade die 14-t\u00e4gige kostenlose Testversion",
+            req: "Erfordert macOS 14 Sonoma oder neuer",
+            carousel_title: "Mehr von CorvusDevs",
+            carousel_sub: "Datenschutzfreundliche Apps f\u00fcr macOS, iOS und Safari.",
+            foot_tagline: "Virtuelle Tastatur mit Wisch-Eingabe f\u00fcr macOS.",
+            foot_product: "Produkt",
+            foot_support: "Support",
+            foot_legal: "Rechtliches",
+            foot_contact: "Kontakt",
+            foot_bug: "Fehler melden",
+            foot_privacy: "Datenschutz",
+            foot_terms: "Bedingungen"
         },
         fr: {
-            nav_features: "Fonctionnalit\u00e9s", nav_how: "Comment \u00e7a marche", nav_languages: "Langues", nav_contact: "Contact",
-            nav_terms: "Conditions d'utilisation", nav_privacy: "Politique de confidentialit\u00e9",
-            hero_title: 'Glissez pour \u00e9crire sur <span>macOS</span>',
+            nav_features: "Fonctionnalit\u00e9s",
+            nav_how: "Comment \u00e7a marche",
+            nav_languages: "Langues",
+            nav_contact: "Contact",
+            nav_terms: "Conditions d'utilisation",
+            nav_privacy: "Politique de confidentialit\u00e9",
+            hero_title: "Glissez pour \u00e9crire sur <span>macOS</span>",
             tagline: "Un clavier virtuel flottant avec saisie par glissement, pr\u00e9dictions intelligentes et prise en charge de 14 langues. Enti\u00e8rement hors ligne. Enti\u00e8rement priv\u00e9.",
-            cta: "T\u00e9l\u00e9charger l'essai gratuit", platform_note: "Gratuit pendant 14 jours, puis 4,99 $. N\u00e9cessite macOS 14 Sonoma ou ult\u00e9rieur.",
-            feat1_title: "Saisie par glissement", feat1_desc: "Glissez votre doigt ou pointeur sur les lettres pour taper des mots instantan\u00e9ment. Scoring g\u00e9om\u00e9trique et classement bay\u00e9sien trouvent le bon mot.",
-            feat2_title: "Pr\u00e9dictions intelligentes", feat2_desc: "Pr\u00e9dictions contextuelles aliment\u00e9es par des mod\u00e8les de bigrammes et des donn\u00e9es de fr\u00e9quence. Plus vous tapez, mieux \u00e7a fonctionne.",
-            feat3_title: "14 langues", feat3_desc: "Dispositions de clavier compl\u00e8tes et donn\u00e9es de pr\u00e9diction pour le fran\u00e7ais, l'anglais, l'espagnol, l'allemand, le portugais, l'italien et 8 autres langues.",
-            feat4_title: "100% hors ligne", feat4_desc: "Pas d'internet requis. Aucune donn\u00e9e ne quitte votre Mac. Vos habitudes de frappe et pr\u00e9f\u00e9rences restent sur votre appareil.",
-            feat5_title: "Clavier complet", feat5_desc: "Clavier Mac complet avec touches de fonction, modificateurs et cluster de navigation. Fen\u00eatre flottante redimensionnable.",
-            feat6_title: "L\u00e9ger", feat6_desc: "CPU quasi nul au repos. Architecture \u00e9v\u00e9nementielle, ne travaille que quand vous le faites.",
+            cta: "T\u00e9l\u00e9charger l'essai gratuit",
+            platform_note: "Gratuit pendant 14 jours, puis 2,99 $. N\u00e9cessite macOS 14 Sonoma ou ult\u00e9rieur.",
+            feat1_title: "Saisie par glissement",
+            feat1_desc: "Glissez votre doigt ou pointeur sur les lettres pour taper des mots instantan\u00e9ment. Scoring g\u00e9om\u00e9trique et classement bay\u00e9sien trouvent le bon mot.",
+            feat2_title: "Pr\u00e9dictions intelligentes",
+            feat2_desc: "Pr\u00e9dictions contextuelles aliment\u00e9es par des mod\u00e8les de bigrammes et des donn\u00e9es de fr\u00e9quence. Plus vous tapez, mieux \u00e7a fonctionne.",
+            feat3_title: "14 langues",
+            feat3_desc: "Dispositions de clavier compl\u00e8tes et donn\u00e9es de pr\u00e9diction pour le fran\u00e7ais, l'anglais, l'espagnol, l'allemand, le portugais, l'italien et 8 autres langues.",
+            feat4_title: "100% hors ligne",
+            feat4_desc: "Pas d'internet requis. Aucune donn\u00e9e ne quitte votre Mac. Vos habitudes de frappe et pr\u00e9f\u00e9rences restent sur votre appareil.",
+            feat5_title: "Clavier complet",
+            feat5_desc: "Clavier Mac complet avec touches de fonction, modificateurs et cluster de navigation. Fen\u00eatre flottante redimensionnable.",
+            feat6_title: "L\u00e9ger",
+            feat6_desc: "CPU quasi nul au repos. Architecture \u00e9v\u00e9nementielle, ne travaille que quand vous le faites.",
             how_title: "Comment \u00e7a marche",
-            step1_title: "Ouvrez Tekla", step1_desc: "Un clavier flottant appara\u00eet. Accordez l'acc\u00e8s Accessibilit\u00e9 pour qu'il puisse taper dans n'importe quelle app.",
-            step2_title: "Glissez ou tapez", step2_desc: "Glissez sur les lettres pour \u00e9crire des mots ou tapez les touches individuellement.",
-            step3_title: "Choisissez les pr\u00e9dictions", step3_desc: "Les pr\u00e9dictions se mettent \u00e0 jour en temps r\u00e9el. Tapez sur une pr\u00e9diction pour l'ins\u00e9rer.",
+            step1_title: "Ouvrez Tekla",
+            step1_desc: "Un clavier flottant appara\u00eet. Accordez l'acc\u00e8s Accessibilit\u00e9 pour qu'il puisse taper dans n'importe quelle app.",
+            step2_title: "Glissez ou tapez",
+            step2_desc: "Glissez sur les lettres pour \u00e9crire des mots ou tapez les touches individuellement.",
+            step3_title: "Choisissez les pr\u00e9dictions",
+            step3_desc: "Les pr\u00e9dictions se mettent \u00e0 jour en temps r\u00e9el. Tapez sur une pr\u00e9diction pour l'ins\u00e9rer.",
             lang_title: "Prend en charge 14 langues",
             a11y_title: "Con\u00e7u pour l'accessibilit\u00e9",
-            a11y1_title: "Accessibilit\u00e9 motrice", a11y1_desc: "Con\u00e7u pour les utilisateurs \u00e0 mobilit\u00e9 r\u00e9duite des mains. La saisie par glissement permet de former des mots d'un seul geste continu, moins de mouvement, moins de fatigue.",
-            a11y2_title: "Saisie flexible", a11y2_desc: "Fonctionne avec trackpads, souris, stylets, pointeurs de t\u00eate et tout dispositif de pointage. La fen\u00eatre flottante s'adapte \u00e0 votre configuration.",
-            a11y3_title: "Moins de frappes", a11y3_desc: "Les pr\u00e9dictions intelligentes et les suggestions de mots suivants permettent de taper moins pour dire plus. Glissez un mot, choisissez une pr\u00e9diction, des phrases compl\u00e8tes avec un effort minimal.",
-            footer_rights: "Tous droits r\u00e9serv\u00e9s.", footer_payments: "Paiements trait\u00e9s par",
+            a11y1_title: "Accessibilit\u00e9 motrice",
+            a11y1_desc: "Con\u00e7u pour les utilisateurs \u00e0 mobilit\u00e9 r\u00e9duite des mains. La saisie par glissement permet de former des mots d'un seul geste continu, moins de mouvement, moins de fatigue.",
+            a11y2_title: "Saisie flexible",
+            a11y2_desc: "Fonctionne avec trackpads, souris, stylets, pointeurs de t\u00eate et tout dispositif de pointage. La fen\u00eatre flottante s'adapte \u00e0 votre configuration.",
+            a11y3_title: "Moins de frappes",
+            a11y3_desc: "Les pr\u00e9dictions intelligentes et les suggestions de mots suivants permettent de taper moins pour dire plus. Glissez un mot, choisissez une pr\u00e9diction, des phrases compl\u00e8tes avec un effort minimal.",
+            footer_rights: "Tous droits r\u00e9serv\u00e9s.",
+            footer_payments: "Paiements trait\u00e9s par",
+            nav_why: "Pourquoi Tekla",
+            nav_pricing: "Prix",
+            sec_features: "Fonctionnalit\u00e9s",
+            sec_features_title: "\u00c9crivez en glissant, sur votre Mac",
+            sec_a11y: "Accessibilit\u00e9",
+            sec_how: "Comment \u00e7a marche",
+            sec_why: "Pourquoi Tekla",
+            sec_why_title: "Un clavier qui se fait oublier",
+            why1_t: "\u00c9crire sans clavier",
+            why1_d: "Un clavier flottant complet \u00e0 l'\u00e9cran, pilot\u00e9 par n'importe quel dispositif de pointage. Aucun clavier physique, aucun espace de bureau en plus.",
+            why2_t: "Natif macOS",
+            why2_d: "Con\u00e7u pour le Mac, pas port\u00e9 d'ailleurs. Une fen\u00eatre l\u00e9g\u00e8re et redimensionnable qui flotte au-dessus de chaque app.",
+            why3_t: "Priv\u00e9 par conception",
+            why3_d: "Pas de compte, pas de t\u00e9l\u00e9m\u00e9trie, pas de r\u00e9seau. Votre frappe, vos pr\u00e9dictions et vos donn\u00e9es de langue ne quittent jamais votre Mac.",
+            sec_pricing: "Prix",
+            sec_pricing_title: "Un prix. Toutes les fonctions.",
+            pricing_badge: "Essai gratuit de 14 jours",
+            pricing_sub: "Achat unique, sans abonnement",
+            pf1: "Toutes les fonctions, sans niveaux",
+            pf2: "Saisie par glissement et pr\u00e9dictions intelligentes",
+            pf3: "14 langues, enti\u00e8rement hors ligne",
+            pf4: "Clavier de bureau complet",
+            pf5: "Con\u00e7u pour l'accessibilit\u00e9",
+            pf6: "Mises \u00e0 jour gratuites",
+            pricing_buy: "Acheter Tekla",
+            pricing_trial: "ou t\u00e9l\u00e9chargez l'essai gratuit de 14 jours",
+            req: "N\u00e9cessite macOS 14 Sonoma ou ult\u00e9rieur",
+            carousel_title: "Plus de CorvusDevs",
+            carousel_sub: "Des apps qui respectent la vie priv\u00e9e pour macOS, iOS et Safari.",
+            foot_tagline: "Clavier virtuel avec saisie par glissement pour macOS.",
+            foot_product: "Produit",
+            foot_support: "Support",
+            foot_legal: "Mentions l\u00e9gales",
+            foot_contact: "Contact",
+            foot_bug: "Signaler un bug",
+            foot_privacy: "Confidentialit\u00e9",
+            foot_terms: "Conditions"
         },
         pt: {
-            nav_features: "Recursos", nav_how: "Como funciona", nav_languages: "Idiomas", nav_contact: "Contato",
-            nav_terms: "Termos de uso", nav_privacy: "Pol\u00edtica de privacidade",
-            hero_title: 'Deslize para digitar no <span>macOS</span>',
+            nav_features: "Recursos",
+            nav_how: "Como funciona",
+            nav_languages: "Idiomas",
+            nav_contact: "Contato",
+            nav_terms: "Termos de uso",
+            nav_privacy: "Pol\u00edtica de privacidade",
+            hero_title: "Deslize para digitar no <span>macOS</span>",
             tagline: "Um teclado virtual flutuante com digita\u00e7\u00e3o por deslizamento, predi\u00e7\u00f5es inteligentes e suporte a 14 idiomas. Totalmente offline. Totalmente privado.",
-            cta: "Baixar teste gratuito", platform_note: "Grátis por 14 dias, depois $4.99. Requer macOS 14 Sonoma ou posterior.",
-            feat1_title: "Digita\u00e7\u00e3o por deslizamento", feat1_desc: "Deslize o dedo ou ponteiro sobre as letras para digitar palavras instantaneamente.",
-            feat2_title: "Predi\u00e7\u00f5es inteligentes", feat2_desc: "Predi\u00e7\u00f5es contextuais alimentadas por modelos de bigramas e dados de frequ\u00eancia.",
-            feat3_title: "14 idiomas", feat3_desc: "Layouts de teclado completos e dados de predi\u00e7\u00e3o para portugu\u00eas, ingl\u00eas, espanhol, alem\u00e3o, franc\u00eas, italiano e mais 8 idiomas.",
-            feat4_title: "100% offline", feat4_desc: "Sem internet. Nenhum dado sai do seu Mac. Seus padr\u00f5es de digita\u00e7\u00e3o permanecem no dispositivo.",
-            feat5_title: "Layout completo", feat5_desc: "Teclado Mac completo com teclas de fun\u00e7\u00e3o, modificadores e cluster de navega\u00e7\u00e3o. Janela flutuante redimension\u00e1vel.",
-            feat6_title: "Leve", feat6_desc: "CPU quase zero em repouso. Arquitetura orientada a eventos, s\u00f3 trabalha quando voc\u00ea trabalha.",
+            cta: "Baixar teste gratuito",
+            platform_note: "Gr\u00e1tis por 14 dias, depois $2.99. Requer macOS 14 Sonoma ou posterior.",
+            feat1_title: "Digita\u00e7\u00e3o por deslizamento",
+            feat1_desc: "Deslize o dedo ou ponteiro sobre as letras para digitar palavras instantaneamente.",
+            feat2_title: "Predi\u00e7\u00f5es inteligentes",
+            feat2_desc: "Predi\u00e7\u00f5es contextuais alimentadas por modelos de bigramas e dados de frequ\u00eancia.",
+            feat3_title: "14 idiomas",
+            feat3_desc: "Layouts de teclado completos e dados de predi\u00e7\u00e3o para portugu\u00eas, ingl\u00eas, espanhol, alem\u00e3o, franc\u00eas, italiano e mais 8 idiomas.",
+            feat4_title: "100% offline",
+            feat4_desc: "Sem internet. Nenhum dado sai do seu Mac. Seus padr\u00f5es de digita\u00e7\u00e3o permanecem no dispositivo.",
+            feat5_title: "Layout completo",
+            feat5_desc: "Teclado Mac completo com teclas de fun\u00e7\u00e3o, modificadores e cluster de navega\u00e7\u00e3o. Janela flutuante redimension\u00e1vel.",
+            feat6_title: "Leve",
+            feat6_desc: "CPU quase zero em repouso. Arquitetura orientada a eventos, s\u00f3 trabalha quando voc\u00ea trabalha.",
             how_title: "Como funciona",
-            step1_title: "Abra o Tekla", step1_desc: "Um teclado flutuante aparece na tela. Conceda permiss\u00e3o de Acessibilidade para digitar em qualquer app.",
-            step2_title: "Deslize ou toque", step2_desc: "Deslize sobre as letras para digitar palavras ou toque nas teclas individualmente.",
-            step3_title: "Escolha predi\u00e7\u00f5es", step3_desc: "As predi\u00e7\u00f5es se atualizam em tempo real. Toque em uma predi\u00e7\u00e3o para inseri-la.",
+            step1_title: "Abra o Tekla",
+            step1_desc: "Um teclado flutuante aparece na tela. Conceda permiss\u00e3o de Acessibilidade para digitar em qualquer app.",
+            step2_title: "Deslize ou toque",
+            step2_desc: "Deslize sobre as letras para digitar palavras ou toque nas teclas individualmente.",
+            step3_title: "Escolha predi\u00e7\u00f5es",
+            step3_desc: "As predi\u00e7\u00f5es se atualizam em tempo real. Toque em uma predi\u00e7\u00e3o para inseri-la.",
             lang_title: "Suporta 14 idiomas",
             a11y_title: "Feito para acessibilidade",
-            a11y1_title: "Acessibilidade motora", a11y1_desc: "Projetado para usu\u00e1rios com mobilidade reduzida nas m\u00e3os. A digita\u00e7\u00e3o por deslizamento permite formar palavras com um \u00fanico gesto cont\u00ednuo, menos movimento, menos esfor\u00e7o.",
-            a11y2_title: "Entrada flex\u00edvel", a11y2_desc: "Funciona com trackpads, mouses, canetas, ponteiros de cabe\u00e7a e qualquer dispositivo apontador. A janela flutuante se adapta \u00e0 sua configura\u00e7\u00e3o.",
-            a11y3_title: "Menos teclas", a11y3_desc: "Predi\u00e7\u00f5es inteligentes e sugest\u00f5es de pr\u00f3xima palavra significam que voc\u00ea digita menos para dizer mais. Deslize uma palavra, escolha uma predi\u00e7\u00e3o, frases completas com esfor\u00e7o m\u00ednimo.",
-            footer_rights: "Todos os direitos reservados.", footer_payments: "Pagamentos processados por",
+            a11y1_title: "Acessibilidade motora",
+            a11y1_desc: "Projetado para usu\u00e1rios com mobilidade reduzida nas m\u00e3os. A digita\u00e7\u00e3o por deslizamento permite formar palavras com um \u00fanico gesto cont\u00ednuo, menos movimento, menos esfor\u00e7o.",
+            a11y2_title: "Entrada flex\u00edvel",
+            a11y2_desc: "Funciona com trackpads, mouses, canetas, ponteiros de cabe\u00e7a e qualquer dispositivo apontador. A janela flutuante se adapta \u00e0 sua configura\u00e7\u00e3o.",
+            a11y3_title: "Menos teclas",
+            a11y3_desc: "Predi\u00e7\u00f5es inteligentes e sugest\u00f5es de pr\u00f3xima palavra significam que voc\u00ea digita menos para dizer mais. Deslize uma palavra, escolha uma predi\u00e7\u00e3o, frases completas com esfor\u00e7o m\u00ednimo.",
+            footer_rights: "Todos os direitos reservados.",
+            footer_payments: "Pagamentos processados por",
+            nav_why: "Por que Tekla",
+            nav_pricing: "Pre\u00e7o",
+            sec_features: "Recursos",
+            sec_features_title: "Digite deslizando, no seu Mac",
+            sec_a11y: "Acessibilidade",
+            sec_how: "Como funciona",
+            sec_why: "Por que Tekla",
+            sec_why_title: "Um teclado que sai do seu caminho",
+            why1_t: "Digite sem teclado",
+            why1_d: "Um teclado flutuante completo na tela, controlado por qualquer dispositivo apontador. Sem teclado f\u00edsico, sem ocupar espa\u00e7o na mesa.",
+            why2_t: "Nativo do macOS",
+            why2_d: "Feito para o Mac, n\u00e3o portado de outra plataforma. Uma janela leve e redimension\u00e1vel que flutua sobre qualquer app.",
+            why3_t: "Privado por concep\u00e7\u00e3o",
+            why3_d: "Sem conta, sem telemetria, sem rede. Sua digita\u00e7\u00e3o, predi\u00e7\u00f5es e dados de idioma nunca saem do seu Mac.",
+            sec_pricing: "Pre\u00e7o",
+            sec_pricing_title: "Um pre\u00e7o. Todos os recursos.",
+            pricing_badge: "Teste gratuito de 14 dias",
+            pricing_sub: "Compra \u00fanica, sem assinatura",
+            pf1: "Todos os recursos, sem n\u00edveis",
+            pf2: "Digita\u00e7\u00e3o por deslizamento e predi\u00e7\u00f5es inteligentes",
+            pf3: "14 idiomas, totalmente offline",
+            pf4: "Layout de teclado de desktop completo",
+            pf5: "Feito para acessibilidade",
+            pf6: "Atualiza\u00e7\u00f5es gratuitas",
+            pricing_buy: "Comprar Tekla",
+            pricing_trial: "ou baixe o teste gratuito de 14 dias",
+            req: "Requer macOS 14 Sonoma ou posterior",
+            carousel_title: "Mais da CorvusDevs",
+            carousel_sub: "Apps que priorizam a privacidade para macOS, iOS e Safari.",
+            foot_tagline: "Teclado virtual com digita\u00e7\u00e3o por deslizamento para macOS.",
+            foot_product: "Produto",
+            foot_support: "Suporte",
+            foot_legal: "Legal",
+            foot_contact: "Contato",
+            foot_bug: "Relatar um erro",
+            foot_privacy: "Privacidade",
+            foot_terms: "Termos"
         },
         it: {
-            nav_features: "Funzionalit\u00e0", nav_how: "Come funziona", nav_languages: "Lingue", nav_contact: "Contatto",
-            nav_terms: "Termini di servizio", nav_privacy: "Informativa sulla privacy",
-            hero_title: 'Scorri per scrivere su <span>macOS</span>',
+            nav_features: "Funzionalit\u00e0",
+            nav_how: "Come funziona",
+            nav_languages: "Lingue",
+            nav_contact: "Contatto",
+            nav_terms: "Termini di servizio",
+            nav_privacy: "Informativa sulla privacy",
+            hero_title: "Scorri per scrivere su <span>macOS</span>",
             tagline: "Una tastiera virtuale flottante con scrittura a scorrimento, previsioni intelligenti e supporto per 14 lingue. Completamente offline. Completamente privata.",
-            cta: "Scarica prova gratuita", platform_note: "Gratis per 14 giorni, poi $4.99. Richiede macOS 14 Sonoma o successivo.",
-            feat1_title: "Scrittura a scorrimento", feat1_desc: "Scorri il dito o il puntatore sulle lettere per digitare parole all'istante.",
-            feat2_title: "Previsioni intelligenti", feat2_desc: "Previsioni contestuali alimentate da modelli di bigrammi e dati di frequenza.",
-            feat3_title: "14 lingue", feat3_desc: "Layout tastiera completi e dati di previsione per italiano, inglese, spagnolo, tedesco, francese, portoghese e altre 8 lingue.",
-            feat4_title: "100% offline", feat4_desc: "Nessuna connessione richiesta. Nessun dato lascia il tuo Mac. I tuoi dati di digitazione restano sul dispositivo.",
-            feat5_title: "Layout desktop completo", feat5_desc: "Tastiera Mac completa con tasti funzione, modificatori e cluster di navigazione. Finestra flottante ridimensionabile.",
-            feat6_title: "Leggera", feat6_desc: "CPU quasi zero in idle. Architettura event-driven, lavora solo quando lo fai tu.",
+            cta: "Scarica prova gratuita",
+            platform_note: "Gratis per 14 giorni, poi $2.99. Richiede macOS 14 Sonoma o successivo.",
+            feat1_title: "Scrittura a scorrimento",
+            feat1_desc: "Scorri il dito o il puntatore sulle lettere per digitare parole all'istante.",
+            feat2_title: "Previsioni intelligenti",
+            feat2_desc: "Previsioni contestuali alimentate da modelli di bigrammi e dati di frequenza.",
+            feat3_title: "14 lingue",
+            feat3_desc: "Layout tastiera completi e dati di previsione per italiano, inglese, spagnolo, tedesco, francese, portoghese e altre 8 lingue.",
+            feat4_title: "100% offline",
+            feat4_desc: "Nessuna connessione richiesta. Nessun dato lascia il tuo Mac. I tuoi dati di digitazione restano sul dispositivo.",
+            feat5_title: "Layout desktop completo",
+            feat5_desc: "Tastiera Mac completa con tasti funzione, modificatori e cluster di navigazione. Finestra flottante ridimensionabile.",
+            feat6_title: "Leggera",
+            feat6_desc: "CPU quasi zero in idle. Architettura event-driven, lavora solo quando lo fai tu.",
             how_title: "Come funziona",
-            step1_title: "Apri Tekla", step1_desc: "Una tastiera flottante appare sullo schermo. Concedi il permesso di Accessibilit\u00e0 per digitare in qualsiasi app.",
-            step2_title: "Scorri o tocca", step2_desc: "Scorri sulle lettere per scrivere parole o tocca i singoli tasti come una tastiera normale.",
-            step3_title: "Scegli le previsioni", step3_desc: "Le previsioni si aggiornano in tempo reale. Tocca una previsione per inserirla.",
+            step1_title: "Apri Tekla",
+            step1_desc: "Una tastiera flottante appare sullo schermo. Concedi il permesso di Accessibilit\u00e0 per digitare in qualsiasi app.",
+            step2_title: "Scorri o tocca",
+            step2_desc: "Scorri sulle lettere per scrivere parole o tocca i singoli tasti come una tastiera normale.",
+            step3_title: "Scegli le previsioni",
+            step3_desc: "Le previsioni si aggiornano in tempo reale. Tocca una previsione per inserirla.",
             lang_title: "Supporta 14 lingue",
             a11y_title: "Progettata per l'accessibilit\u00e0",
-            a11y1_title: "Accessibilit\u00e0 motoria", a11y1_desc: "Progettata per utenti con mobilit\u00e0 ridotta delle mani. La scrittura a scorrimento permette di formare parole con un singolo gesto continuo, meno movimento, meno sforzo.",
-            a11y2_title: "Input flessibile", a11y2_desc: "Funziona con trackpad, mouse, penne, puntatori a testa e qualsiasi dispositivo di puntamento. La finestra flottante si adatta alla tua configurazione.",
-            a11y3_title: "Meno tasti", a11y3_desc: "Le previsioni intelligenti e i suggerimenti della parola successiva significano che digiti meno per dire di pi\u00f9. Scorri una parola, scegli una previsione, frasi complete con il minimo sforzo.",
-            footer_rights: "Tutti i diritti riservati.", footer_payments: "Pagamenti elaborati da",
+            a11y1_title: "Accessibilit\u00e0 motoria",
+            a11y1_desc: "Progettata per utenti con mobilit\u00e0 ridotta delle mani. La scrittura a scorrimento permette di formare parole con un singolo gesto continuo, meno movimento, meno sforzo.",
+            a11y2_title: "Input flessibile",
+            a11y2_desc: "Funziona con trackpad, mouse, penne, puntatori a testa e qualsiasi dispositivo di puntamento. La finestra flottante si adatta alla tua configurazione.",
+            a11y3_title: "Meno tasti",
+            a11y3_desc: "Le previsioni intelligenti e i suggerimenti della parola successiva significano che digiti meno per dire di pi\u00f9. Scorri una parola, scegli una previsione, frasi complete con il minimo sforzo.",
+            footer_rights: "Tutti i diritti riservati.",
+            footer_payments: "Pagamenti elaborati da",
+            nav_why: "Perch\u00e9 Tekla",
+            nav_pricing: "Prezzo",
+            sec_features: "Funzionalit\u00e0",
+            sec_features_title: "Scrivi scorrendo, sul tuo Mac",
+            sec_a11y: "Accessibilit\u00e0",
+            sec_how: "Come funziona",
+            sec_why: "Perch\u00e9 Tekla",
+            sec_why_title: "Una tastiera che non ti intralcia",
+            why1_t: "Scrivi senza tastiera",
+            why1_d: "Una tastiera flottante completa sullo schermo, guidata da qualsiasi dispositivo di puntamento. Nessuna tastiera fisica, nessuno spazio in pi\u00f9 sulla scrivania.",
+            why2_t: "Nativa per macOS",
+            why2_d: "Creata per il Mac, non portata da altrove. Una finestra leggera e ridimensionabile che flotta sopra ogni app.",
+            why3_t: "Privata per progettazione",
+            why3_d: "Nessun account, nessuna telemetria, nessuna rete. La tua digitazione, le previsioni e i dati di lingua non lasciano mai il tuo Mac.",
+            sec_pricing: "Prezzo",
+            sec_pricing_title: "Un prezzo. Tutte le funzioni.",
+            pricing_badge: "Prova gratuita di 14 giorni",
+            pricing_sub: "Acquisto unico, nessun abbonamento",
+            pf1: "Tutte le funzioni, senza livelli",
+            pf2: "Scrittura a scorrimento e previsioni intelligenti",
+            pf3: "14 lingue, completamente offline",
+            pf4: "Layout tastiera desktop completo",
+            pf5: "Progettata per l'accessibilit\u00e0",
+            pf6: "Aggiornamenti gratuiti",
+            pricing_buy: "Acquista Tekla",
+            pricing_trial: "o scarica la prova gratuita di 14 giorni",
+            req: "Richiede macOS 14 Sonoma o successivo",
+            carousel_title: "Altro da CorvusDevs",
+            carousel_sub: "App che mettono la privacy al primo posto per macOS, iOS e Safari.",
+            foot_tagline: "Tastiera virtuale con scrittura a scorrimento per macOS.",
+            foot_product: "Prodotto",
+            foot_support: "Supporto",
+            foot_legal: "Note legali",
+            foot_contact: "Contatto",
+            foot_bug: "Segnala un bug",
+            foot_privacy: "Privacy",
+            foot_terms: "Termini"
         },
         nl: {
-            nav_features: "Functies", nav_how: "Hoe het werkt", nav_languages: "Talen", nav_contact: "Contact",
-            nav_terms: "Gebruiksvoorwaarden", nav_privacy: "Privacybeleid",
-            hero_title: 'Veeg om te typen op <span>macOS</span>',
+            nav_features: "Functies",
+            nav_how: "Hoe het werkt",
+            nav_languages: "Talen",
+            nav_contact: "Contact",
+            nav_terms: "Gebruiksvoorwaarden",
+            nav_privacy: "Privacybeleid",
+            hero_title: "Veeg om te typen op <span>macOS</span>",
             tagline: "Een zwevend virtueel toetsenbord met veeg-typen, slimme voorspellingen en ondersteuning voor 14 talen. Volledig offline. Volledig priv\u00e9.",
-            cta: "Gratis proefversie downloaden", platform_note: "14 dagen gratis, daarna $4.99. Vereist macOS 14 Sonoma of nieuwer.",
-            feat1_title: "Veeg-typen", feat1_desc: "Glijd met je vinger of aanwijzer over letters om woorden direct te typen.",
-            feat2_title: "Slimme voorspellingen", feat2_desc: "Contextbewuste voorspellingen op basis van bigrammodellen en frequentiegegevens.",
-            feat3_title: "14 talen", feat3_desc: "Volledige toetsenbordindelingen en voorspellingsdata voor Nederlands, Engels, Spaans, Duits, Frans, en 9 andere talen.",
-            feat4_title: "100% offline", feat4_desc: "Geen internet nodig. Geen gegevens verlaten je Mac. Je typpatronen blijven op je apparaat.",
-            feat5_title: "Volledig desktoplayut", feat5_desc: "Compleet Mac-toetsenbord met functietoetsen, modifiers en navigatiecluster. Schaalbaar zwevend venster.",
-            feat6_title: "Lichtgewicht", feat6_desc: "Bijna geen CPU-gebruik in rust. Eventgestuurde architectuur, werkt alleen wanneer jij werkt.",
+            cta: "Gratis proefversie downloaden",
+            platform_note: "14 dagen gratis, daarna $2.99. Vereist macOS 14 Sonoma of nieuwer.",
+            feat1_title: "Veeg-typen",
+            feat1_desc: "Glijd met je vinger of aanwijzer over letters om woorden direct te typen.",
+            feat2_title: "Slimme voorspellingen",
+            feat2_desc: "Contextbewuste voorspellingen op basis van bigrammodellen en frequentiegegevens.",
+            feat3_title: "14 talen",
+            feat3_desc: "Volledige toetsenbordindelingen en voorspellingsdata voor Nederlands, Engels, Spaans, Duits, Frans, en 9 andere talen.",
+            feat4_title: "100% offline",
+            feat4_desc: "Geen internet nodig. Geen gegevens verlaten je Mac. Je typpatronen blijven op je apparaat.",
+            feat5_title: "Volledige desktoplayout",
+            feat5_desc: "Compleet Mac-toetsenbord met functietoetsen, modifiers en navigatiecluster. Schaalbaar zwevend venster.",
+            feat6_title: "Lichtgewicht",
+            feat6_desc: "Bijna geen CPU-gebruik in rust. Eventgestuurde architectuur, werkt alleen wanneer jij werkt.",
             how_title: "Hoe het werkt",
-            step1_title: "Open Tekla", step1_desc: "Een zwevend toetsenbord verschijnt. Geef toegankelijkheidstoegang zodat het in elke app kan typen.",
-            step2_title: "Veeg of tik", step2_desc: "Glijd over letters om woorden te vegen of tik op individuele toetsen.",
-            step3_title: "Kies voorspellingen", step3_desc: "Slimme voorspellingen worden in realtime bijgewerkt. Tik op een voorspelling om deze in te voegen.",
+            step1_title: "Open Tekla",
+            step1_desc: "Een zwevend toetsenbord verschijnt. Geef toegankelijkheidstoegang zodat het in elke app kan typen.",
+            step2_title: "Veeg of tik",
+            step2_desc: "Glijd over letters om woorden te vegen of tik op individuele toetsen.",
+            step3_title: "Kies voorspellingen",
+            step3_desc: "Slimme voorspellingen worden in realtime bijgewerkt. Tik op een voorspelling om deze in te voegen.",
             lang_title: "Ondersteunt 14 talen",
             a11y_title: "Ontworpen voor toegankelijkheid",
-            a11y1_title: "Motorische toegankelijkheid", a11y1_desc: "Ontworpen voor gebruikers met beperkte handmobiliteit. Veeg-typen laat je woorden vormen met \u00e9\u00e9n doorlopend gebaar, minder beweging, minder belasting.",
-            a11y2_title: "Flexibele invoer", a11y2_desc: "Werkt met trackpads, muizen, pennen, hoofdaanwijzers en elk aanwijsapparaat. Het schaalbare zwevende venster past zich aan je opstelling aan.",
-            a11y3_title: "Minder toetsaanslagen", a11y3_desc: "Slimme voorspellingen en suggesties voor het volgende woord, minder typen, meer zeggen. Veeg een woord, kies een voorspelling, volledige zinnen met minimale inspanning.",
-            footer_rights: "Alle rechten voorbehouden.", footer_payments: "Betalingen verwerkt door",
+            a11y1_title: "Motorische toegankelijkheid",
+            a11y1_desc: "Ontworpen voor gebruikers met beperkte handmobiliteit. Veeg-typen laat je woorden vormen met \u00e9\u00e9n doorlopend gebaar, minder beweging, minder belasting.",
+            a11y2_title: "Flexibele invoer",
+            a11y2_desc: "Werkt met trackpads, muizen, pennen, hoofdaanwijzers en elk aanwijsapparaat. Het schaalbare zwevende venster past zich aan je opstelling aan.",
+            a11y3_title: "Minder toetsaanslagen",
+            a11y3_desc: "Slimme voorspellingen en suggesties voor het volgende woord, minder typen, meer zeggen. Veeg een woord, kies een voorspelling, volledige zinnen met minimale inspanning.",
+            footer_rights: "Alle rechten voorbehouden.",
+            footer_payments: "Betalingen verwerkt door",
+            nav_why: "Waarom Tekla",
+            nav_pricing: "Prijs",
+            sec_features: "Functies",
+            sec_features_title: "Typ met een veeg, op je eigen Mac",
+            sec_a11y: "Toegankelijkheid",
+            sec_how: "Hoe het werkt",
+            sec_why: "Waarom Tekla",
+            sec_why_title: "Een toetsenbord dat je niet in de weg zit",
+            why1_t: "Typ zonder toetsenbord",
+            why1_d: "Een volledig zwevend toetsenbord op het scherm, bediend met elk aanwijsapparaat. Geen fysiek toetsenbord nodig, geen extra bureauruimte.",
+            why2_t: "Native macOS",
+            why2_d: "Gebouwd voor de Mac, niet ergens anders vandaan geport. Een licht, schaalbaar venster dat boven elke app zweeft.",
+            why3_t: "Priv\u00e9 door ontwerp",
+            why3_d: "Geen account, geen telemetrie, geen netwerk. Je typen, voorspellingen en taalgegevens verlaten je Mac nooit.",
+            sec_pricing: "Prijs",
+            sec_pricing_title: "E\u00e9n prijs. Alle functies.",
+            pricing_badge: "14 dagen gratis proberen",
+            pricing_sub: "Eenmalige aankoop, geen abonnement",
+            pf1: "Alle functies, geen niveaus",
+            pf2: "Veeg-typen en slimme voorspellingen",
+            pf3: "14 talen, volledig offline",
+            pf4: "Volledige desktop-toetsenbordindeling",
+            pf5: "Ontworpen voor toegankelijkheid",
+            pf6: "Gratis updates",
+            pricing_buy: "Tekla kopen",
+            pricing_trial: "of download de gratis proefversie van 14 dagen",
+            req: "Vereist macOS 14 Sonoma of nieuwer",
+            carousel_title: "Meer van CorvusDevs",
+            carousel_sub: "Privacyvriendelijke apps voor macOS, iOS en Safari.",
+            foot_tagline: "Virtueel toetsenbord met veeg-typen voor macOS.",
+            foot_product: "Product",
+            foot_support: "Ondersteuning",
+            foot_legal: "Juridisch",
+            foot_contact: "Contact",
+            foot_bug: "Bug melden",
+            foot_privacy: "Privacy",
+            foot_terms: "Voorwaarden"
         },
         sv: {
-            nav_features: "Funktioner", nav_how: "Hur det fungerar", nav_languages: "Spr\u00e5k", nav_contact: "Kontakt",
-            nav_terms: "Anv\u00e4ndarvillkor", nav_privacy: "Integritetspolicy",
-            hero_title: 'Svep f\u00f6r att skriva p\u00e5 <span>macOS</span>',
+            nav_features: "Funktioner",
+            nav_how: "Hur det fungerar",
+            nav_languages: "Spr\u00e5k",
+            nav_contact: "Kontakt",
+            nav_terms: "Anv\u00e4ndarvillkor",
+            nav_privacy: "Integritetspolicy",
+            hero_title: "Svep f\u00f6r att skriva p\u00e5 <span>macOS</span>",
             tagline: "Ett sv\u00e4vande virtuellt tangentbord med svep-skrivning, smarta f\u00f6rslag och st\u00f6d f\u00f6r 14 spr\u00e5k. Helt offline. Helt privat.",
-            cta: "Ladda ner gratis provversion", platform_note: "Gratis i 14 dagar, sedan $4.99. Kr\u00e4ver macOS 14 Sonoma eller senare.",
-            feat1_title: "Svep-skrivning", feat1_desc: "Dra fingret eller pekaren \u00f6ver bokst\u00e4ver f\u00f6r att skriva ord direkt.",
-            feat2_title: "Smarta f\u00f6rslag", feat2_desc: "Kontextmedvetna f\u00f6rslag drivna av bigrammodeller och frekvensdata.",
-            feat3_title: "14 spr\u00e5k", feat3_desc: "Kompletta tangentbordslayouter och f\u00f6rslagsdata f\u00f6r svenska, engelska, spanska, tyska, franska och 9 spr\u00e5k till.",
-            feat4_title: "100% offline", feat4_desc: "Inget internet kr\u00e4vs. Ingen data l\u00e4mnar din Mac. Dina skrivm\u00f6nster stannar p\u00e5 din enhet.",
-            feat5_title: "Komplett skrivbordslayout", feat5_desc: "Komplett Mac-tangentbord med funktionstangenter, modifierare och navigationskluster.",
-            feat6_title: "L\u00e4tt", feat6_desc: "N\u00e4stan ingen CPU-anv\u00e4ndning i vila. H\u00e4ndelsestyrd arkitektur.",
+            cta: "Ladda ner gratis provversion",
+            platform_note: "Gratis i 14 dagar, sedan $2.99. Kr\u00e4ver macOS 14 Sonoma eller senare.",
+            feat1_title: "Svep-skrivning",
+            feat1_desc: "Dra fingret eller pekaren \u00f6ver bokst\u00e4ver f\u00f6r att skriva ord direkt.",
+            feat2_title: "Smarta f\u00f6rslag",
+            feat2_desc: "Kontextmedvetna f\u00f6rslag drivna av bigrammodeller och frekvensdata.",
+            feat3_title: "14 spr\u00e5k",
+            feat3_desc: "Kompletta tangentbordslayouter och f\u00f6rslagsdata f\u00f6r svenska, engelska, spanska, tyska, franska och 9 spr\u00e5k till.",
+            feat4_title: "100% offline",
+            feat4_desc: "Inget internet kr\u00e4vs. Ingen data l\u00e4mnar din Mac. Dina skrivm\u00f6nster stannar p\u00e5 din enhet.",
+            feat5_title: "Komplett skrivbordslayout",
+            feat5_desc: "Komplett Mac-tangentbord med funktionstangenter, modifierare och navigationskluster.",
+            feat6_title: "L\u00e4tt",
+            feat6_desc: "N\u00e4stan ingen CPU-anv\u00e4ndning i vila. H\u00e4ndelsestyrd arkitektur.",
             how_title: "Hur det fungerar",
-            step1_title: "\u00d6ppna Tekla", step1_desc: "Ett sv\u00e4vande tangentbord visas. Ge tillg\u00e4nglighets\u00e5tkomst s\u00e5 det kan skriva i valfri app.",
-            step2_title: "Svep eller tryck", step2_desc: "Svep \u00f6ver bokst\u00e4ver f\u00f6r att skriva ord eller tryck p\u00e5 enskilda tangenter.",
-            step3_title: "V\u00e4lj f\u00f6rslag", step3_desc: "Smarta f\u00f6rslag uppdateras i realtid. Tryck p\u00e5 ett f\u00f6rslag f\u00f6r att infoga det.",
+            step1_title: "\u00d6ppna Tekla",
+            step1_desc: "Ett sv\u00e4vande tangentbord visas. Ge tillg\u00e4nglighets\u00e5tkomst s\u00e5 det kan skriva i valfri app.",
+            step2_title: "Svep eller tryck",
+            step2_desc: "Svep \u00f6ver bokst\u00e4ver f\u00f6r att skriva ord eller tryck p\u00e5 enskilda tangenter.",
+            step3_title: "V\u00e4lj f\u00f6rslag",
+            step3_desc: "Smarta f\u00f6rslag uppdateras i realtid. Tryck p\u00e5 ett f\u00f6rslag f\u00f6r att infoga det.",
             lang_title: "St\u00f6der 14 spr\u00e5k",
             a11y_title: "Byggd f\u00f6r tillg\u00e4nglighet",
-            a11y1_title: "Motorisk tillg\u00e4nglighet", a11y1_desc: "Designad f\u00f6r anv\u00e4ndare med begr\u00e4nsad handmobilitet. Svep-skrivning l\u00e5ter dig bilda ord med en enda gest, mindre r\u00f6relse, mindre anstr\u00e4ngning.",
-            a11y2_title: "Flexibel inmatning", a11y2_desc: "Fungerar med styrplattor, m\u00f6ss, pennor, huvudpekare och alla pekdon. Det skalbara f\u00f6nstret anpassar sig till din upps\u00e4ttning.",
-            a11y3_title: "F\u00e4rre tangenttryckningar", a11y3_desc: "Smarta f\u00f6rslag och n\u00e4sta-ord-f\u00f6rslag, skriv mindre, s\u00e4g mer. Svep ett ord, v\u00e4lj ett f\u00f6rslag, hela meningar med minimal anstr\u00e4ngning.",
-            footer_rights: "Alla r\u00e4ttigheter f\u00f6rbeh\u00e5llna.", footer_payments: "Betalningar hanteras av",
+            a11y1_title: "Motorisk tillg\u00e4nglighet",
+            a11y1_desc: "Designad f\u00f6r anv\u00e4ndare med begr\u00e4nsad handmobilitet. Svep-skrivning l\u00e5ter dig bilda ord med en enda gest, mindre r\u00f6relse, mindre anstr\u00e4ngning.",
+            a11y2_title: "Flexibel inmatning",
+            a11y2_desc: "Fungerar med styrplattor, m\u00f6ss, pennor, huvudpekare och alla pekdon. Det skalbara f\u00f6nstret anpassar sig till din upps\u00e4ttning.",
+            a11y3_title: "F\u00e4rre tangenttryckningar",
+            a11y3_desc: "Smarta f\u00f6rslag och n\u00e4sta-ord-f\u00f6rslag, skriv mindre, s\u00e4g mer. Svep ett ord, v\u00e4lj ett f\u00f6rslag, hela meningar med minimal anstr\u00e4ngning.",
+            footer_rights: "Alla r\u00e4ttigheter f\u00f6rbeh\u00e5llna.",
+            footer_payments: "Betalningar hanteras av",
+            nav_why: "Varf\u00f6r Tekla",
+            nav_pricing: "Pris",
+            sec_features: "Funktioner",
+            sec_features_title: "Skriv genom att svepa, p\u00e5 din Mac",
+            sec_a11y: "Tillg\u00e4nglighet",
+            sec_how: "Hur det fungerar",
+            sec_why: "Varf\u00f6r Tekla",
+            sec_why_title: "Ett tangentbord som inte st\u00e5r i v\u00e4gen",
+            why1_t: "Skriv utan tangentbord",
+            why1_d: "Ett komplett sv\u00e4vande tangentbord p\u00e5 sk\u00e4rmen, styrt av valfritt pekdon. Inget fysiskt tangentbord beh\u00f6vs, ingen extra skrivbordsyta.",
+            why2_t: "Native macOS",
+            why2_d: "Byggt f\u00f6r Mac, inte portat fr\u00e5n n\u00e5got annat. Ett l\u00e4tt, skalbart f\u00f6nster som sv\u00e4var ovanp\u00e5 varje app.",
+            why3_t: "Privat i grunden",
+            why3_d: "Inget konto, ingen telemetri, inget n\u00e4tverk. Din skrivning, dina f\u00f6rslag och dina spr\u00e5kdata l\u00e4mnar aldrig din Mac.",
+            sec_pricing: "Pris",
+            sec_pricing_title: "Ett pris. Alla funktioner.",
+            pricing_badge: "14 dagars gratis provperiod",
+            pricing_sub: "Eng\u00e5ngsk\u00f6p, ingen prenumeration",
+            pf1: "Alla funktioner, inga niv\u00e5er",
+            pf2: "Svep-skrivning och smarta f\u00f6rslag",
+            pf3: "14 spr\u00e5k, helt offline",
+            pf4: "Komplett skrivbordslayout",
+            pf5: "Byggd f\u00f6r tillg\u00e4nglighet",
+            pf6: "Gratis uppdateringar",
+            pricing_buy: "K\u00f6p Tekla",
+            pricing_trial: "eller ladda ner den kostnadsfria 14-dagarsversionen",
+            req: "Kr\u00e4ver macOS 14 Sonoma eller senare",
+            carousel_title: "Mer fr\u00e5n CorvusDevs",
+            carousel_sub: "Integritetsf\u00f6rst-appar f\u00f6r macOS, iOS och Safari.",
+            foot_tagline: "Virtuellt tangentbord med svep-skrivning f\u00f6r macOS.",
+            foot_product: "Produkt",
+            foot_support: "Support",
+            foot_legal: "Juridik",
+            foot_contact: "Kontakt",
+            foot_bug: "Rapportera ett fel",
+            foot_privacy: "Integritet",
+            foot_terms: "Villkor"
         },
         no: {
-            nav_features: "Funksjoner", nav_how: "Slik fungerer det", nav_languages: "Spr\u00e5k", nav_contact: "Kontakt",
-            nav_terms: "Vilk\u00e5r", nav_privacy: "Personvern",
-            hero_title: 'Sveip for \u00e5 skrive p\u00e5 <span>macOS</span>',
+            nav_features: "Funksjoner",
+            nav_how: "Slik fungerer det",
+            nav_languages: "Spr\u00e5k",
+            nav_contact: "Kontakt",
+            nav_terms: "Vilk\u00e5r",
+            nav_privacy: "Personvern",
+            hero_title: "Sveip for \u00e5 skrive p\u00e5 <span>macOS</span>",
             tagline: "Et flytende virtuelt tastatur med sveip-skriving, smarte forslag og st\u00f8tte for 14 spr\u00e5k. Helt offline. Helt privat.",
-            cta: "Last ned gratis prøveversjon", platform_note: "Gratis i 14 dager, deretter $4.99. Krever macOS 14 Sonoma eller nyere.",
-            feat1_title: "Sveip-skriving", feat1_desc: "Dra fingeren eller pekeren over bokstaver for \u00e5 skrive ord umiddelbart.",
-            feat2_title: "Smarte forslag", feat2_desc: "Kontekstbevisste forslag drevet av bigrammodeller og frekvensdata.",
-            feat3_title: "14 spr\u00e5k", feat3_desc: "Komplette tastaturoppsett og forslagsdata for norsk, engelsk, spansk, tysk, fransk og 9 spr\u00e5k til.",
-            feat4_title: "100% offline", feat4_desc: "Ingen internett n\u00f8dvendig. Ingen data forlater din Mac.",
-            feat5_title: "Komplett layout", feat5_desc: "Komplett Mac-tastatur med funksjonstaster, modifikatorer og navigasjonsklynge.",
-            feat6_title: "Lett", feat6_desc: "Nesten ingen CPU-bruk i hvile. Hendelsesdrevet arkitektur.",
+            cta: "Last ned gratis pr\u00f8veversjon",
+            platform_note: "Gratis i 14 dager, deretter $2.99. Krever macOS 14 Sonoma eller nyere.",
+            feat1_title: "Sveip-skriving",
+            feat1_desc: "Dra fingeren eller pekeren over bokstaver for \u00e5 skrive ord umiddelbart.",
+            feat2_title: "Smarte forslag",
+            feat2_desc: "Kontekstbevisste forslag drevet av bigrammodeller og frekvensdata.",
+            feat3_title: "14 spr\u00e5k",
+            feat3_desc: "Komplette tastaturoppsett og forslagsdata for norsk, engelsk, spansk, tysk, fransk og 9 spr\u00e5k til.",
+            feat4_title: "100% offline",
+            feat4_desc: "Ingen internett n\u00f8dvendig. Ingen data forlater din Mac.",
+            feat5_title: "Komplett layout",
+            feat5_desc: "Komplett Mac-tastatur med funksjonstaster, modifikatorer og navigasjonsklynge.",
+            feat6_title: "Lett",
+            feat6_desc: "Nesten ingen CPU-bruk i hvile. Hendelsesdrevet arkitektur.",
             how_title: "Slik fungerer det",
-            step1_title: "\u00c5pne Tekla", step1_desc: "Et flytende tastatur vises. Gi tilgjengelighetstilgang s\u00e5 det kan skrive i enhver app.",
-            step2_title: "Sveip eller trykk", step2_desc: "Sveip over bokstaver for \u00e5 skrive ord eller trykk p\u00e5 enkelttaster.",
-            step3_title: "Velg forslag", step3_desc: "Smarte forslag oppdateres i sanntid. Trykk p\u00e5 et forslag for \u00e5 sette det inn.",
+            step1_title: "\u00c5pne Tekla",
+            step1_desc: "Et flytende tastatur vises. Gi tilgjengelighetstilgang s\u00e5 det kan skrive i enhver app.",
+            step2_title: "Sveip eller trykk",
+            step2_desc: "Sveip over bokstaver for \u00e5 skrive ord eller trykk p\u00e5 enkelttaster.",
+            step3_title: "Velg forslag",
+            step3_desc: "Smarte forslag oppdateres i sanntid. Trykk p\u00e5 et forslag for \u00e5 sette det inn.",
             lang_title: "St\u00f8tter 14 spr\u00e5k",
             a11y_title: "Bygget for tilgjengelighet",
-            a11y1_title: "Motorisk tilgjengelighet", a11y1_desc: "Designet for brukere med begrenset h\u00e5ndmobilitet. Sveip-skriving lar deg forme ord med \u00e9n sammenhengende bevegelse, mindre bevegelse, mindre belastning.",
-            a11y2_title: "Fleksibel inndata", a11y2_desc: "Fungerer med styreflater, mus, penner, hodepekere og alle pekeenheter. Det skalerbare vinduet tilpasser seg ditt oppsett.",
-            a11y3_title: "F\u00e6rre tastetrykk", a11y3_desc: "Smarte forslag og neste-ord-forslag, skriv mindre, si mer. Sveip et ord, velg et forslag, hele setninger med minimal innsats.",
-            footer_rights: "Alle rettigheter forbeholdt.", footer_payments: "Betalinger behandles av",
+            a11y1_title: "Motorisk tilgjengelighet",
+            a11y1_desc: "Designet for brukere med begrenset h\u00e5ndmobilitet. Sveip-skriving lar deg forme ord med \u00e9n sammenhengende bevegelse, mindre bevegelse, mindre belastning.",
+            a11y2_title: "Fleksibel inndata",
+            a11y2_desc: "Fungerer med styreflater, mus, penner, hodepekere og alle pekeenheter. Det skalerbare vinduet tilpasser seg ditt oppsett.",
+            a11y3_title: "F\u00e6rre tastetrykk",
+            a11y3_desc: "Smarte forslag og neste-ord-forslag, skriv mindre, si mer. Sveip et ord, velg et forslag, hele setninger med minimal innsats.",
+            footer_rights: "Alle rettigheter forbeholdt.",
+            footer_payments: "Betalinger behandles av",
+            nav_why: "Hvorfor Tekla",
+            nav_pricing: "Pris",
+            sec_features: "Funksjoner",
+            sec_features_title: "Skriv ved \u00e5 sveipe, p\u00e5 din Mac",
+            sec_a11y: "Tilgjengelighet",
+            sec_how: "Slik fungerer det",
+            sec_why: "Hvorfor Tekla",
+            sec_why_title: "Et tastatur som ikke er i veien",
+            why1_t: "Skriv uten tastatur",
+            why1_d: "Et komplett flytende tastatur p\u00e5 skjermen, styrt av enhver pekeenhet. Ingen fysisk tastatur n\u00f8dvendig, ingen ekstra plass p\u00e5 pulten.",
+            why2_t: "Native macOS",
+            why2_d: "Bygget for Mac, ikke portet fra noe annet sted. Et lett, skalerbart vindu som flyter over hver app.",
+            why3_t: "Privat av design",
+            why3_d: "Ingen konto, ingen telemetri, ingen nettverk. Skrivingen din, forslagene og spr\u00e5kdataene forlater aldri din Mac.",
+            sec_pricing: "Pris",
+            sec_pricing_title: "\u00c9n pris. Alle funksjoner.",
+            pricing_badge: "14 dagers gratis pr\u00f8veperiode",
+            pricing_sub: "Engangskj\u00f8p, ingen abonnement",
+            pf1: "Alle funksjoner, ingen niv\u00e5er",
+            pf2: "Sveip-skriving og smarte forslag",
+            pf3: "14 spr\u00e5k, helt offline",
+            pf4: "Komplett skrivebordslayout",
+            pf5: "Bygget for tilgjengelighet",
+            pf6: "Gratis oppdateringer",
+            pricing_buy: "Kj\u00f8p Tekla",
+            pricing_trial: "eller last ned den gratis 14-dagers pr\u00f8veversjonen",
+            req: "Krever macOS 14 Sonoma eller nyere",
+            carousel_title: "Mer fra CorvusDevs",
+            carousel_sub: "Personvern-f\u00f8rst-apper for macOS, iOS og Safari.",
+            foot_tagline: "Virtuelt tastatur med sveip-skriving for macOS.",
+            foot_product: "Produkt",
+            foot_support: "St\u00f8tte",
+            foot_legal: "Juridisk",
+            foot_contact: "Kontakt",
+            foot_bug: "Rapporter en feil",
+            foot_privacy: "Personvern",
+            foot_terms: "Vilk\u00e5r"
         },
         da: {
-            nav_features: "Funktioner", nav_how: "S\u00e5dan virker det", nav_languages: "Sprog", nav_contact: "Kontakt",
-            nav_terms: "Vilk\u00e5r", nav_privacy: "Privatlivspolitik",
-            hero_title: 'Stryg for at skrive p\u00e5 <span>macOS</span>',
+            nav_features: "Funktioner",
+            nav_how: "S\u00e5dan virker det",
+            nav_languages: "Sprog",
+            nav_contact: "Kontakt",
+            nav_terms: "Vilk\u00e5r",
+            nav_privacy: "Privatlivspolitik",
+            hero_title: "Stryg for at skrive p\u00e5 <span>macOS</span>",
             tagline: "Et sv\u00e6vende virtuelt tastatur med stryge-skrivning, smarte forudsigelser og underst\u00f8ttelse af 14 sprog. Helt offline. Helt privat.",
-            cta: "Download gratis pr\u00f8veversion", platform_note: "Gratis i 14 dage, derefter $4.99. Kr\u00e6ver macOS 14 Sonoma eller nyere.",
-            feat1_title: "Stryge-skrivning", feat1_desc: "Str\u00f8g fingeren eller markøren over bogstaver for at skrive ord \u00f8jeblikkeligt.",
-            feat2_title: "Smarte forudsigelser", feat2_desc: "Kontekstbevidste forudsigelser drevet af bigrammodeller og frekvensdata.",
-            feat3_title: "14 sprog", feat3_desc: "Komplette tastaturlayouts og forudsigelsesdata for dansk, engelsk, spansk, tysk, fransk og 9 sprog mere.",
-            feat4_title: "100% offline", feat4_desc: "Intet internet kr\u00e6ves. Ingen data forlader din Mac.",
-            feat5_title: "Komplet layout", feat5_desc: "Komplet Mac-tastatur med funktionstaster, modifikatorer og navigationsklynge.",
-            feat6_title: "Let", feat6_desc: "N\u00e6sten intet CPU-forbrug i hvile. H\u00e6ndelsesdrevet arkitektur.",
+            cta: "Download gratis pr\u00f8veversion",
+            platform_note: "Gratis i 14 dage, derefter $2.99. Kr\u00e6ver macOS 14 Sonoma eller nyere.",
+            feat1_title: "Stryge-skrivning",
+            feat1_desc: "Str\u00f8g fingeren eller mark\u00f8ren over bogstaver for at skrive ord \u00f8jeblikkeligt.",
+            feat2_title: "Smarte forudsigelser",
+            feat2_desc: "Kontekstbevidste forudsigelser drevet af bigrammodeller og frekvensdata.",
+            feat3_title: "14 sprog",
+            feat3_desc: "Komplette tastaturlayouts og forudsigelsesdata for dansk, engelsk, spansk, tysk, fransk og 9 sprog mere.",
+            feat4_title: "100% offline",
+            feat4_desc: "Intet internet kr\u00e6ves. Ingen data forlader din Mac.",
+            feat5_title: "Komplet layout",
+            feat5_desc: "Komplet Mac-tastatur med funktionstaster, modifikatorer og navigationsklynge.",
+            feat6_title: "Let",
+            feat6_desc: "N\u00e6sten intet CPU-forbrug i hvile. H\u00e6ndelsesdrevet arkitektur.",
             how_title: "S\u00e5dan virker det",
-            step1_title: "\u00c5bn Tekla", step1_desc: "Et sv\u00e6vende tastatur vises. Giv tilg\u00e6ngelighedsadgang s\u00e5 det kan skrive i enhver app.",
-            step2_title: "Stryg eller tryk", step2_desc: "Stryg over bogstaver for at skrive ord eller tryk p\u00e5 enkelte taster.",
-            step3_title: "V\u00e6lg forudsigelser", step3_desc: "Smarte forudsigelser opdateres i realtid. Tryk p\u00e5 en forudsigelse for at inds\u00e6tte den.",
+            step1_title: "\u00c5bn Tekla",
+            step1_desc: "Et sv\u00e6vende tastatur vises. Giv tilg\u00e6ngelighedsadgang s\u00e5 det kan skrive i enhver app.",
+            step2_title: "Stryg eller tryk",
+            step2_desc: "Stryg over bogstaver for at skrive ord eller tryk p\u00e5 enkelte taster.",
+            step3_title: "V\u00e6lg forudsigelser",
+            step3_desc: "Smarte forudsigelser opdateres i realtid. Tryk p\u00e5 en forudsigelse for at inds\u00e6tte den.",
             lang_title: "Underst\u00f8tter 14 sprog",
             a11y_title: "Bygget til tilg\u00e6ngelighed",
-            a11y1_title: "Motorisk tilg\u00e6ngelighed", a11y1_desc: "Designet til brugere med begr\u00e6nset h\u00e5ndmobilitet. Stryge-skrivning lader dig danne ord med \u00e9n sammenh\u00e6ngende bev\u00e6gelse, mindre bev\u00e6gelse, mindre belastning.",
-            a11y2_title: "Fleksibelt input", a11y2_desc: "Fungerer med pegeplader, mus, penne, hovedpegere og alle pegeanordninger. Det skalerbare vindue tilpasser sig din ops\u00e6tning.",
-            a11y3_title: "F\u00e6rre tastetryk", a11y3_desc: "Smarte forudsigelser og n\u00e6ste-ord-forslag, skriv mindre, sig mere. Stryg et ord, v\u00e6lg en forudsigelse, hele s\u00e6tninger med minimal indsats.",
-            footer_rights: "Alle rettigheder forbeholdes.", footer_payments: "Betalinger behandles af",
+            a11y1_title: "Motorisk tilg\u00e6ngelighed",
+            a11y1_desc: "Designet til brugere med begr\u00e6nset h\u00e5ndmobilitet. Stryge-skrivning lader dig danne ord med \u00e9n sammenh\u00e6ngende bev\u00e6gelse, mindre bev\u00e6gelse, mindre belastning.",
+            a11y2_title: "Fleksibelt input",
+            a11y2_desc: "Fungerer med pegeplader, mus, penne, hovedpegere og alle pegeanordninger. Det skalerbare vindue tilpasser sig din ops\u00e6tning.",
+            a11y3_title: "F\u00e6rre tastetryk",
+            a11y3_desc: "Smarte forudsigelser og n\u00e6ste-ord-forslag, skriv mindre, sig mere. Stryg et ord, v\u00e6lg en forudsigelse, hele s\u00e6tninger med minimal indsats.",
+            footer_rights: "Alle rettigheder forbeholdes.",
+            footer_payments: "Betalinger behandles af",
+            nav_why: "Hvorfor Tekla",
+            nav_pricing: "Pris",
+            sec_features: "Funktioner",
+            sec_features_title: "Skriv ved at stryge, p\u00e5 din Mac",
+            sec_a11y: "Tilg\u00e6ngelighed",
+            sec_how: "S\u00e5dan virker det",
+            sec_why: "Hvorfor Tekla",
+            sec_why_title: "Et tastatur, der ikke st\u00e5r i vejen",
+            why1_t: "Skriv uden tastatur",
+            why1_d: "Et komplet sv\u00e6vende tastatur p\u00e5 sk\u00e6rmen, styret af enhver pegeanordning. Intet fysisk tastatur n\u00f8dvendigt, ingen ekstra plads p\u00e5 skrivebordet.",
+            why2_t: "Native macOS",
+            why2_d: "Bygget til Mac, ikke portet fra noget andet. Et let, skalerbart vindue, der sv\u00e6ver oven p\u00e5 hver app.",
+            why3_t: "Privat af design",
+            why3_d: "Ingen konto, ingen telemetri, intet netv\u00e6rk. Din skrivning, dine forudsigelser og sprogdata forlader aldrig din Mac.",
+            sec_pricing: "Pris",
+            sec_pricing_title: "\u00c9n pris. Alle funktioner.",
+            pricing_badge: "14 dages gratis pr\u00f8veperiode",
+            pricing_sub: "Engangsk\u00f8b, intet abonnement",
+            pf1: "Alle funktioner, ingen niveauer",
+            pf2: "Stryge-skrivning og smarte forudsigelser",
+            pf3: "14 sprog, helt offline",
+            pf4: "Komplet skrivebordslayout",
+            pf5: "Bygget til tilg\u00e6ngelighed",
+            pf6: "Gratis opdateringer",
+            pricing_buy: "K\u00f8b Tekla",
+            pricing_trial: "eller download den gratis 14-dages pr\u00f8veversion",
+            req: "Kr\u00e6ver macOS 14 Sonoma eller nyere",
+            carousel_title: "Mere fra CorvusDevs",
+            carousel_sub: "Privatliv-f\u00f8rst-apps til macOS, iOS og Safari.",
+            foot_tagline: "Virtuelt tastatur med stryge-skrivning til macOS.",
+            foot_product: "Produkt",
+            foot_support: "Support",
+            foot_legal: "Juridisk",
+            foot_contact: "Kontakt",
+            foot_bug: "Rapporter en fejl",
+            foot_privacy: "Privatliv",
+            foot_terms: "Vilk\u00e5r"
         },
         fi: {
-            nav_features: "Ominaisuudet", nav_how: "N\u00e4in se toimii", nav_languages: "Kielet", nav_contact: "Yhteystiedot",
-            nav_terms: "K\u00e4ytt\u00f6ehdot", nav_privacy: "Tietosuoja",
-            hero_title: 'Pyyhk\u00e4ise kirjoittaaksesi <span>macOS</span>:lla',
+            nav_features: "Ominaisuudet",
+            nav_how: "N\u00e4in se toimii",
+            nav_languages: "Kielet",
+            nav_contact: "Yhteystiedot",
+            nav_terms: "K\u00e4ytt\u00f6ehdot",
+            nav_privacy: "Tietosuoja",
+            hero_title: "Pyyhk\u00e4ise kirjoittaaksesi <span>macOS</span>:lla",
             tagline: "Kelluva virtuaalin\u00e4pp\u00e4imist\u00f6 pyyhk\u00e4isykirjoituksella, \u00e4lykk\u00e4ill\u00e4 ennusteilla ja 14 kielen tuella. T\u00e4ysin offline. T\u00e4ysin yksityinen.",
-            cta: "Lataa ilmainen kokeilu", platform_note: "Ilmainen 14 päivää, sitten 4,99 $. Vaatii macOS 14 Sonoman tai uudemman.",
-            feat1_title: "Pyyhk\u00e4isykirjoitus", feat1_desc: "Liu'uta sormea tai osoitinta kirjainten yli kirjoittaaksesi sanoja v\u00e4litt\u00f6m\u00e4sti.",
-            feat2_title: "\u00c4lykk\u00e4\u00e4t ennusteet", feat2_desc: "Kontekstitietoiset ennusteet bigrammi-kielimallien ja taajuusdatan avulla.",
-            feat3_title: "14 kielt\u00e4", feat3_desc: "T\u00e4ydelliset n\u00e4pp\u00e4imist\u00f6asettelut ja ennustedata suomelle, englanniksi, espanjaksi ja 11 muulle kielelle.",
-            feat4_title: "100% offline", feat4_desc: "Ei internet-yhteytt\u00e4 tarvita. Mik\u00e4\u00e4n data ei poistu Macistasi.",
-            feat5_title: "T\u00e4ysi ty\u00f6p\u00f6yt\u00e4asettelu", feat5_desc: "T\u00e4ydellinen Mac-n\u00e4pp\u00e4imist\u00f6 toiminton\u00e4pp\u00e4imill\u00e4 ja navigointiklusterilla.",
-            feat6_title: "Kevyt", feat6_desc: "L\u00e4hes nolla CPU-k\u00e4ytt\u00f6\u00e4 levossa. Tapahtumapohjainen arkkitehtuuri.",
+            cta: "Lataa ilmainen kokeilu",
+            platform_note: "Ilmainen 14 p\u00e4iv\u00e4\u00e4, sitten 2,99 $. Vaatii macOS 14 Sonoman tai uudemman.",
+            feat1_title: "Pyyhk\u00e4isykirjoitus",
+            feat1_desc: "Liu'uta sormea tai osoitinta kirjainten yli kirjoittaaksesi sanoja v\u00e4litt\u00f6m\u00e4sti.",
+            feat2_title: "\u00c4lykk\u00e4\u00e4t ennusteet",
+            feat2_desc: "Kontekstitietoiset ennusteet bigrammi-kielimallien ja taajuusdatan avulla.",
+            feat3_title: "14 kielt\u00e4",
+            feat3_desc: "T\u00e4ydelliset n\u00e4pp\u00e4imist\u00f6asettelut ja ennustedata suomelle, englanniksi, espanjaksi ja 11 muulle kielelle.",
+            feat4_title: "100% offline",
+            feat4_desc: "Ei internet-yhteytt\u00e4 tarvita. Mik\u00e4\u00e4n data ei poistu Macistasi.",
+            feat5_title: "T\u00e4ysi ty\u00f6p\u00f6yt\u00e4asettelu",
+            feat5_desc: "T\u00e4ydellinen Mac-n\u00e4pp\u00e4imist\u00f6 toiminton\u00e4pp\u00e4imill\u00e4 ja navigointiklusterilla.",
+            feat6_title: "Kevyt",
+            feat6_desc: "L\u00e4hes nolla CPU-k\u00e4ytt\u00f6\u00e4 levossa. Tapahtumapohjainen arkkitehtuuri.",
             how_title: "N\u00e4in se toimii",
-            step1_title: "Avaa Tekla", step1_desc: "Kelluva n\u00e4pp\u00e4imist\u00f6 ilmestyy. Anna esteett\u00f6myys-k\u00e4ytt\u00f6oikeus.",
-            step2_title: "Pyyhk\u00e4ise tai napauta", step2_desc: "Pyyhk\u00e4ise kirjainten yli kirjoittaaksesi sanoja tai napauta yksitt\u00e4isi\u00e4 n\u00e4pp\u00e4imi\u00e4.",
-            step3_title: "Valitse ennusteet", step3_desc: "\u00c4lykk\u00e4\u00e4t ennusteet p\u00e4ivittyv\u00e4t reaaliajassa. Napauta ennustetta lis\u00e4t\u00e4ksesi sen.",
+            step1_title: "Avaa Tekla",
+            step1_desc: "Kelluva n\u00e4pp\u00e4imist\u00f6 ilmestyy. Anna esteett\u00f6myys-k\u00e4ytt\u00f6oikeus.",
+            step2_title: "Pyyhk\u00e4ise tai napauta",
+            step2_desc: "Pyyhk\u00e4ise kirjainten yli kirjoittaaksesi sanoja tai napauta yksitt\u00e4isi\u00e4 n\u00e4pp\u00e4imi\u00e4.",
+            step3_title: "Valitse ennusteet",
+            step3_desc: "\u00c4lykk\u00e4\u00e4t ennusteet p\u00e4ivittyv\u00e4t reaaliajassa. Napauta ennustetta lis\u00e4t\u00e4ksesi sen.",
             lang_title: "Tukee 14 kielt\u00e4",
             a11y_title: "Rakennettu saavutettavuutta varten",
-            a11y1_title: "Motorinen saavutettavuus", a11y1_desc: "Suunniteltu k\u00e4ytt\u00e4jille, joilla on rajoittunut k\u00e4den liikkuvuus. Pyyhk\u00e4isykirjoitus mahdollistaa sanojen muodostamisen yhdell\u00e4 jatkuvalla eleell\u00e4, v\u00e4hemm\u00e4n liikett\u00e4, v\u00e4hemm\u00e4n rasitusta.",
-            a11y2_title: "Joustava sy\u00f6tt\u00f6", a11y2_desc: "Toimii ohjauslevyjen, hiirien, kynien, p\u00e4\u00e4osoittimien ja kaikkien osoitinlaitteiden kanssa. Skaalautuva kelluva ikkuna mukautuu asetukseesi.",
-            a11y3_title: "V\u00e4hemm\u00e4n n\u00e4pp\u00e4ilyj\u00e4", a11y3_desc: "\u00c4lykk\u00e4\u00e4t ennusteet ja seuraavan sanan ehdotukset, kirjoita v\u00e4hemm\u00e4n, sano enemm\u00e4n. Pyyhk\u00e4ise sana, valitse ennuste, kokonaiset lauseet v\u00e4h\u00e4ll\u00e4 vaivalla.",
-            footer_rights: "Kaikki oikeudet pid\u00e4tetty.", footer_payments: "Maksut k\u00e4sittelee",
+            a11y1_title: "Motorinen saavutettavuus",
+            a11y1_desc: "Suunniteltu k\u00e4ytt\u00e4jille, joilla on rajoittunut k\u00e4den liikkuvuus. Pyyhk\u00e4isykirjoitus mahdollistaa sanojen muodostamisen yhdell\u00e4 jatkuvalla eleell\u00e4, v\u00e4hemm\u00e4n liikett\u00e4, v\u00e4hemm\u00e4n rasitusta.",
+            a11y2_title: "Joustava sy\u00f6tt\u00f6",
+            a11y2_desc: "Toimii ohjauslevyjen, hiirien, kynien, p\u00e4\u00e4osoittimien ja kaikkien osoitinlaitteiden kanssa. Skaalautuva kelluva ikkuna mukautuu asetukseesi.",
+            a11y3_title: "V\u00e4hemm\u00e4n n\u00e4pp\u00e4ilyj\u00e4",
+            a11y3_desc: "\u00c4lykk\u00e4\u00e4t ennusteet ja seuraavan sanan ehdotukset, kirjoita v\u00e4hemm\u00e4n, sano enemm\u00e4n. Pyyhk\u00e4ise sana, valitse ennuste, kokonaiset lauseet v\u00e4h\u00e4ll\u00e4 vaivalla.",
+            footer_rights: "Kaikki oikeudet pid\u00e4tetty.",
+            footer_payments: "Maksut k\u00e4sittelee",
+            nav_why: "Miksi Tekla",
+            nav_pricing: "Hinta",
+            sec_features: "Ominaisuudet",
+            sec_features_title: "Kirjoita pyyhk\u00e4isem\u00e4ll\u00e4, omalla Macilla",
+            sec_a11y: "Saavutettavuus",
+            sec_how: "N\u00e4in se toimii",
+            sec_why: "Miksi Tekla",
+            sec_why_title: "N\u00e4pp\u00e4imist\u00f6, joka ei ole tiell\u00e4",
+            why1_t: "Kirjoita ilman n\u00e4pp\u00e4imist\u00f6\u00e4",
+            why1_d: "T\u00e4ysi kelluva n\u00e4pp\u00e4imist\u00f6 n\u00e4yt\u00f6ll\u00e4, ohjattuna mill\u00e4 tahansa osoitinlaitteella. Ei fyysist\u00e4 n\u00e4pp\u00e4imist\u00f6\u00e4, ei ylim\u00e4\u00e4r\u00e4ist\u00e4 p\u00f6yt\u00e4tilaa.",
+            why2_t: "Natiivi macOS",
+            why2_d: "Rakennettu Macille, ei siirretty muualta. Kevyt, skaalautuva ikkuna, joka kelluu jokaisen sovelluksen p\u00e4\u00e4ll\u00e4.",
+            why3_t: "Yksityinen suunnittelultaan",
+            why3_d: "Ei tili\u00e4, ei telemetriaa, ei verkkoa. Kirjoituksesi, ennusteesi ja kielidatasi eiv\u00e4t koskaan poistu Macistasi.",
+            sec_pricing: "Hinta",
+            sec_pricing_title: "Yksi hinta. Kaikki ominaisuudet.",
+            pricing_badge: "14 p\u00e4iv\u00e4n ilmainen kokeilu",
+            pricing_sub: "Kertaosto, ei tilausta",
+            pf1: "Kaikki ominaisuudet, ei tasoja",
+            pf2: "Pyyhk\u00e4isykirjoitus ja \u00e4lykk\u00e4\u00e4t ennusteet",
+            pf3: "14 kielt\u00e4, t\u00e4ysin offline",
+            pf4: "T\u00e4ysi ty\u00f6p\u00f6yt\u00e4n\u00e4pp\u00e4imist\u00f6asettelu",
+            pf5: "Rakennettu saavutettavuutta varten",
+            pf6: "Ilmaiset p\u00e4ivitykset",
+            pricing_buy: "Osta Tekla",
+            pricing_trial: "tai lataa 14 p\u00e4iv\u00e4n ilmainen kokeilu",
+            req: "Vaatii macOS 14 Sonoman tai uudemman",
+            carousel_title: "Lis\u00e4\u00e4 CorvusDevsilt\u00e4",
+            carousel_sub: "Yksityisyytt\u00e4 kunnioittavia sovelluksia macOS:lle, iOS:lle ja Safarille.",
+            foot_tagline: "Pyyhk\u00e4isykirjoituksen virtuaalin\u00e4pp\u00e4imist\u00f6 macOS:lle.",
+            foot_product: "Tuote",
+            foot_support: "Tuki",
+            foot_legal: "Oikeudellinen",
+            foot_contact: "Yhteystiedot",
+            foot_bug: "Ilmoita virheest\u00e4",
+            foot_privacy: "Tietosuoja",
+            foot_terms: "Ehdot"
         },
         tr: {
-            nav_features: "\u00d6zellikler", nav_how: "Nas\u0131l \u00e7al\u0131\u015f\u0131r", nav_languages: "Diller", nav_contact: "\u0130leti\u015fim",
-            nav_terms: "Kullan\u0131m ko\u015fullar\u0131", nav_privacy: "Gizlilik politikas\u0131",
-            hero_title: '<span>macOS</span>\u2019ta kayd\u0131rarak yaz',
+            nav_features: "\u00d6zellikler",
+            nav_how: "Nas\u0131l \u00e7al\u0131\u015f\u0131r",
+            nav_languages: "Diller",
+            nav_contact: "\u0130leti\u015fim",
+            nav_terms: "Kullan\u0131m ko\u015fullar\u0131",
+            nav_privacy: "Gizlilik politikas\u0131",
+            hero_title: "<span>macOS</span>\u2019ta kayd\u0131rarak yaz",
             tagline: "Kayd\u0131rarak yazma, ak\u0131ll\u0131 tahminler ve 14 dil deste\u011fi ile y\u00fczen sanal klavye. Tamamen \u00e7evrimd\u0131\u015f\u0131. Tamamen gizli.",
-            cta: "\u00dccretsiz deneme s\u00fcr\u00fcm\u00fcn\u00fc indir", platform_note: "14 g\u00fcn \u00fccretsiz, sonra 4,99 $. macOS 14 Sonoma veya \u00fcst\u00fc gerektirir.",
-            feat1_title: "Kayd\u0131rarak yazma", feat1_desc: "Parma\u011f\u0131n\u0131z\u0131 veya i\u015faret\u00e7inizi harfler \u00fczerinde kayd\u0131rarak an\u0131nda kelime yaz\u0131n.",
-            feat2_title: "Ak\u0131ll\u0131 tahminler", feat2_desc: "Bigram dil modelleri ve frekans verileriyle desteklenen ba\u011flama duyarl\u0131 tahminler.",
-            feat3_title: "14 dil", feat3_desc: "T\u00fcrk\u00e7e, \u0130ngilizce, \u0130spanyolca, Almanca, Frans\u0131zca ve 9 dil daha i\u00e7in tam klavye d\u00fczenleri.",
-            feat4_title: "100% \u00e7evrimd\u0131\u015f\u0131", feat4_desc: "\u0130nternet gerekmez. Hi\u00e7bir veri Mac'inizden ayr\u0131lmaz.",
-            feat5_title: "Tam masa\u00fcst\u00fc d\u00fczeni", feat5_desc: "Fonksiyon tu\u015flar\u0131, de\u011fi\u015ftirici tu\u015flar ve gezinme k\u00fcmesi ile tam Mac klavyesi.",
-            feat6_title: "Hafif", feat6_desc: "Bo\u015ftayken neredeyse s\u0131f\u0131r CPU kullan\u0131m\u0131. Olay tabanl\u0131 mimari.",
+            cta: "\u00dccretsiz deneme s\u00fcr\u00fcm\u00fcn\u00fc indir",
+            platform_note: "14 g\u00fcn \u00fccretsiz, sonra 2,99 $. macOS 14 Sonoma veya \u00fcst\u00fc gerektirir.",
+            feat1_title: "Kayd\u0131rarak yazma",
+            feat1_desc: "Parma\u011f\u0131n\u0131z\u0131 veya i\u015faret\u00e7inizi harfler \u00fczerinde kayd\u0131rarak an\u0131nda kelime yaz\u0131n.",
+            feat2_title: "Ak\u0131ll\u0131 tahminler",
+            feat2_desc: "Bigram dil modelleri ve frekans verileriyle desteklenen ba\u011flama duyarl\u0131 tahminler.",
+            feat3_title: "14 dil",
+            feat3_desc: "T\u00fcrk\u00e7e, \u0130ngilizce, \u0130spanyolca, Almanca, Frans\u0131zca ve 9 dil daha i\u00e7in tam klavye d\u00fczenleri.",
+            feat4_title: "100% \u00e7evrimd\u0131\u015f\u0131",
+            feat4_desc: "\u0130nternet gerekmez. Hi\u00e7bir veri Mac'inizden ayr\u0131lmaz.",
+            feat5_title: "Tam masa\u00fcst\u00fc d\u00fczeni",
+            feat5_desc: "Fonksiyon tu\u015flar\u0131, de\u011fi\u015ftirici tu\u015flar ve gezinme k\u00fcmesi ile tam Mac klavyesi.",
+            feat6_title: "Hafif",
+            feat6_desc: "Bo\u015ftayken neredeyse s\u0131f\u0131r CPU kullan\u0131m\u0131. Olay tabanl\u0131 mimari.",
             how_title: "Nas\u0131l \u00e7al\u0131\u015f\u0131r",
-            step1_title: "Tekla'y\u0131 a\u00e7", step1_desc: "Y\u00fczen bir klavye g\u00f6r\u00fcn\u00fcr. Herhangi bir uygulamada yazabilmesi i\u00e7in Eri\u015filebilirlik izni verin.",
-            step2_title: "Kayd\u0131r veya dokun", step2_desc: "Kelime yazmak i\u00e7in harfler \u00fczerinde kayd\u0131r\u0131n veya tek tek tu\u015flara dokunun.",
-            step3_title: "Tahminleri se\u00e7", step3_desc: "Ak\u0131ll\u0131 tahminler ger\u00e7ek zamanl\u0131 g\u00fcncellenir. Eklemek i\u00e7in bir tahmine dokunun.",
+            step1_title: "Tekla'y\u0131 a\u00e7",
+            step1_desc: "Y\u00fczen bir klavye g\u00f6r\u00fcn\u00fcr. Herhangi bir uygulamada yazabilmesi i\u00e7in Eri\u015filebilirlik izni verin.",
+            step2_title: "Kayd\u0131r veya dokun",
+            step2_desc: "Kelime yazmak i\u00e7in harfler \u00fczerinde kayd\u0131r\u0131n veya tek tek tu\u015flara dokunun.",
+            step3_title: "Tahminleri se\u00e7",
+            step3_desc: "Ak\u0131ll\u0131 tahminler ger\u00e7ek zamanl\u0131 g\u00fcncellenir. Eklemek i\u00e7in bir tahmine dokunun.",
             lang_title: "14 dili destekler",
             a11y_title: "Eri\u015filebilirlik i\u00e7in tasarland\u0131",
-            a11y1_title: "Motor eri\u015filebilirlik", a11y1_desc: "S\u0131n\u0131rl\u0131 el hareketlili\u011fi olan kullan\u0131c\u0131lar i\u00e7in tasarland\u0131. Kayd\u0131rarak yazma, tek bir s\u00fcrekli hareketle kelime olu\u015fturman\u0131z\u0131 sa\u011flar, daha az hareket, daha az yorgunluk.",
-            a11y2_title: "Esnek giri\u015f", a11y2_desc: "\u0130zl\u00f6zetler, fareler, kalemler, ba\u015f i\u015faret\u00e7ileri ve t\u00fcm i\u015faret ayg\u0131tlar\u0131yla \u00e7al\u0131\u015f\u0131r. \u00d6l\u00e7eklenebilir y\u00fczen pencere kurulumunuza uyum sa\u011flar.",
-            a11y3_title: "Daha az tu\u015f bas\u0131m\u0131", a11y3_desc: "Ak\u0131ll\u0131 tahminler ve sonraki kelime \u00f6nerileri, daha az yaz\u0131n, daha \u00e7ok s\u00f6yleyin. Bir kelimeyi kayd\u0131r\u0131n, bir tahmini se\u00e7in, minimum \u00e7abayla tam c\u00fcmleler.",
-            footer_rights: "T\u00fcm haklar\u0131 sakl\u0131d\u0131r.", footer_payments: "\u00d6demeler taraf\u0131ndan i\u015flenir:",
+            a11y1_title: "Motor eri\u015filebilirlik",
+            a11y1_desc: "S\u0131n\u0131rl\u0131 el hareketlili\u011fi olan kullan\u0131c\u0131lar i\u00e7in tasarland\u0131. Kayd\u0131rarak yazma, tek bir s\u00fcrekli hareketle kelime olu\u015fturman\u0131z\u0131 sa\u011flar, daha az hareket, daha az yorgunluk.",
+            a11y2_title: "Esnek giri\u015f",
+            a11y2_desc: "\u0130zleme dokunmatik y\u00fczeyleri, fareler, kalemler, ba\u015f i\u015faret\u00e7ileri ve t\u00fcm i\u015faret ayg\u0131tlar\u0131yla \u00e7al\u0131\u015f\u0131r. \u00d6l\u00e7eklenebilir y\u00fczen pencere kurulumunuza uyum sa\u011flar.",
+            a11y3_title: "Daha az tu\u015f bas\u0131m\u0131",
+            a11y3_desc: "Ak\u0131ll\u0131 tahminler ve sonraki kelime \u00f6nerileri, daha az yaz\u0131n, daha \u00e7ok s\u00f6yleyin. Bir kelimeyi kayd\u0131r\u0131n, bir tahmini se\u00e7in, minimum \u00e7abayla tam c\u00fcmleler.",
+            footer_rights: "T\u00fcm haklar\u0131 sakl\u0131d\u0131r.",
+            footer_payments: "\u00d6demeler taraf\u0131ndan i\u015flenir:",
+            nav_why: "Neden Tekla",
+            nav_pricing: "Fiyat",
+            sec_features: "\u00d6zellikler",
+            sec_features_title: "Kendi Mac'inizde kayd\u0131rarak yaz\u0131n",
+            sec_a11y: "Eri\u015filebilirlik",
+            sec_how: "Nas\u0131l \u00e7al\u0131\u015f\u0131r",
+            sec_why: "Neden Tekla",
+            sec_why_title: "Yolunuzdan \u00e7ekilen bir klavye",
+            why1_t: "Klavye olmadan yaz\u0131n",
+            why1_d: "Ekranda tam bir y\u00fczen klavye, herhangi bir i\u015faret ayg\u0131t\u0131yla kontrol edilir. Fiziksel klavye gerekmez, masada ekstra yer kaplamaz.",
+            why2_t: "macOS'a \u00f6zg\u00fc",
+            why2_d: "Mac i\u00e7in yap\u0131ld\u0131, ba\u015fka bir yerden ta\u015f\u0131nmad\u0131. Her uygulaman\u0131n \u00fczerinde y\u00fczen hafif, \u00f6l\u00e7eklenebilir bir pencere.",
+            why3_t: "Tasar\u0131m gere\u011fi gizli",
+            why3_d: "Hesap yok, telemetri yok, a\u011f yok. Yazd\u0131klar\u0131n\u0131z, tahminleriniz ve dil verileriniz Mac'inizden asla ayr\u0131lmaz.",
+            sec_pricing: "Fiyat",
+            sec_pricing_title: "Tek fiyat. T\u00fcm \u00f6zellikler.",
+            pricing_badge: "14 g\u00fcnl\u00fck \u00fccretsiz deneme",
+            pricing_sub: "Tek seferlik sat\u0131n alma, abonelik yok",
+            pf1: "T\u00fcm \u00f6zellikler, katman yok",
+            pf2: "Kayd\u0131rarak yazma ve ak\u0131ll\u0131 tahminler",
+            pf3: "14 dil, tamamen \u00e7evrimd\u0131\u015f\u0131",
+            pf4: "Tam masa\u00fcst\u00fc klavye d\u00fczeni",
+            pf5: "Eri\u015filebilirlik i\u00e7in tasarland\u0131",
+            pf6: "\u00dccretsiz g\u00fcncellemeler",
+            pricing_buy: "Tekla'y\u0131 sat\u0131n al",
+            pricing_trial: "veya 14 g\u00fcnl\u00fck \u00fccretsiz denemeyi indirin",
+            req: "macOS 14 Sonoma veya \u00fcst\u00fcn\u00fc gerektirir",
+            carousel_title: "CorvusDevs'ten daha fazlas\u0131",
+            carousel_sub: "macOS, iOS ve Safari i\u00e7in gizlili\u011fi \u00f6nceleyen uygulamalar.",
+            foot_tagline: "macOS i\u00e7in kayd\u0131rarak yazma sanal klavyesi.",
+            foot_product: "\u00dcr\u00fcn",
+            foot_support: "Destek",
+            foot_legal: "Yasal",
+            foot_contact: "\u0130leti\u015fim",
+            foot_bug: "Hata bildir",
+            foot_privacy: "Gizlilik",
+            foot_terms: "Ko\u015fullar"
         },
         pl: {
-            nav_features: "Funkcje", nav_how: "Jak to dzia\u0142a", nav_languages: "J\u0119zyki", nav_contact: "Kontakt",
-            nav_terms: "Regulamin", nav_privacy: "Polityka prywatno\u015bci",
-            hero_title: 'Przesuwaj, aby pisa\u0107 na <span>macOS</span>',
+            nav_features: "Funkcje",
+            nav_how: "Jak to dzia\u0142a",
+            nav_languages: "J\u0119zyki",
+            nav_contact: "Kontakt",
+            nav_terms: "Regulamin",
+            nav_privacy: "Polityka prywatno\u015bci",
+            hero_title: "Przesuwaj, aby pisa\u0107 na <span>macOS</span>",
             tagline: "P\u0142ywaj\u0105ca wirtualna klawiatura z pisaniem przesuwaniem, inteligentnymi podpowiedziami i obs\u0142ug\u0105 14 j\u0119zyk\u00f3w. Ca\u0142kowicie offline. Ca\u0142kowicie prywatna.",
-            cta: "Pobierz darmową wersję próbną", platform_note: "14 dni za darmo, potem 4,99 $. Wymaga macOS 14 Sonoma lub nowszego.",
-            feat1_title: "Pisanie przesuwaniem", feat1_desc: "Przesuwaj palec lub wska\u017anik po literach, aby natychmiast pisa\u0107 s\u0142owa.",
-            feat2_title: "Inteligentne podpowiedzi", feat2_desc: "Podpowiedzi kontekstowe oparte na modelach bigramowych i danych cz\u0119stotliwo\u015bci.",
-            feat3_title: "14 j\u0119zyk\u00f3w", feat3_desc: "Pe\u0142ne uk\u0142ady klawiatury i dane predykcyjne dla polskiego, angielskiego, hiszpa\u0144skiego, niemieckiego i 10 innych j\u0119zyk\u00f3w.",
-            feat4_title: "100% offline", feat4_desc: "\u017badnego internetu. \u017badne dane nie opuszczaj\u0105 Twojego Maca.",
-            feat5_title: "Pe\u0142ny uk\u0142ad", feat5_desc: "Kompletna klawiatura Mac z klawiszami funkcyjnymi, modyfikatorami i klastrem nawigacyjnym.",
-            feat6_title: "Lekka", feat6_desc: "Prawie zerowe zu\u017cycie CPU w stanie spoczynku. Architektura sterowana zdarzeniami.",
+            cta: "Pobierz darmow\u0105 wersj\u0119 pr\u00f3bn\u0105",
+            platform_note: "14 dni za darmo, potem 2,99 $. Wymaga macOS 14 Sonoma lub nowszego.",
+            feat1_title: "Pisanie przesuwaniem",
+            feat1_desc: "Przesuwaj palec lub wska\u017anik po literach, aby natychmiast pisa\u0107 s\u0142owa.",
+            feat2_title: "Inteligentne podpowiedzi",
+            feat2_desc: "Podpowiedzi kontekstowe oparte na modelach bigramowych i danych cz\u0119stotliwo\u015bci.",
+            feat3_title: "14 j\u0119zyk\u00f3w",
+            feat3_desc: "Pe\u0142ne uk\u0142ady klawiatury i dane predykcyjne dla polskiego, angielskiego, hiszpa\u0144skiego, niemieckiego i 10 innych j\u0119zyk\u00f3w.",
+            feat4_title: "100% offline",
+            feat4_desc: "\u017badnego internetu. \u017badne dane nie opuszczaj\u0105 Twojego Maca.",
+            feat5_title: "Pe\u0142ny uk\u0142ad",
+            feat5_desc: "Kompletna klawiatura Mac z klawiszami funkcyjnymi, modyfikatorami i klastrem nawigacyjnym.",
+            feat6_title: "Lekka",
+            feat6_desc: "Prawie zerowe zu\u017cycie CPU w stanie spoczynku. Architektura sterowana zdarzeniami.",
             how_title: "Jak to dzia\u0142a",
-            step1_title: "Otw\u00f3rz Tekla", step1_desc: "Pojawia si\u0119 p\u0142ywaj\u0105ca klawiatura. Przyznaj dost\u0119p do u\u0142atwie\u0144, aby mog\u0142a pisa\u0107 w dowolnej aplikacji.",
-            step2_title: "Przesuwaj lub dotykaj", step2_desc: "Przesuwaj po literach, aby pisa\u0107 s\u0142owa, lub dotykaj poszczeg\u00f3lnych klawiszy.",
-            step3_title: "Wybierz podpowiedzi", step3_desc: "Inteligentne podpowiedzi aktualizuj\u0105 si\u0119 w czasie rzeczywistym. Dotknij podpowiedzi, aby j\u0105 wstawi\u0107.",
+            step1_title: "Otw\u00f3rz Tekla",
+            step1_desc: "Pojawia si\u0119 p\u0142ywaj\u0105ca klawiatura. Przyznaj dost\u0119p do u\u0142atwie\u0144, aby mog\u0142a pisa\u0107 w dowolnej aplikacji.",
+            step2_title: "Przesuwaj lub dotykaj",
+            step2_desc: "Przesuwaj po literach, aby pisa\u0107 s\u0142owa, lub dotykaj poszczeg\u00f3lnych klawiszy.",
+            step3_title: "Wybierz podpowiedzi",
+            step3_desc: "Inteligentne podpowiedzi aktualizuj\u0105 si\u0119 w czasie rzeczywistym. Dotknij podpowiedzi, aby j\u0105 wstawi\u0107.",
             lang_title: "Obs\u0142uguje 14 j\u0119zyk\u00f3w",
             a11y_title: "Zaprojektowana z my\u015bl\u0105 o dost\u0119pno\u015bci",
-            a11y1_title: "Dost\u0119pno\u015b\u0107 motoryczna", a11y1_desc: "Zaprojektowana dla u\u017cytkownik\u00f3w z ograniczon\u0105 ruchomo\u015bci\u0105 r\u0105k. Pisanie przesuwaniem pozwala tworzy\u0107 s\u0142owa jednym ci\u0105g\u0142ym gestem, mniej ruchu, mniej wysi\u0142ku.",
-            a11y2_title: "Elastyczne wprowadzanie", a11y2_desc: "Dzia\u0142a z g\u0142adzikami, myszkami, rysikami, wska\u017anikami g\u0142owy i ka\u017cdym urz\u0105dzeniem wskazuj\u0105cym. Skalowalne okno dopasowuje si\u0119 do Twojej konfiguracji.",
-            a11y3_title: "Mniej naci\u015bni\u0119\u0107 klawiszy", a11y3_desc: "Inteligentne podpowiedzi i sugestie nast\u0119pnego s\u0142owa, pisz mniej, m\u00f3w wi\u0119cej. Przesu\u0144 s\u0142owo, wybierz podpowied\u017a, pe\u0142ne zdania przy minimalnym wysi\u0142ku.",
-            footer_rights: "Wszelkie prawa zastrze\u017cone.", footer_payments: "P\u0142atno\u015bci obs\u0142ugiwane przez",
+            a11y1_title: "Dost\u0119pno\u015b\u0107 motoryczna",
+            a11y1_desc: "Zaprojektowana dla u\u017cytkownik\u00f3w z ograniczon\u0105 ruchomo\u015bci\u0105 r\u0105k. Pisanie przesuwaniem pozwala tworzy\u0107 s\u0142owa jednym ci\u0105g\u0142ym gestem, mniej ruchu, mniej wysi\u0142ku.",
+            a11y2_title: "Elastyczne wprowadzanie",
+            a11y2_desc: "Dzia\u0142a z g\u0142adzikami, myszkami, rysikami, wska\u017anikami g\u0142owy i ka\u017cdym urz\u0105dzeniem wskazuj\u0105cym. Skalowalne okno dopasowuje si\u0119 do Twojej konfiguracji.",
+            a11y3_title: "Mniej naci\u015bni\u0119\u0107 klawiszy",
+            a11y3_desc: "Inteligentne podpowiedzi i sugestie nast\u0119pnego s\u0142owa, pisz mniej, m\u00f3w wi\u0119cej. Przesu\u0144 s\u0142owo, wybierz podpowied\u017a, pe\u0142ne zdania przy minimalnym wysi\u0142ku.",
+            footer_rights: "Wszelkie prawa zastrze\u017cone.",
+            footer_payments: "P\u0142atno\u015bci obs\u0142ugiwane przez",
+            nav_why: "Dlaczego Tekla",
+            nav_pricing: "Cena",
+            sec_features: "Funkcje",
+            sec_features_title: "Pisz przesuwaniem, na swoim Macu",
+            sec_a11y: "Dost\u0119pno\u015b\u0107",
+            sec_how: "Jak to dzia\u0142a",
+            sec_why: "Dlaczego Tekla",
+            sec_why_title: "Klawiatura, kt\u00f3ra nie przeszkadza",
+            why1_t: "Pisz bez klawiatury",
+            why1_d: "Pe\u0142na p\u0142ywaj\u0105ca klawiatura na ekranie, obs\u0142ugiwana ka\u017cdym urz\u0105dzeniem wskazuj\u0105cym. Bez fizycznej klawiatury, bez zajmowania miejsca na biurku.",
+            why2_t: "Natywna dla macOS",
+            why2_d: "Stworzona dla Maca, nie przeniesiona sk\u0105din\u0105d. Lekkie, skalowalne okno unosz\u0105ce si\u0119 nad ka\u017cd\u0105 aplikacj\u0105.",
+            why3_t: "Prywatna z za\u0142o\u017cenia",
+            why3_d: "Bez konta, bez telemetrii, bez sieci. Twoje pisanie, podpowiedzi i dane j\u0119zykowe nigdy nie opuszczaj\u0105 Twojego Maca.",
+            sec_pricing: "Cena",
+            sec_pricing_title: "Jedna cena. Wszystkie funkcje.",
+            pricing_badge: "14-dniowy darmowy okres pr\u00f3bny",
+            pricing_sub: "Jednorazowy zakup, bez subskrypcji",
+            pf1: "Wszystkie funkcje, bez poziom\u00f3w",
+            pf2: "Pisanie przesuwaniem i inteligentne podpowiedzi",
+            pf3: "14 j\u0119zyk\u00f3w, ca\u0142kowicie offline",
+            pf4: "Pe\u0142ny uk\u0142ad klawiatury na biurko",
+            pf5: "Zaprojektowana z my\u015bl\u0105 o dost\u0119pno\u015bci",
+            pf6: "Darmowe aktualizacje",
+            pricing_buy: "Kup Tekla",
+            pricing_trial: "lub pobierz 14-dniow\u0105 darmow\u0105 wersj\u0119 pr\u00f3bn\u0105",
+            req: "Wymaga macOS 14 Sonoma lub nowszego",
+            carousel_title: "Wi\u0119cej od CorvusDevs",
+            carousel_sub: "Aplikacje stawiaj\u0105ce prywatno\u015b\u0107 na pierwszym miejscu dla macOS, iOS i Safari.",
+            foot_tagline: "Wirtualna klawiatura z pisaniem przesuwaniem dla macOS.",
+            foot_product: "Produkt",
+            foot_support: "Wsparcie",
+            foot_legal: "Informacje prawne",
+            foot_contact: "Kontakt",
+            foot_bug: "Zg\u0142o\u015b b\u0142\u0105d",
+            foot_privacy: "Prywatno\u015b\u0107",
+            foot_terms: "Warunki"
         },
         ru: {
-            nav_features: "\u0424\u0443\u043d\u043a\u0446\u0438\u0438", nav_how: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", nav_languages: "\u042f\u0437\u044b\u043a\u0438", nav_contact: "\u041a\u043e\u043d\u0442\u0430\u043a\u0442",
-            nav_terms: "\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f", nav_privacy: "\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438",
-            hero_title: '\u041f\u0438\u0448\u0438\u0442\u0435 \u0441\u0432\u0430\u0439\u043f\u043e\u043c \u043d\u0430 <span>macOS</span>',
+            nav_features: "\u0424\u0443\u043d\u043a\u0446\u0438\u0438",
+            nav_how: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442",
+            nav_languages: "\u042f\u0437\u044b\u043a\u0438",
+            nav_contact: "\u041a\u043e\u043d\u0442\u0430\u043a\u0442",
+            nav_terms: "\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f",
+            nav_privacy: "\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438",
+            hero_title: "\u041f\u0438\u0448\u0438\u0442\u0435 \u0441\u0432\u0430\u0439\u043f\u043e\u043c \u043d\u0430 <span>macOS</span>",
             tagline: "\u041f\u043b\u0430\u0432\u0430\u044e\u0449\u0430\u044f \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430 \u0441\u043e \u0441\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434\u043e\u043c, \u0443\u043c\u043d\u044b\u043c\u0438 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0430\u043c\u0438 \u0438 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u043e\u0439 14 \u044f\u0437\u044b\u043a\u043e\u0432. \u041f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043e\u0444\u0444\u043b\u0430\u0439\u043d. \u041f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e.",
-            cta: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u0443\u044e \u043f\u0440\u043e\u0431\u043d\u0443\u044e \u0432\u0435\u0440\u0441\u0438\u044e", platform_note: "\u0411\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e 14 \u0434\u043d\u0435\u0439, \u0437\u0430\u0442\u0435\u043c $4.99. \u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f macOS 14 Sonoma \u0438\u043b\u0438 \u043d\u043e\u0432\u0435\u0435.",
-            feat1_title: "\u0421\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434", feat1_desc: "\u041f\u0440\u043e\u0432\u043e\u0434\u0438\u0442\u0435 \u043f\u0430\u043b\u044c\u0446\u0435\u043c \u0438\u043b\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u043f\u043e \u0431\u0443\u043a\u0432\u0430\u043c, \u0447\u0442\u043e\u0431\u044b \u043c\u0433\u043d\u043e\u0432\u0435\u043d\u043d\u043e \u043d\u0430\u0431\u0438\u0440\u0430\u0442\u044c \u0441\u043b\u043e\u0432\u0430.",
-            feat2_title: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438", feat2_desc: "\u041a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0433\u0440\u0430\u043c\u043c\u043d\u044b\u0445 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0445 \u043c\u043e\u0434\u0435\u043b\u0435\u0439 \u0438 \u0447\u0430\u0441\u0442\u043e\u0442\u043d\u044b\u0445 \u0434\u0430\u043d\u043d\u044b\u0445.",
-            feat3_title: "14 \u044f\u0437\u044b\u043a\u043e\u0432", feat3_desc: "\u041f\u043e\u043b\u043d\u044b\u0435 \u0440\u0430\u0441\u043a\u043b\u0430\u0434\u043a\u0438 \u0438 \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u0440\u0435\u0434\u0441\u043a\u0430\u0437\u0430\u043d\u0438\u0439 \u0434\u043b\u044f \u0440\u0443\u0441\u0441\u043a\u043e\u0433\u043e, \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u043e\u0433\u043e, \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u043e\u0433\u043e, \u043d\u0435\u043c\u0435\u0446\u043a\u043e\u0433\u043e \u0438 10 \u0434\u0440\u0443\u0433\u0438\u0445 \u044f\u0437\u044b\u043a\u043e\u0432.",
-            feat4_title: "100% \u043e\u0444\u0444\u043b\u0430\u0439\u043d", feat4_desc: "\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u043d\u0443\u0436\u0435\u043d. \u041d\u0438\u043a\u0430\u043a\u0438\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u043d\u0435 \u043f\u043e\u043a\u0438\u0434\u0430\u044e\u0442 \u0432\u0430\u0448 Mac.",
-            feat5_title: "\u041f\u043e\u043b\u043d\u0430\u044f \u0440\u0430\u0441\u043a\u043b\u0430\u0434\u043a\u0430", feat5_desc: "\u041f\u043e\u043b\u043d\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430 Mac \u0441 \u0444\u0443\u043d\u043a\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u043c\u0438 \u043a\u043b\u0430\u0432\u0438\u0448\u0430\u043c\u0438, \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440\u0430\u043c\u0438 \u0438 \u043d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u043c \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u043e\u043c.",
-            feat6_title: "\u041b\u0451\u0433\u043a\u0430\u044f", feat6_desc: "\u041f\u043e\u0447\u0442\u0438 \u043d\u0443\u043b\u0435\u0432\u0430\u044f \u043d\u0430\u0433\u0440\u0443\u0437\u043a\u0430 \u043d\u0430 CPU \u0432 \u043f\u043e\u043a\u043e\u0435. \u0421\u043e\u0431\u044b\u0442\u0438\u0439\u043d\u0430\u044f \u0430\u0440\u0445\u0438\u0442\u0435\u043a\u0442\u0443\u0440\u0430.",
+            cta: "\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u0443\u044e \u043f\u0440\u043e\u0431\u043d\u0443\u044e \u0432\u0435\u0440\u0441\u0438\u044e",
+            platform_note: "\u0411\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e 14 \u0434\u043d\u0435\u0439, \u0437\u0430\u0442\u0435\u043c $2.99. \u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f macOS 14 Sonoma \u0438\u043b\u0438 \u043d\u043e\u0432\u0435\u0435.",
+            feat1_title: "\u0421\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434",
+            feat1_desc: "\u041f\u0440\u043e\u0432\u043e\u0434\u0438\u0442\u0435 \u043f\u0430\u043b\u044c\u0446\u0435\u043c \u0438\u043b\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u043f\u043e \u0431\u0443\u043a\u0432\u0430\u043c, \u0447\u0442\u043e\u0431\u044b \u043c\u0433\u043d\u043e\u0432\u0435\u043d\u043d\u043e \u043d\u0430\u0431\u0438\u0440\u0430\u0442\u044c \u0441\u043b\u043e\u0432\u0430.",
+            feat2_title: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438",
+            feat2_desc: "\u041a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u043d\u0430 \u043e\u0441\u043d\u043e\u0432\u0435 \u0431\u0438\u0433\u0440\u0430\u043c\u043c\u043d\u044b\u0445 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0445 \u043c\u043e\u0434\u0435\u043b\u0435\u0439 \u0438 \u0447\u0430\u0441\u0442\u043e\u0442\u043d\u044b\u0445 \u0434\u0430\u043d\u043d\u044b\u0445.",
+            feat3_title: "14 \u044f\u0437\u044b\u043a\u043e\u0432",
+            feat3_desc: "\u041f\u043e\u043b\u043d\u044b\u0435 \u0440\u0430\u0441\u043a\u043b\u0430\u0434\u043a\u0438 \u0438 \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u0440\u0435\u0434\u0441\u043a\u0430\u0437\u0430\u043d\u0438\u0439 \u0434\u043b\u044f \u0440\u0443\u0441\u0441\u043a\u043e\u0433\u043e, \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u043e\u0433\u043e, \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u043e\u0433\u043e, \u043d\u0435\u043c\u0435\u0446\u043a\u043e\u0433\u043e \u0438 10 \u0434\u0440\u0443\u0433\u0438\u0445 \u044f\u0437\u044b\u043a\u043e\u0432.",
+            feat4_title: "100% \u043e\u0444\u0444\u043b\u0430\u0439\u043d",
+            feat4_desc: "\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442 \u043d\u0435 \u043d\u0443\u0436\u0435\u043d. \u041d\u0438\u043a\u0430\u043a\u0438\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u043d\u0435 \u043f\u043e\u043a\u0438\u0434\u0430\u044e\u0442 \u0432\u0430\u0448 Mac.",
+            feat5_title: "\u041f\u043e\u043b\u043d\u0430\u044f \u0440\u0430\u0441\u043a\u043b\u0430\u0434\u043a\u0430",
+            feat5_desc: "\u041f\u043e\u043b\u043d\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430 Mac \u0441 \u0444\u0443\u043d\u043a\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u043c\u0438 \u043a\u043b\u0430\u0432\u0438\u0448\u0430\u043c\u0438, \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440\u0430\u043c\u0438 \u0438 \u043d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u043c \u043a\u043b\u0430\u0441\u0442\u0435\u0440\u043e\u043c.",
+            feat6_title: "\u041b\u0451\u0433\u043a\u0430\u044f",
+            feat6_desc: "\u041f\u043e\u0447\u0442\u0438 \u043d\u0443\u043b\u0435\u0432\u0430\u044f \u043d\u0430\u0433\u0440\u0443\u0437\u043a\u0430 \u043d\u0430 CPU \u0432 \u043f\u043e\u043a\u043e\u0435. \u0421\u043e\u0431\u044b\u0442\u0438\u0439\u043d\u0430\u044f \u0430\u0440\u0445\u0438\u0442\u0435\u043a\u0442\u0443\u0440\u0430.",
             how_title: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442",
-            step1_title: "\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 Tekla", step1_desc: "\u041f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u043f\u043b\u0430\u0432\u0430\u044e\u0449\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430. \u041f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u044c\u0442\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043d\u0438\u0435 \u0423\u043d\u0438\u0432\u0435\u0440\u0441\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0434\u043e\u0441\u0442\u0443\u043f\u0430.",
-            step2_title: "\u0421\u0432\u0430\u0439\u043f\u0430\u0439\u0442\u0435 \u0438\u043b\u0438 \u043d\u0430\u0436\u0438\u043c\u0430\u0439\u0442\u0435", step2_desc: "\u041f\u0440\u043e\u0432\u043e\u0434\u0438\u0442\u0435 \u043f\u043e \u0431\u0443\u043a\u0432\u0430\u043c \u0434\u043b\u044f \u0441\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434\u0430 \u0438\u043b\u0438 \u043d\u0430\u0436\u0438\u043c\u0430\u0439\u0442\u0435 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u044b\u0435 \u043a\u043b\u0430\u0432\u0438\u0448\u0438.",
-            step3_title: "\u0412\u044b\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438", step3_desc: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u043e\u0431\u043d\u043e\u0432\u043b\u044f\u044e\u0442\u0441\u044f \u0432 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u043c \u0432\u0440\u0435\u043c\u0435\u043d\u0438. \u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0430 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0443, \u0447\u0442\u043e\u0431\u044b \u0432\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u0435\u0451.",
+            step1_title: "\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 Tekla",
+            step1_desc: "\u041f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u043f\u043b\u0430\u0432\u0430\u044e\u0449\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430. \u041f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u044c\u0442\u0435 \u0440\u0430\u0437\u0440\u0435\u0448\u0435\u043d\u0438\u0435 \u0423\u043d\u0438\u0432\u0435\u0440\u0441\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0434\u043e\u0441\u0442\u0443\u043f\u0430.",
+            step2_title: "\u0421\u0432\u0430\u0439\u043f\u0430\u0439\u0442\u0435 \u0438\u043b\u0438 \u043d\u0430\u0436\u0438\u043c\u0430\u0439\u0442\u0435",
+            step2_desc: "\u041f\u0440\u043e\u0432\u043e\u0434\u0438\u0442\u0435 \u043f\u043e \u0431\u0443\u043a\u0432\u0430\u043c \u0434\u043b\u044f \u0441\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434\u0430 \u0438\u043b\u0438 \u043d\u0430\u0436\u0438\u043c\u0430\u0439\u0442\u0435 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u044b\u0435 \u043a\u043b\u0430\u0432\u0438\u0448\u0438.",
+            step3_title: "\u0412\u044b\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438",
+            step3_desc: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u043e\u0431\u043d\u043e\u0432\u043b\u044f\u044e\u0442\u0441\u044f \u0432 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u043c \u0432\u0440\u0435\u043c\u0435\u043d\u0438. \u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0430 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0443, \u0447\u0442\u043e\u0431\u044b \u0432\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u0435\u0451.",
             lang_title: "\u041f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442 14 \u044f\u0437\u044b\u043a\u043e\u0432",
             a11y_title: "\u0421\u043e\u0437\u0434\u0430\u043d\u0430 \u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438",
-            a11y1_title: "\u041c\u043e\u0442\u043e\u0440\u043d\u0430\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u044c", a11y1_desc: "\u0420\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u0430 \u0434\u043b\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0435\u0439 \u0441 \u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u043d\u043e\u0439 \u043f\u043e\u0434\u0432\u0438\u0436\u043d\u043e\u0441\u0442\u044c\u044e \u0440\u0443\u043a. \u0421\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434 \u043f\u043e\u0437\u0432\u043e\u043b\u044f\u0435\u0442 \u043d\u0430\u0431\u0438\u0440\u0430\u0442\u044c \u0441\u043b\u043e\u0432\u0430 \u043e\u0434\u043d\u0438\u043c \u043d\u0435\u043f\u0440\u0435\u0440\u044b\u0432\u043d\u044b\u043c \u0436\u0435\u0441\u0442\u043e\u043c, \u043c\u0435\u043d\u044c\u0448\u0435 \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0439, \u043c\u0435\u043d\u044c\u0448\u0435 \u043d\u0430\u0433\u0440\u0443\u0437\u043a\u0438.",
-            a11y2_title: "\u0413\u0438\u0431\u043a\u0438\u0439 \u0432\u0432\u043e\u0434", a11y2_desc: "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0441 \u0442\u0440\u0435\u043a\u043f\u0430\u0434\u0430\u043c\u0438, \u043c\u044b\u0448\u0430\u043c\u0438, \u0441\u0442\u0438\u043b\u0443\u0441\u0430\u043c\u0438, \u0433\u043e\u043b\u043e\u0432\u043d\u044b\u043c\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044f\u043c\u0438 \u0438 \u043b\u044e\u0431\u044b\u043c\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u043c\u0438 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430\u043c\u0438. \u041c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u043e\u043a\u043d\u043e \u0430\u0434\u0430\u043f\u0442\u0438\u0440\u0443\u0435\u0442\u0441\u044f \u043f\u043e\u0434 \u0432\u0430\u0448\u0443 \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044e.",
-            a11y3_title: "\u041c\u0435\u043d\u044c\u0448\u0435 \u043d\u0430\u0436\u0430\u0442\u0438\u0439", a11y3_desc: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u0438 \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u0441\u043b\u043e\u0432\u0430, \u043f\u0438\u0448\u0438\u0442\u0435 \u043c\u0435\u043d\u044c\u0448\u0435, \u0433\u043e\u0432\u043e\u0440\u0438\u0442\u0435 \u0431\u043e\u043b\u044c\u0448\u0435. \u0421\u0432\u0430\u0439\u043f\u043d\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e, \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0443, \u043f\u043e\u043b\u043d\u044b\u0435 \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0441 \u043c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u043c \u0443\u0441\u0438\u043b\u0438\u0435\u043c.",
-            footer_rights: "\u0412\u0441\u0435 \u043f\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u044b.", footer_payments: "\u041f\u043b\u0430\u0442\u0435\u0436\u0438 \u043e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0435\u0442",
-        },
+            a11y1_title: "\u041c\u043e\u0442\u043e\u0440\u043d\u0430\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u044c",
+            a11y1_desc: "\u0420\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u0430 \u0434\u043b\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0435\u0439 \u0441 \u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u043d\u043e\u0439 \u043f\u043e\u0434\u0432\u0438\u0436\u043d\u043e\u0441\u0442\u044c\u044e \u0440\u0443\u043a. \u0421\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434 \u043f\u043e\u0437\u0432\u043e\u043b\u044f\u0435\u0442 \u043d\u0430\u0431\u0438\u0440\u0430\u0442\u044c \u0441\u043b\u043e\u0432\u0430 \u043e\u0434\u043d\u0438\u043c \u043d\u0435\u043f\u0440\u0435\u0440\u044b\u0432\u043d\u044b\u043c \u0436\u0435\u0441\u0442\u043e\u043c, \u043c\u0435\u043d\u044c\u0448\u0435 \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0439, \u043c\u0435\u043d\u044c\u0448\u0435 \u043d\u0430\u0433\u0440\u0443\u0437\u043a\u0438.",
+            a11y2_title: "\u0413\u0438\u0431\u043a\u0438\u0439 \u0432\u0432\u043e\u0434",
+            a11y2_desc: "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0441 \u0442\u0440\u0435\u043a\u043f\u0430\u0434\u0430\u043c\u0438, \u043c\u044b\u0448\u0430\u043c\u0438, \u0441\u0442\u0438\u043b\u0443\u0441\u0430\u043c\u0438, \u0433\u043e\u043b\u043e\u0432\u043d\u044b\u043c\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044f\u043c\u0438 \u0438 \u043b\u044e\u0431\u044b\u043c\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u043c\u0438 \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430\u043c\u0438. \u041c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u043e\u043a\u043d\u043e \u0430\u0434\u0430\u043f\u0442\u0438\u0440\u0443\u0435\u0442\u0441\u044f \u043f\u043e\u0434 \u0432\u0430\u0448\u0443 \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044e.",
+            a11y3_title: "\u041c\u0435\u043d\u044c\u0448\u0435 \u043d\u0430\u0436\u0430\u0442\u0438\u0439",
+            a11y3_desc: "\u0423\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u0438 \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0433\u043e \u0441\u043b\u043e\u0432\u0430, \u043f\u0438\u0448\u0438\u0442\u0435 \u043c\u0435\u043d\u044c\u0448\u0435, \u0433\u043e\u0432\u043e\u0440\u0438\u0442\u0435 \u0431\u043e\u043b\u044c\u0448\u0435. \u0421\u0432\u0430\u0439\u043f\u043d\u0438\u0442\u0435 \u0441\u043b\u043e\u0432\u043e, \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0443, \u043f\u043e\u043b\u043d\u044b\u0435 \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0441 \u043c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u043c \u0443\u0441\u0438\u043b\u0438\u0435\u043c.",
+            footer_rights: "\u0412\u0441\u0435 \u043f\u0440\u0430\u0432\u0430 \u0437\u0430\u0449\u0438\u0449\u0435\u043d\u044b.",
+            footer_payments: "\u041f\u043b\u0430\u0442\u0435\u0436\u0438 \u043e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0435\u0442",
+            nav_why: "\u041f\u043e\u0447\u0435\u043c\u0443 Tekla",
+            nav_pricing: "\u0426\u0435\u043d\u0430",
+            sec_features: "\u0424\u0443\u043d\u043a\u0446\u0438\u0438",
+            sec_features_title: "\u041d\u0430\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u0441\u0432\u0430\u0439\u043f\u043e\u043c, \u043f\u0440\u044f\u043c\u043e \u043d\u0430 \u0441\u0432\u043e\u0451\u043c Mac",
+            sec_a11y: "\u0414\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u044c",
+            sec_how: "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442",
+            sec_why: "\u041f\u043e\u0447\u0435\u043c\u0443 Tekla",
+            sec_why_title: "\u041a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430, \u043a\u043e\u0442\u043e\u0440\u0430\u044f \u043d\u0435 \u043c\u0435\u0448\u0430\u0435\u0442",
+            why1_t: "\u041f\u0435\u0447\u0430\u0442\u0430\u0439\u0442\u0435 \u0431\u0435\u0437 \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u044b",
+            why1_d: "\u041f\u043e\u043b\u043d\u043e\u0446\u0435\u043d\u043d\u0430\u044f \u043f\u043b\u0430\u0432\u0430\u044e\u0449\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430 \u043d\u0430 \u044d\u043a\u0440\u0430\u043d\u0435, \u0443\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u043c\u0430\u044f \u043b\u044e\u0431\u044b\u043c \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u043c \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e\u043c. \u0411\u0435\u0437 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043a\u043e\u0439 \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u044b, \u0431\u0435\u0437 \u043b\u0438\u0448\u043d\u0435\u0433\u043e \u043c\u0435\u0441\u0442\u0430 \u043d\u0430 \u0441\u0442\u043e\u043b\u0435.",
+            why2_t: "\u041d\u0430\u0442\u0438\u0432\u043d\u0430\u044f \u0434\u043b\u044f macOS",
+            why2_d: "\u0421\u043e\u0437\u0434\u0430\u043d\u0430 \u0434\u043b\u044f Mac, \u0430 \u043d\u0435 \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0435\u043d\u0430 \u043e\u0442\u043a\u0443\u0434\u0430-\u0442\u043e. \u041b\u0451\u0433\u043a\u043e\u0435 \u043c\u0430\u0441\u0448\u0442\u0430\u0431\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u043e\u043a\u043d\u043e, \u043f\u0430\u0440\u044f\u0449\u0435\u0435 \u043d\u0430\u0434 \u043b\u044e\u0431\u044b\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u043c.",
+            why3_t: "\u041f\u0440\u0438\u0432\u0430\u0442\u043d\u0430\u044f \u043f\u043e \u0437\u0430\u043c\u044b\u0441\u043b\u0443",
+            why3_d: "\u0411\u0435\u0437 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430, \u0431\u0435\u0437 \u0442\u0435\u043b\u0435\u043c\u0435\u0442\u0440\u0438\u0438, \u0431\u0435\u0437 \u0441\u0435\u0442\u0438. \u0412\u0430\u0448 \u0432\u0432\u043e\u0434, \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u0438 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u043d\u0438\u043a\u043e\u0433\u0434\u0430 \u043d\u0435 \u043f\u043e\u043a\u0438\u0434\u0430\u044e\u0442 \u0432\u0430\u0448 Mac.",
+            sec_pricing: "\u0426\u0435\u043d\u0430",
+            sec_pricing_title: "\u041e\u0434\u043d\u0430 \u0446\u0435\u043d\u0430. \u0412\u0441\u0435 \u0444\u0443\u043d\u043a\u0446\u0438\u0438.",
+            pricing_badge: "14 \u0434\u043d\u0435\u0439 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e",
+            pricing_sub: "\u0420\u0430\u0437\u043e\u0432\u0430\u044f \u043f\u043e\u043a\u0443\u043f\u043a\u0430, \u0431\u0435\u0437 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438",
+            pf1: "\u0412\u0441\u0435 \u0444\u0443\u043d\u043a\u0446\u0438\u0438, \u0431\u0435\u0437 \u0443\u0440\u043e\u0432\u043d\u0435\u0439",
+            pf2: "\u0421\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434 \u0438 \u0443\u043c\u043d\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438",
+            pf3: "14 \u044f\u0437\u044b\u043a\u043e\u0432, \u043f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u043e\u0444\u0444\u043b\u0430\u0439\u043d",
+            pf4: "\u041f\u043e\u043b\u043d\u0430\u044f \u043d\u0430\u0441\u0442\u043e\u043b\u044c\u043d\u0430\u044f \u0440\u0430\u0441\u043a\u043b\u0430\u0434\u043a\u0430 \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u044b",
+            pf5: "\u0421\u043e\u0437\u0434\u0430\u043d\u0430 \u0434\u043b\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438",
+            pf6: "\u0411\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f",
+            pricing_buy: "\u041a\u0443\u043f\u0438\u0442\u044c Tekla",
+            pricing_trial: "\u0438\u043b\u0438 \u0441\u043a\u0430\u0447\u0430\u0439\u0442\u0435 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u0443\u044e 14-\u0434\u043d\u0435\u0432\u043d\u0443\u044e \u0432\u0435\u0440\u0441\u0438\u044e",
+            req: "\u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f macOS 14 Sonoma \u0438\u043b\u0438 \u043d\u043e\u0432\u0435\u0435",
+            carousel_title: "\u0411\u043e\u043b\u044c\u0448\u0435 \u043e\u0442 CorvusDevs",
+            carousel_sub: "\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f \u0441 \u043f\u0440\u0438\u043e\u0440\u0438\u0442\u0435\u0442\u043e\u043c \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0441\u0442\u0438 \u0434\u043b\u044f macOS, iOS \u0438 Safari.",
+            foot_tagline: "\u0412\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u0430\u044f \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u0430 \u0441\u043e \u0441\u0432\u0430\u0439\u043f-\u0432\u0432\u043e\u0434\u043e\u043c \u0434\u043b\u044f macOS.",
+            foot_product: "\u041f\u0440\u043e\u0434\u0443\u043a\u0442",
+            foot_support: "\u041f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430",
+            foot_legal: "\u041f\u0440\u0430\u0432\u043e\u0432\u0430\u044f \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f",
+            foot_contact: "\u041a\u043e\u043d\u0442\u0430\u043a\u0442",
+            foot_bug: "\u0421\u043e\u043e\u0431\u0449\u0438\u0442\u044c \u043e\u0431 \u043e\u0448\u0438\u0431\u043a\u0435",
+            foot_privacy: "\u041a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
+            foot_terms: "\u0423\u0441\u043b\u043e\u0432\u0438\u044f"
+        }
     };
 
     const langNames = {en:"EN",es:"ES",de:"DE",fr:"FR",pt:"PT",it:"IT",nl:"NL",sv:"SV",no:"NO",da:"DA",fi:"FI",tr:"TR",pl:"PL",ru:"RU"};
@@ -927,39 +1599,27 @@
         const t = T[lang] || T.en;
         document.querySelectorAll("[data-i18n]").forEach(el => {
             const key = el.getAttribute("data-i18n");
-            if (t[key]) el.innerHTML = t[key];
+            const val = (t[key] !== undefined) ? t[key] : T.en[key];
+            if (val !== undefined) el.innerHTML = val;
         });
         document.documentElement.lang = lang;
-        // Update picker label
         const label = document.querySelector(".lang-picker-label");
         if (label) label.textContent = langNames[lang] || lang.toUpperCase();
-        // Mark active in dropdown
         document.querySelectorAll(".lang-dropdown button").forEach(btn => {
             btn.classList.toggle("active", btn.dataset.lang === lang);
         });
-        // Close dropdown
         document.querySelector(".lang-dropdown")?.classList.remove("open");
-        // Persist
         try { localStorage.setItem("tekla-lang", lang); } catch(e) {}
     }
 
-    // Toggle dropdown
-    document.querySelector(".lang-picker-btn")?.addEventListener("click", e => {
-        e.stopPropagation();
-        document.querySelector(".lang-dropdown")?.classList.toggle("open");
-    });
-
-    // Language buttons
     document.querySelectorAll(".lang-dropdown button[data-lang]").forEach(btn => {
         btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
     });
 
-    // Close on outside click
-    document.addEventListener("click", () => {
-        document.querySelector(".lang-dropdown")?.classList.remove("open");
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".lang-picker")) document.querySelector(".lang-dropdown")?.classList.remove("open");
     });
 
-    // Init: saved > browser > English
     (function initLang() {
         let lang;
         try { lang = localStorage.getItem("tekla-lang"); } catch(e) {}
