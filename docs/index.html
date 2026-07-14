@@ -288,7 +288,23 @@
         <span class="hero-free" data-i18n="platform_note">Free for 14 days, then $2.99. Requires macOS 14 Sonoma or later.</span>
     </section>
 
-    <!-- TODO: add app screenshots -->
+    <!-- App screenshot -->
+    <style>
+        .showcase { max-width: 1040px; margin: 0 auto; padding: 130px 24px 40px; text-align: center; }
+        .showcase .section-title { margin-bottom: 18px; }
+        .showcase-caption { font-size: 18px; color: var(--text-secondary); max-width: 660px; margin: 0 auto 44px; line-height: 1.6; }
+        .showcase-frame { border-radius: 22px; padding: 52px 36px; background: radial-gradient(130% 120% at 50% -10%, rgba(10, 132, 255, 0.18), rgba(20, 20, 24, 0) 55%), var(--surface); border: 1px solid var(--border); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); }
+        .showcase-frame img { width: 100%; max-width: 920px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.5)); }
+        @media (max-width: 720px) { .showcase { padding-top: 90px; } .showcase-frame { padding: 28px 16px; } .showcase-caption { font-size: 16px; } }
+    </style>
+    <section class="showcase" id="showcase">
+        <div class="section-label fade-in" data-i18n="sec_showcase">See it in action</div>
+        <h2 class="section-title gradient-text fade-in" data-i18n="showcase_title">A full Mac keyboard, floating on your screen</h2>
+        <p class="showcase-caption fade-in" data-i18n="showcase_caption">Swipe-to-type, smart predictions, a function row, and a navigation cluster, all in a resizable window that stays out of your way.</p>
+        <div class="showcase-frame fade-in">
+            <img src="screenshots/keyboard.png" alt="Tekla floating keyboard on macOS" width="920" height="340" loading="lazy">
+        </div>
+    </section>
 
     <section class="features" id="features">
         <div class="section-label fade-in" data-i18n="sec_features">Features</div>
@@ -535,6 +551,9 @@
             tagline: "A floating virtual keyboard with swipe-to-type, smart predictions, and support for 14 languages. Fully offline. Fully private.",
             cta: "Download Free Trial",
             platform_note: "Free for 14 days, then $2.99. Requires macOS 14 Sonoma or later.",
+            sec_showcase: "See it in action",
+            showcase_title: "A full Mac keyboard, floating on your screen",
+            showcase_caption: "Swipe-to-type, smart predictions, a function row, and a navigation cluster, all in a resizable window that stays out of your way.",
             feat1_title: "Swipe-to-Type",
             feat1_desc: "Slide your finger or pointer across letters to type words instantly. Geometric scoring and Bayesian ranking find the right word every time.",
             feat2_title: "Smart Predictions",
